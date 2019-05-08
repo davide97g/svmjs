@@ -140,7 +140,7 @@
                 // lines, scaled by C is essentially the total hinge loss.
                 for(var i=0;i<N;i++) {
                     if(svm.alpha[i]<1e-2) continue;
-                    if(labels[i]==1) {
+                    if(labels[i]===1) {
                         ys[0]= (1 -wb.b - wb.w[0]*xs[0])/wb.w[1];
                         ys[1]= (1 -wb.b - wb.w[0]*xs[1])/wb.w[1];
                     } else {
@@ -163,7 +163,7 @@
             for(var i=0;i<N;i++) { if(svm.alpha[i] > 1e-5) numsupp++; }
             ctx.fillText("Number of support vectors: " + numsupp + " / " + N, 10, HEIGHT-50);
 
-            $(".slider_container").hide();
+            $(".slider_container").hide(); // per nascondere gli slider che non servono
 
             if(kernelid === 2){
                 ctx.fillText("Using Polynomial kernel with degree = " + Degree, 10, HEIGHT - 70);
@@ -235,7 +235,7 @@
             var logSig = ui.value;
             rbfKernelSigma= Math.pow(10, logSig);
             $("#sigreport").text("RBF Kernel sigma = " + rbfKernelSigma.toPrecision(2));
-            if(kernelid==1) {
+            if(kernelid === 1) {
                 retrainSVM();
             }
         }
@@ -245,7 +245,7 @@
             //Degree = Math.pow(10, logDegree);
             Degree = ui.value;
             $("#degport").text("Polynomial Kernel degree = " + Degree.toPrecision(2));
-            if(kernelid==2) {
+            if(kernelid === 2) {
                 retrainSVM();
             }
         }
@@ -253,7 +253,7 @@
         function refreshInfluence(event, ui) {
             Influence =  ui.value;
             $("#infport").text("Polynomial Kernel influence = " + Influence.toPrecision(2));
-            if(kernelid==2) {
+            if(kernelid === 2) {
                 retrainSVM();
             }
         }
