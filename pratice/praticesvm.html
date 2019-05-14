@@ -30,7 +30,7 @@
         let Influence = 0;
         let svmC = 1.0;
         let ssca = false;
-        let ub = 1.3;
+        let ub = 0.5;
         let memo = true;
         let sv,svl;
         let CM;
@@ -328,8 +328,13 @@
                 setDataSet(1);
                 retrainSVM();
             }
+            if(key===50){ //2
+                data = data.splice(0,10);
+                setDataSet(2);
+                retrainSVM();
+            }
             if(key===51){ //3
-                N = 50;
+                N = 100;
                 data = new Array(N);
                 setDataSet(-1);
                 retrainSVM();
@@ -547,7 +552,7 @@
     <div id="s5" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
         <div id="slider5"></div>
         <br/>
-        <span id="ubport">Upper bound = 1.3</span>
+        <span id="ubport">Upper bound = 0.5</span>
     </div>
 </div>
 
