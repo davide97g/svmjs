@@ -23,6 +23,8 @@
         let ss= 50.0; // scaling factor for drawing
         let svm= new svmjs.SVM();
         let trainstats = {
+            data: null,
+            labels: null,
             CM:null,
             recall: null,
             precision : null,
@@ -183,8 +185,6 @@
         }
 
         function update(){
-            //data = trainstats.data;
-            //labels = trainstats.labels;
 
             CM = trainstats.CM;
             recall = trainstats.recall;
@@ -192,9 +192,15 @@
             accurancy = trainstats.accurancy;
             specificity = trainstats.specificity;
             fMeasure = trainstats.fMeasure;
+            if(kernelid<3)
+                updateData();
 
         }
 
+        function updateData() {
+            data = trainstats.data;
+            labels = trainstats.labels;
+        }
 
         //distances for KNN
 
@@ -291,8 +297,6 @@
             for(let i=0;i<n;i++){
                 nearest[i] = {};
                 nearest[i].distance = distanceF(x,y,data[i][0],data[i][1]);
-                //nearest[i].distance = chebyshev(x,y,data[0][0],data[0][1]);
-                //nearest[i].distance = mahalanobis(x,y,data[0][0],data[0][1]);
                 nearest[i].label = labels[i];
             }
 
@@ -302,8 +306,6 @@
             //find nn sets
             for(let i=n;i<data.length;i++){
                 d = distanceF(x,y,data[i][0],data[i][1]);
-                //d = chebyshev(x,y,data[i][0],data[i][1]);
-                //d = mahalanobis(x,y,data[0][0],data[0][1]);
                 if(nearest[0].distance>d){ //se è più distante il più distante dei nearest, aggiorno la lista
                     nearest[0].distance = d;
                     nearest[0].label = labels[i];
@@ -354,6 +356,7 @@
             dirty = false;
 
             ctx.clearRect(0,0,WIDTH,HEIGHT);
+            update();
 
             let optimization = $("#optimization");
             let distances = $("#distances");
@@ -418,8 +421,6 @@
                 return;
             }
 
-
-            update();
 
             optimization.show();
 
@@ -822,7 +823,7 @@
 
 <body onLoad="NPGinit(10);">
 <div id="dec">
-    <br /><h1>Support Vector Machine in Javascript (Pratice Mode)</h1>
+    <br /><h1>Support Vector Machine in Javascript (Pratice Mode) 🐧✌️</h1>
     <p>
         Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
         This version is based on the work of Andrej Karpathy.<br/>Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
