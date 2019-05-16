@@ -22,7 +22,14 @@
         let wb; // weights and offset structure
         let ss= 50.0; // scaling factor for drawing
         let svm= new svmjs.SVM();
-        let trainstats;
+        let trainstats = {
+            CM:null,
+            recall: null,
+            precision : null,
+            accurancy : null,
+            specificity : null,
+            fMeasure : null
+        };
         let dirty= true;
         let kernelid= 3;
         let rbfKernelSigma = 0.5;
@@ -43,6 +50,7 @@
         let distanceF = minkowski;//variable for distance function
         let distanceid=0;
         let P=2; //for minkowski
+        let v; //array of variances
 
         function myinit(){
             setDataSet(0);
@@ -155,6 +163,17 @@
             }
             if(kernelid===3){
                 console.info("KNN: "+K);
+                console.info("distance with: ");
+                if(distanceid===0){
+                    console.info("minkowski with p = "+P);
+                }
+                else if(distanceid === 1 ){
+                    console.info("chebyshev");
+                }
+                else if(distanceid === 2){ //mahalanobis
+                    console.info("mahalanobis");
+                    v = variance(); //calcolo una volta sola per aggiornamento di data set
+                }
             }
             if(kernelid===4){
                 console.info("RBF");
@@ -167,14 +186,14 @@
         function update(){
             //data = trainstats.data;
             //labels = trainstats.labels;
-            /*
+
             CM = trainstats.CM;
             recall = trainstats.recall;
             precision = trainstats.precision;
             accurancy = trainstats.accurancy;
             specificity = trainstats.specificity;
             fMeasure = trainstats.fMeasure;
-            */
+
         }
 
 
@@ -203,7 +222,6 @@
         //mahalanobis
         function mahalanobis(x1,y1,x2,y2) {
             let distance = 0;
-            let v = variance();
             let diff = 0;
             let x = [x1,y1];
             let y = [x2,y2];
@@ -217,9 +235,10 @@
         function variance() {
             let v = new Array(data[0].length);
             let m = average();
+            let sum,diff;
             for(let i=0;i<v.length;i++){
-                let sum = 0;
-                let diff = 0;
+                sum = 0;
+                diff = 0;
                 for(let j=0;j<data.length;j++){
                     diff = data[j][i]-m[i];
                     sum += Math.pow(diff,2);
@@ -232,10 +251,11 @@
         function average() {
             let m = new Array(data[0].length); //numero di coordinate per punto
             for(let i=0;i<m.length;i++){
+                m[i] = 0; //inizializzo a zero
                 for (let j=0;j<data.length;j++){ //per ogni punto
                     m[i]+=data[j][i];
                 }
-                m[i]/=data.length;
+                m[i]= m[i] / data.length;
             }
             return m;
         }
@@ -337,6 +357,8 @@
             ctx.clearRect(0,0,WIDTH,HEIGHT);
 
             let optimization = $("#optimization");
+            let distances = $("#distances");
+            distances.hide();
             optimization.hide();
 
             $(".slider_container").hide(); // per nascondere gli slider che non servono
@@ -345,8 +367,10 @@
 
                 if(kernelid===3) {
                     $("#s6").show();
-                    if(distanceid===0) //minkowski
+                    distances.show();
+                    if(distanceid===0)  //minkowski
                         $("#s7").show();
+
                 }
 
                 // draw decisions in the grid
@@ -591,6 +615,7 @@
         }
 
         function changeDistance(id) {
+            if(distanceid === id) return;
             if(id===0)
                 distanceF = minkowski;
             else if(id===1)
@@ -602,10 +627,8 @@
             retrainSVM();
         }
 
-
         function keyDown(key){
         }
-
 
         // UI stuff
         function refreshC(event, ui) {
