@@ -501,19 +501,15 @@
     </head>
 
     <body onLoad="NPGinit(10);"> <!-- 24 FPS -->
-        <div id="dec">
+        <div id="info">
             <br /><h1>Support Vector Machine in Javascript (Pratice Mode) 🐧✌️</h1>
             <p>
                 Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
-                This version is based on the work of Andrej Karpathy.<br/>Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
+                This version is based on the work of Andrej Karpathy. Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
             </p>
         </div>
         <div id="options">
-            <div id="instructions" class="opts">
-                <b>Mouse click</b>: add red data point<br />
-                <b>Shift + mouse click</b>: add green data point<br />
-                <b>'r'</b>: reset<br /><br />
-            </div>
+            <h3>Options</h3>
             <div id="kernels" class="opts">
                 <b>Kernels: </b>
                 <button id="linear" onclick="clickBtn(id),changeKernel(0)">Linear Kernel</button>
@@ -536,10 +532,19 @@
                 <button id="maha" onclick="clickBtn(id),changeDistance(2)">Mahalanobis</button>
             </div>
         </div>
-        <canvas id="NPGcanvas" width="450" height="450">Browser not supported for Canvas. Get a real browser.
-        </canvas>
-        <br /><br />
-        <div id="optsdiv">
+        <div id="instructions">
+            <h3>Instructions</h3>
+            <div>
+                <strong>Mouse click</strong>: add red data point<br />
+                <strong>Shift + mouse click</strong>: add green data point<br />
+                <strong>'r'</strong>: reset
+            </div>
+            <canvas id="NPGcanvas" width="450" height="450">Browser not supported for Canvas. Get a real browser.
+            </canvas>
+        </div>
+
+        <div id="values">
+            <h3>Values</h3>
             <div id="s1" class="slider_container">
                 <div id="slider1"></div>
                 <br/>
