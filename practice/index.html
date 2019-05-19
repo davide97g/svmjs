@@ -162,15 +162,19 @@
                 //wb= svm.getWeights();
             }
             if(kernelid===3){
+                addClassSelected("knn");
                 console.info("KNN: "+K);
                 console.info("distance with: ");
                 if(distanceid===0){
+                    addClassSelected("min");
                     console.info("minkowski with p = "+P);
                 }
                 else if(distanceid === 1 ){
+                    addClassSelected("che");
                     console.info("chebyshev");
                 }
                 else if(distanceid === 2){ //mahalanobis
+                    addClassSelected("maha");
                     console.info("mahalanobis");
                     v = variance(); //calcolo una volta sola per aggiornamento di data set
                 }
@@ -183,8 +187,27 @@
         }
 
         function myinit(){
+            clickBtn("knn");
             setDataSet(0);
             retrainSVM();
+        }
+        function clickBtn(ID) {
+            removeAll();
+            addClassSelected(ID);
+        }
+        function addClassSelected(ID) {
+            document.getElementById(ID).classList.add("selected");
+        }
+        function removeAll() {
+            let buttons = document.getElementsByTagName("button");
+            for (let i=0;i<buttons.length;i++){
+                removeAllClasses(buttons.item(i).id);
+            }
+        }
+        function removeAllClasses(ID) {
+            let list = document.getElementById(ID).classList;
+            for(let i=0;i<list.length;i++)
+                list.remove(list[i]);
         }
 
         </script>
@@ -493,9 +516,9 @@
             </div>
             <div id="kernels" class="opts">
                 <b>Kernels: </b>
-                <button onclick="changeKernel(0)">Linear Kernel</button>
-                <button onclick="changeKernel(1)">RBF Kernerl</button>
-                <button onclick="changeKernel(2)">Polynomial Kernel</button>
+                <button id="linear" onclick="clickBtn(id),changeKernel(0)">Linear Kernel</button>
+                <button id="rbfk" onclick="clickBtn(id),changeKernel(1)">RBF Kernerl</button>
+                <button id="poly" onclick="clickBtn(id),changeKernel(2)">Polynomial Kernel</button>
             </div>
             <div id="optimization" class="opts">
                 <b>Optimization: </b>
@@ -503,55 +526,55 @@
             </div>
             <div id="evalutation" class="opts">
                 <b>Evaluation functions:</b>
-                <button onclick="changeKernel(3)">KNN</button>
-                <button onclick="changeKernel(4)">RBF function</button>
+                <button id="knn" onclick="clickBtn(id),changeKernel(3)">KNN</button>
+                <button id="rbf" onclick="clickBtn(id),changeKernel(4)">RBF function</button>
             </div>
             <div id="distances" class="opts">
                 <b>Distances functions:</b>
-                <button onclick="changeDistance(0)">Minkowski</button>
-                <button onclick="changeDistance(1)">Chebyshev</button>
-                <button onclick="changeDistance(2)">Mahalanobis</button>
+                <button id="min" onclick="clickBtn(id),changeDistance(0)">Minkowski</button>
+                <button id="che" onclick="clickBtn(id),changeDistance(1)">Chebyshev</button>
+                <button id="maha" onclick="clickBtn(id),changeDistance(2)">Mahalanobis</button>
             </div>
         </div>
         <canvas id="NPGcanvas" width="450" height="450">Browser not supported for Canvas. Get a real browser.
         </canvas>
         <br /><br />
         <div id="optsdiv">
-            <div id="s1" class="slider_container" style="width:250px; float: left; margin-left: 10px;">
+            <div id="s1" class="slider_container">
                 <div id="slider1"></div>
                 <br/>
                 <span id="creport">C = 1.0</span>
             </div>
-            <div id="s2" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+            <div id="s2" class="slider_container">
                 <div id="slider2"></div>
                 <br/>
                 <span id="sigreport">RBF Kernel sigma = 1.0</span>
             </div>
-            <div id="s3" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+            <div id="s3" class="slider_container">
                 <div id="slider3"></div>
                 <br/>
                 <span id="degport">Polynomial Kernel degree = 2</span>
             </div>
-            <div id="s4" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+            <div id="s4" class="slider_container">
                 <div id="slider4"></div>
                 <br/>
                 <span id="infport">Polynomial Kernel influence = 0</span>
             </div>
-            <div id="s5" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+            <div id="s5" class="slider_container">
                 <div id="slider5"></div>
                 <br/>
                 <span id="ubport">Upper bound = 0.5</span>
             </div>
-            <div id="s6" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+            <div id="s6" class="slider_container">
                 <div id="slider6"></div>
                 <br/>
                 <span id="kport">K: 1</span>
             </div>
-            <div id="s7" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+            <div id="s7" class="slider_container">
             <div id="slider7"></div>
-            <br/>
-            <span id="pport">Minkowski with P: 2</span>
-        </div>
+                <br/>
+                <span id="pport">Minkowski with P: 2</span>
+            </div>
         </div>
     </body>
 </html>
