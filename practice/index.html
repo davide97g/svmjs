@@ -1,4 +1,4 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html lang="it">
     <head>
         <title>SVM Javascript</title>
@@ -14,6 +14,7 @@
 
         <script src="../lib/svm.js"></script>
 
+        <!-- Declaration and initialization -->
         <script type="text/javascript">
 
         /*
@@ -45,6 +46,7 @@
             specificity : null,
             fMeasure : null
         };
+
         let kernelid= 3;
         let Degree = 2;
         let Influence = 0;
@@ -59,15 +61,7 @@
         let K = 1; //for KNN
         let P = 2; //for minkowski
         let v; //array of variances
-
-        function myinit(){
-            setDataSet(0);
-            retrainSVM();
-        }
-
-        function setSSCA(value) {
-            ssca = value;
-        }
+        let distanceid = 0; //for distances in KNN evalutations
 
         function setDataSet(id) {
             if(id===-1){
@@ -154,13 +148,18 @@
 
             if(kernelid === 2){
                 trainstats= svm.train(data, labels, { kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
+                if(Degree === 1)
+                    wb = svm.getWeights();
             }
             if(kernelid === 1) {
                 trainstats= svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
             }
             if(kernelid === 0) {
-                trainstats= svm.train(data, labels, { kernel: 'linear' , C: svmC, quadratic: true, SSCA: ssca, UB: ub, memoize: memo});
-                wb= svm.getWeights();
+                kernelid = 2;
+                Degree = 1;
+                retrainSVM();
+                //trainstats= svm.train(data, labels, { kernel: 'linear' , C: svmC, quadratic: false, SSCA: ssca, UB: ub, memoize: memo});
+                //wb= svm.getWeights();
             }
             if(kernelid===3){
                 console.info("KNN: "+K);
@@ -179,185 +178,37 @@
             if(kernelid===4){
                 console.info("RBF");
             }
-            //let jsonValues = svm.toJSON();
-            //console.table(jsonValues.alpha);
+
             dirty= true; // to redraw screen
         }
 
-        function update(){
-
-            CM = trainstats.CM;
-            recall = trainstats.recall;
-            precision = trainstats.precision;
-            accurancy = trainstats.accurancy;
-            specificity = trainstats.specificity;
-            fMeasure = trainstats.fMeasure;
-            if(kernelid<3)
-                updateData();
-
-        }
-
-        function updateData() {
-            data = trainstats.data;
-            labels = trainstats.labels;
+        function myinit(){
+            setDataSet(0);
+            retrainSVM();
         }
 
         </script>
 
-        <!-- distances functions -->
+        <!-- distances functions (minkowski, chebyshev, mahalanobis) -->
         <script type="text/javascript" src="js/distances.js"></script>
 
-        <!-- evaluation - draw - set -->
+        <!-- evaluations functions (KNN and RBF) -->
+        <script type="text/javascript" src="js/evaluations.js"></script>
+
+        <!-- draw, mouseClick, keyUp, kewDown -->
         <script type="text/javascript">
-            /*
-        //distances for KNN
 
-        //minkowski
-        function minkowski(x1,y1,x2,y2) {
-            let p = P;
-            let v1 = [x1,y1];
-            let v2 = [x2,y2];
-            if(v1.length!==v2.length){
-                return 0;
-            }
-            let sum = 0;
-            for(let i=0;i<v1.length;i++){
-                sum+=Math.pow(Math.abs(v1[i]-v2[i]),p);
-            }
-            return Math.pow(sum,1/p);
-        }
-
-        //chebyshev
-        function chebyshev(x1,y1,x2,y2) {
-            return Math.max(Math.abs(x2-x1),Math.abs(y2-y1));
-        }
-
-        //mahalanobis
-        function mahalanobis(x1,y1,x2,y2) {
-            let distance = 0;
-            let diff = 0;
-            let x = [x1,y1];
-            let y = [x2,y2];
-            for (let i=0;i<data[0].length;i++){
-                diff = x[i]-y[i];
-                distance += Math.pow(diff,2)/Math.pow(v[i],2);
-            }
-            return Math.sqrt(distance);
-        }
-
-        function variance() {
-            let v = new Array(data[0].length);
-            let m = average();
-            let sum,diff;
-            for(let i=0;i<v.length;i++){
-                sum = 0;
-                diff = 0;
-                for(let j=0;j<data.length;j++){
-                    diff = data[j][i]-m[i];
-                    sum += Math.pow(diff,2);
+            function update(){
+                CM = trainstats.CM;
+                recall = trainstats.recall;
+                precision = trainstats.precision;
+                accurancy = trainstats.accurancy;
+                specificity = trainstats.specificity;
+                fMeasure = trainstats.fMeasure;
+                if(kernelid<3){
+                    data = trainstats.data;
+                    labels = trainstats.labels;
                 }
-                v[i] = Math.sqrt(sum/data.length);
-            }
-            return v;
-        }
-
-        function average() {
-            let m = new Array(data[0].length); //numero di coordinate per punto
-            for(let i=0;i<m.length;i++){
-                m[i] = 0; //inizializzo a zero
-                for (let j=0;j<data.length;j++){ //per ogni punto
-                    m[i]+=data[j][i];
-                }
-                m[i]= m[i] / data.length;
-            }
-            return m;
-        }
-        */
-            /*
-        function KNN1(x,y){
-            let distance = minkowski(x,y,data[0][0],data[0][1],2);
-            let label = labels[0];
-            let d = 0;
-            for(let i=0;i<data.length;i++){
-                d = minkowski(x,y,data[i][0],data[i][1],2);
-                if(distance>d){ //se è più distante metto questo punto i-esimo
-                    distance = d;
-                    label = labels[i];
-                }
-            }
-            return label;
-        }
-        */
-
-            let distanceF = minkowski;//variable for distance function
-            let distanceid = 0;
-            /**
-             * @return {number}
-             */
-            function KNN(x,y,n){
-                n = n||1;
-                if(n<1) n=1;
-                if(n>data.length) {
-                    //console.warn("need more data: KNN with K: "+K+" and #data: "+data.length);
-                    return 0;
-                }
-                //if(n===1) return KNN1(x,y);
-
-                let nearest = new Array(n);
-                for(let i=0;i<n;i++){
-                    nearest[i] = {};
-                    nearest[i].distance = distanceF(x,y,data[i][0],data[i][1]);
-                    nearest[i].label = labels[i];
-                }
-
-                nearest.sort(function(a,b){return b.distance-a.distance}); //ordino decrescente
-
-                let d = 0;
-                //find nn sets
-                for(let i=n;i<data.length;i++){
-                    d = distanceF(x,y,data[i][0],data[i][1]);
-                    if(nearest[0].distance>d){ //se è più distante il più distante dei nearest, aggiorno la lista
-                        nearest[0].distance = d;
-                        nearest[0].label = labels[i];
-                        nearest.sort(function(a,b){return b.distance-a.distance}); //ordino decrescente
-                    }
-                }
-
-                //label definition
-                let c = 0;
-                for (let i=0;i<n;i++){
-                    c+=nearest[i].label;
-                }
-                if(c>0) return 1;
-                if(c===0){//indecision between two classes -> could approximate findind the value for n-1 of n+1
-                    //return KNN(x,y,n+1); //equal to call knn on the next k
-                    //return KNN(x,y,n-1); //equal to call knn on the previous k
-                    return 0;
-                }
-                return -1;
-            }
-
-            /**
-             * @return {number}
-             */
-            function RBF(x,y) {
-                let s = 0;
-                let diff = 0;
-                let v1 = [x,y];
-                let rbf;
-                let rbfs=0;
-                for(let i=0;i<data.length;i++){
-                    s=0; //somma per un rbf
-                    for(let j=0;j<v1.length;j++){
-                        diff = v1[j]-data[i][j];
-                        s += Math.pow(diff,2);
-                    }
-                    rbf = Math.exp(-s/(2.0*Math.pow(rbfKernelSigma,2)));
-                    rbfs += labels[i]*rbf; //sum of rbf evaluations with weight = labels[i]
-                }
-
-                if(rbfs>0) return 1;
-                else return -1;
             }
 
             function draw(){
@@ -377,15 +228,15 @@
                 if(kernelid>=3){
 
                     if(kernelid===3) {
-                        $("#s6").show();
+                        $("#s6").show(); //slider for K in KNN
                         distances.show();
                         if(distanceid===0)  //minkowski
-                            $("#s7").show();
+                            $("#s7").show(); //slider for minkowski
 
                     }
 
                     // draw decisions in the grid
-                    let density= 1;
+                    let density = 1;
                     for(let x=0.0; x<=WIDTH; x+= density) {
                         for(let y=0.0; y<=HEIGHT; y+= density) {
                             let label;
@@ -418,7 +269,7 @@
                     ctx.strokeStyle = 'rgb(0,0,0)';
                     N = data.length;
                     let radius = 3;
-                    console.info("EVALUATE DRAW: "+N+"#");
+                    console.info("DRAW: "+N+"🔥");
                     for(let i=0;i<N;i++) {
                         if(labels[i]===1) //positive
                             ctx.fillStyle = 'rgb(100,200,100)'; //green
@@ -429,7 +280,6 @@
 
                     return;
                 }
-
 
                 optimization.show();
 
@@ -459,7 +309,7 @@
                 N = data.length;
                 let value = 0;
                 let radius = 0;
-                console.info("EVALUATE DRAW: "+N+"#");
+                console.info("DRAW: "+N+"🔥");
                 for(let i=0;i<N;i++) {
                     value = svm.marginOne(data[i]);
                     if(value>0){ //positive
@@ -489,10 +339,12 @@
                 }
 
                 // if linear kernel, draw decision boundary and margin lines
-                if(kernelid === 0) {
+                //modified: also if kernel is polynomial and degree is 1: should be equal to linear kernel
+                if( kernelid===0 || (kernelid === 2 && Degree ===  1)) {
 
                     let xs= [-5, 5];
                     let ys= [0, 0];
+                    wb.b = -wb.b;
                     ys[0]= (-wb.b - wb.w[0]*xs[0])/wb.w[1];
                     ys[1]= (-wb.b - wb.w[0]*xs[1])/wb.w[1];
                     ctx.fillStyle = 'rgb(0,0,0)';
@@ -542,8 +394,6 @@
                 let numsupp=0;
                 for(let i=0;i<N;i++) { if(svm.alpha[i] > 1e-5) numsupp++; }
                 ctx.fillText("Number of support vectors: " + numsupp + " / " + N, 10, HEIGHT-50);
-
-                //$(".slider_container").hide(); // per nascondere gli slider che non servono
 
                 if(kernelid === 2){
                     ctx.fillText("Using Polynomial kernel with degree = " + Degree, 10, HEIGHT - 70);
@@ -615,114 +465,93 @@
                 }*/
             }
 
-            function changeKernel(id){
-                if(kernelid !== id){
-                    kernelid = id;
-                    retrainSVM();
-                }
-            }
-
-            function changeDistance(id) {
-                if(distanceid === id) return;
-                if(id===0)
-                    distanceF = minkowski;
-                else if(id===1)
-                    distanceF = chebyshev;
-                else if(id===2)
-                    distanceF = mahalanobis;
-
-                distanceid = id;
-                retrainSVM();
-            }
-
-            function keyDown(key){
-            }
+            function keyDown(key){}
 
         </script>
 
         <!-- ui functions -->
         <script type="text/javascript" src="js/ui.js"></script>
 
-        <!-- jquery functions -->
+        <!-- jquery/set functions -->
         <script type="text/javascript" src="js/functions.js"></script>
 
     </head>
 
-    <body onLoad="NPGinit(10);">
+    <body onLoad="NPGinit(10);"> <!-- 24 FPS -->
         <div id="dec">
-    <br /><h1>Support Vector Machine in Javascript (Pratice Mode) 🐧✌️</h1>
-    <p>
-        Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
-        This version is based on the work of Andrej Karpathy.<br/>Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
-    </p>
-</div>
+            <br /><h1>Support Vector Machine in Javascript (Pratice Mode) 🐧✌️</h1>
+            <p>
+                Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
+                This version is based on the work of Andrej Karpathy.<br/>Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
+            </p>
+        </div>
         <div id="options">
-    <div id="instructions" class="opts">
-        <b>mouse click</b>: add red data point<br />
-        <b>shift + mouse click</b>: add green data point<br />
-        <b>'r'</b>: reset<br /><br />
-    </div>
-    <div id="kernels" class="opts">
-        <b>Kernels: </b>
-        <button onclick="changeKernel(0)">Linear Kernel</button>
-        <button onclick="changeKernel(1)">RBF Kernerl</button>
-        <button onclick="changeKernel(2)">Polynomial Kernel</button>
-
-    </div>
-    <div id="optimization" class="opts">
-        <b>Optimization: </b>
-        <button id="SSCAtoggle" onclick="toggleSSCA(!ssca)">SSCA off</button>
-    </div>
-    <div id="evalutation" class="opts">
-        <b>Evalutation functions:</b>
-        <button onclick="changeKernel(3)">KNN</button>
-        <button onclick="changeKernel(4)">RBF function</button>
-    </div>
-    <div id="distances" class="opts">
-        <b>Distances functions:</b>
-        <button onclick="changeDistance(0)">Minkowski</button>
-        <button onclick="changeDistance(1)">Chebyshev</button>
-        <button onclick="changeDistance(2)">Mahalanobis</button>
-    </div>
-</div>
-        <canvas id="NPGcanvas" width="450" height="450">Browser not supported for Canvas. Get a real browser.</canvas><br /><br />
+            <div id="instructions" class="opts">
+                <b>Mouse click</b>: add red data point<br />
+                <b>Shift + mouse click</b>: add green data point<br />
+                <b>'r'</b>: reset<br /><br />
+            </div>
+            <div id="kernels" class="opts">
+                <b>Kernels: </b>
+                <button onclick="changeKernel(0)">Linear Kernel</button>
+                <button onclick="changeKernel(1)">RBF Kernerl</button>
+                <button onclick="changeKernel(2)">Polynomial Kernel</button>
+            </div>
+            <div id="optimization" class="opts">
+                <b>Optimization: </b>
+                <button id="SSCAtoggle" onclick="toggleSSCA(!ssca)">SSCA off</button>
+            </div>
+            <div id="evalutation" class="opts">
+                <b>Evaluation functions:</b>
+                <button onclick="changeKernel(3)">KNN</button>
+                <button onclick="changeKernel(4)">RBF function</button>
+            </div>
+            <div id="distances" class="opts">
+                <b>Distances functions:</b>
+                <button onclick="changeDistance(0)">Minkowski</button>
+                <button onclick="changeDistance(1)">Chebyshev</button>
+                <button onclick="changeDistance(2)">Mahalanobis</button>
+            </div>
+        </div>
+        <canvas id="NPGcanvas" width="450" height="450">Browser not supported for Canvas. Get a real browser.
+        </canvas>
+        <br /><br />
         <div id="optsdiv">
-    <div id="s1" class="slider_container" style="width:250px; float: left; margin-left: 10px;">
-        <div id="slider1"></div>
-        <br/>
-        <span id="creport">C = 1.0</span>
-    </div>
-
-    <div id="s2" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
-        <div id="slider2"></div>
-        <br/>
-        <span id="sigreport">RBF Kernel sigma = 1.0</span>
-    </div>
-    <div id="s3" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
-        <div id="slider3"></div>
-        <br/>
-        <span id="degport">Polynomial Kernel degree = 2</span>
-    </div>
-    <div id="s4" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
-        <div id="slider4"></div>
-        <br/>
-        <span id="infport">Polynomial Kernel influence = 0</span>
-    </div>
-    <div id="s5" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
-        <div id="slider5"></div>
-        <br/>
-        <span id="ubport">Upper bound = 0.5</span>
-    </div>
-    <div id="s6" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
-        <div id="slider6"></div>
-        <br/>
-        <span id="kport">K: 1</span>
-    </div>
-    <div id="s7" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
-        <div id="slider7"></div>
-        <br/>
-        <span id="pport">Minkowski with P: 2</span>
-    </div>
-</div>
+            <div id="s1" class="slider_container" style="width:250px; float: left; margin-left: 10px;">
+                <div id="slider1"></div>
+                <br/>
+                <span id="creport">C = 1.0</span>
+            </div>
+            <div id="s2" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+                <div id="slider2"></div>
+                <br/>
+                <span id="sigreport">RBF Kernel sigma = 1.0</span>
+            </div>
+            <div id="s3" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+                <div id="slider3"></div>
+                <br/>
+                <span id="degport">Polynomial Kernel degree = 2</span>
+            </div>
+            <div id="s4" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+                <div id="slider4"></div>
+                <br/>
+                <span id="infport">Polynomial Kernel influence = 0</span>
+            </div>
+            <div id="s5" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+                <div id="slider5"></div>
+                <br/>
+                <span id="ubport">Upper bound = 0.5</span>
+            </div>
+            <div id="s6" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+                <div id="slider6"></div>
+                <br/>
+                <span id="kport">K: 1</span>
+            </div>
+            <div id="s7" class="slider_container" style="width:250px; float: right; margin-right: 10px;">
+            <div id="slider7"></div>
+            <br/>
+            <span id="pport">Minkowski with P: 2</span>
+        </div>
+        </div>
     </body>
 </html>

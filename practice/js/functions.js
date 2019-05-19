@@ -70,3 +70,28 @@ $(function() {
     });
     
 });
+
+
+function changeKernel(id){
+    if(kernelid !== id){
+        kernelid = id;
+        retrainSVM();
+    }
+}
+
+function changeDistance(id) {
+    if(distanceid === id) return;
+    if(id===0)
+        distanceF = minkowski;
+    else if(id===1)
+        distanceF = chebyshev;
+    else if(id===2)
+        distanceF = mahalanobis;
+    
+    distanceid = id;
+    retrainSVM();
+}
+
+function setSSCA(value) {
+    ssca = value;
+}
