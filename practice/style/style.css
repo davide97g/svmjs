@@ -36,9 +36,11 @@ p {
     float: left;
 }
 #options {
-    width: 33%;
+    text-align: left;
+    width: 28%;
     height: 150px;
     margin-bottom: 20px;
+    margin-left: 5%;
     float: left;
 }
 #values {
@@ -47,8 +49,15 @@ p {
     margin-left: 3%;
 }
 .slider_container{
+    margin-left: auto;
+    margin-right: auto;
     width: 50%;
-    float: left;
+    margin-bottom: 2%;
+}
+#s0{
+    margin-left: 0;
+    margin-right: 0;
+    width: 90%;
 }
 .slider_container div {
     -webkit-appearance: none;
@@ -59,10 +68,21 @@ p {
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
+    margin-bottom: 2%;
 }
 .slider_container div:hover{
     opacity: 1;
 }
 .opts{
     margin: 1%;
+}
+.datasets{
+    text-align: left;
+}
+.datasets div{
+    margin-top: 2%;
+}
+.keys{
+    margin-right: 2%;
+    font-weight: bold;
 }

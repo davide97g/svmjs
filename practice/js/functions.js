@@ -1,5 +1,15 @@
 $(function() {
     // for C parameter
+    $("#slider0").slider({
+        orientation: "horizontal",
+        slide: refreshN,
+        max: 200,
+        min: 10,
+        step: 10,
+        value: 10
+    });
+    
+    // for C parameter
     $("#slider1").slider({
         orientation: "horizontal",
         slide: refreshC,

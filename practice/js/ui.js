@@ -57,6 +57,13 @@ function refreshP(event, ui) {
     }
 }
 
+function refreshN(event, ui) {
+    N =  ui.value;
+    $("#nport").text("N = " + N.toPrecision(2));
+    setDataSet(datasetID);
+    retrainSVM();
+}
+
 function toggleSSCA(value){
     setSSCA(value);
     
