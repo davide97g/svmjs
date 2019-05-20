@@ -13,6 +13,7 @@
         <script src="../lib/kernels.js"></script>
 
         <script src="../lib/svm.js"></script>
+        <script src="../lib/svmo.js"></script>
 
         <script type="text/javascript" src="./js/generator.js"></script>
         <!-- Declaration and initialization -->
@@ -32,6 +33,7 @@
         let wb; // weights and offset structure
         let ss= 50.0; // scaling factor for drawing
         let svm= new svmjs.SVM();
+        let svmo = new svmojs.SVMO();
         let dirty= true;
         let rbfKernelSigma = 0.5;
         let svmC = 1.0;
@@ -154,6 +156,8 @@
                 addClassSelected("rbf");
                 console.info("\tRBF");
             }
+
+            //svmo.setUp(data,alpha,labels,b,{ kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
 
             dirty= true; // to redraw screen
         }
