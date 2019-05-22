@@ -64,6 +64,23 @@ function refreshN(event, ui) {
     retrainSVM();
 }
 
+function refreshEpsilon(event, ui) {
+    Epsilon =  ui.value;
+    $("#epsilonport").text("Epsilon = " + Epsilon.toPrecision(2));
+    retrainSVM();
+}
+function refreshKmeans1(event, ui) {
+    Km1 =  ui.value;
+    $("#kmeans1port").text("K1 (Means) = " + Km1.toPrecision(2));
+    retrainSVM();
+}
+function refreshKmeans2(event, ui) {
+    Km2 =  ui.value;
+    $("#kmeans2port").text("K2 (Means) = " + Km2.toPrecision(2));
+    retrainSVM();
+}
+
+
 function toggleSSCA(value){
     setSSCA(value);
     

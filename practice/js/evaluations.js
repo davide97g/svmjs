@@ -146,6 +146,14 @@ function RBF(x,y) {
         rbfs += labels[i]*rbf; //sum of rbf evaluations with weight = labels[i]
     }
     
-    if(rbfs>0) return 1;
-    else return -1;
+    if(rbfs>=0){ //above
+        //if(KMdata) return 2;
+        if(rbfs<Epsilon) return 1; //error for above
+        else return 2; //redundant from above
+    }
+    else{ //below
+        //if(KMdata) return -2;
+        if(rbfs>-Epsilon) return -1; //error from below
+        else return -2; //redundant from below
+    }
 }

@@ -12,6 +12,7 @@
         <script src="../lib/utils.js"></script>
         <script src="../lib/kernels.js"></script>
 
+        <script src="./js/kmeans.js"></script>
         <script src="../lib/svm.js"></script>
         <script src="../lib/svmo.js"></script>
 
@@ -30,6 +31,8 @@
         let N = 10; //number of data points
         let data = new Array(N);
         let labels = new Array(N);
+        let dataOLD = new Array(N);
+        let labelsOLD = new Array(N);
         let wb; // weights and offset structure
         let ss= 50.0; // scaling factor for drawing
         let svm= new svmjs.SVM();
@@ -50,7 +53,7 @@
             fMeasure : null
         };
 
-        let kernelid= 3;
+        let kernelid= 4;
         let Degree = 2;
         let Influence = 0;
         let ssca = false;
@@ -65,10 +68,16 @@
         let P = 2; //for minkowski
         let v; //array of variances
         let distanceid = 0; //for distances in KNN evalutations
-        let datasetID = 0;
+        let datasetID = 1; //initially random
+        let Epsilon = 0.1; //for rbf function evaluation
+        let Km1 = 3; //K for kmeans
+        let Km2 = 3; //K for kmeans
+        let KMdata = false; //use or not Kmeans as data
+
         function setDataSet(id) {
             datasetID = id;
             if(id===0){
+                /*
                 data[0]=[-0.4326  ,  1.1909 ];
                 data[1]= [3.0, 4.0];
                 data[2]=[0.1253 , -0.0376   ];
@@ -90,6 +99,35 @@
                 labels[7]= -1;
                 labels[8]= -1;
                 labels[9]= -1;
+                */
+                data = new Array(11);
+                labels = new Array(11);
+                data[0]=[-0, -0.49];
+                data[1]=[-0.29, 0.85];
+                data[2]=[0.34, 0.33];
+                data[3]=[-0.87, 0.56];
+                data[4]=[-0.86, -0.33];
+                data[5]=[1.12, -0.77];
+                data[6]=[-0, -0.49];
+                data[7]=[-0.29, 0.85];
+                data[8]=[0.34, 0.33];
+                data[9]=[-0.87, 0.56];
+                data[10]=[-0.86, -0.33];
+                data[11]=[1.12, -0.77];
+
+                labels[0]= 1;
+                labels[1]= 1;
+                labels[2]= 1;
+                labels[3]= 1;
+                labels[4]= 1;
+                labels[5]= 1;
+                labels[6]= -1;
+                labels[7]= -1;
+                labels[8]= -1;
+                labels[9]= -1;
+                labels[10]= -1;
+                labels[11]= -1;
+
             }
             else if(id===1){
                 let res = randomData(N);
@@ -155,6 +193,10 @@
             else if(kernelid === 4){
                 addClassSelected("rbf");
                 console.info("\tRBF");
+                console.info("\tKMEANS: \n\tKM1: " + Km1+"\n\tKM2: "+Km2);
+                dataOLD = data;
+                labelsOLD = labels;
+                this.KMEANS();
             }
 
             //svmo.setUp(data,alpha,labels,b,{ kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
@@ -163,7 +205,10 @@
         }
 
         function myinit(){
-            setDataSet(0);
+            N=100;
+            Km1 = 3;
+            Km2 = 3;
+            setDataSet(2);
             retrainSVM();
         }
 
@@ -184,6 +229,49 @@
             let list = document.getElementById(ID).classList;
             for(let i=0;i<list.length;i++)
                 list.remove(list[i]);
+        }
+
+        function KMEANS() {
+            let separated = this.separateData();
+            let kmeans1 = new KMeans({
+                canvas: document.getElementById('NPGcanvas'),
+                data: separated[0],
+                k: Km1
+            });
+            let kmeans2 = new KMeans({
+                canvas: document.getElementById('NPGcanvas'),
+                data: separated[1],
+                k: Km2
+            });
+            this.means = new Array(2);
+            this.means[0] = kmeans1.means;
+            this.means[1] = kmeans2.means;
+            let L1 = this.means[0].length;
+            let L2 = this.means[1].length;
+            let L = L1+L2;
+            this.newData = new Array(L);
+            this.newLabels = new Array(L);
+            for(let i=0;i<L1;i++){
+                this.newData[i] = this.means[0][i];
+                this.newLabels[i] = 1;
+            }
+            for(let i=L1;i<L;i++) {
+                this.newData[i] = this.means[1][i-L1];
+                this.newLabels[i] = -1;
+            }
+            //console.table(this.newData);
+            //console.table(this.newLabels);
+        }
+        function separateData() {
+            let res = new Array(2);
+            res[0] = [];
+            res[1] = [];
+            for(let i=0;i<data.length;i++){
+                if(labels[i]===1)
+                    res[0].push(data[i]);
+                else res[1].push(data[i]);
+            }
+            return res;
         }
 
         </script>
@@ -208,6 +296,15 @@
                     data = trainstats.data;
                     labels = trainstats.labels;
                 }
+                if(kernelid === 4 && KMdata){
+                    // console.table(data);
+                    // console.table(labels);
+                    data = this.newData;
+                    labels = this.newLabels;
+                    // console.info("now they are means");
+                    // console.table(data);
+                    // console.table(labels);
+                }
             }
 
             function draw(){
@@ -219,6 +316,8 @@
 
                 let optimization = $("#optimization");
                 let distances = $("#distances");
+                let confusion_matrix = $("#CMtable");
+                confusion_matrix.hide();
                 distances.hide();
                 optimization.hide();
 
@@ -234,6 +333,11 @@
                         distances.show();
                         if(distanceid===0)  //minkowski
                             $("#s7").show(); //slider for minkowski
+                    }
+                    if(kernelid===4){
+                        $("#s8").show(); //slider for epsilon
+                        $("#s9").show(); //slider for Km1
+                        $("#s10").show(); //slider for Km2
 
                     }
 
@@ -244,15 +348,21 @@
                             let label;
                             if(kernelid===3) { //KNN
                                 label = KNN((x - WIDTH / 2) / ss, (y - HEIGHT / 2) / ss,K);
+                                if(label === 1) ctx.fillStyle = 'rgb(150,250,150)'; //green
+                                //else if(label === 0) ctx.fillStyle = 'rgb(191,244,66)'; //yellow lime
+                                //else if(label === 0) ctx.fillStyle = 'rgb(244,161,66)'; //orange
+                                else if(label === 0) ctx.fillStyle = 'rgb(244,220,66)'; //yellow gold
+                                else ctx.fillStyle = 'rgb(250,150,150)'; //red
                             }
                             else if(kernelid===4){ //RBF
                                 label = RBF((x - WIDTH / 2) / ss, (y - HEIGHT / 2) / ss);
+                                if(label === 2) ctx.fillStyle = 'rgb(150,250,150)'; //green
+                                else if(label === 0) ctx.fillStyle = 'rgb(0,0,0)'; //pure black
+                                else if(label === 1) ctx.fillStyle = 'rgb(255,255,50)'; //yellow gold
+                                else if(label === -1) ctx.fillStyle = 'rgb(255,165,50)'; //orange
+                                else if(label === -2) ctx.fillStyle = 'rgb(250,150,150)'; //red
                             }
-                            if(label === 1) ctx.fillStyle = 'rgb(150,250,150)'; //green
-                            //else if(label === 0) ctx.fillStyle = 'rgb(191,244,66)'; //yellow lime
-                            //else if(label === 0) ctx.fillStyle = 'rgb(244,161,66)'; //orange
-                            else if(label === 0) ctx.fillStyle = 'rgb(244,220,66)'; //yellow gold
-                            else ctx.fillStyle = 'rgb(250,150,150)'; //red
+
                             ctx.fillRect(x-density/2-1, y-density-1, density+2, density+2);
                         }
                     }
@@ -269,15 +379,77 @@
 
                     // draw datapoints
                     ctx.strokeStyle = 'rgb(0,0,0)';
-                    //N = data.length;
-                    let radius = 3;
+                    N = data.length;
+                    let radius = 5;
                     console.info(" ✏ DRAW: "+N);
                     for(let i=0;i<N;i++) {
                         if(labels[i]===1) //positive
-                            ctx.fillStyle = 'rgb(100,200,100)'; //green
+                        {
+                            ctx.fillStyle = 'rgb(100,200,100)';//green
+                        }
                         else //negative
+                        {
                             ctx.fillStyle = 'rgb(200,100,100)'; //red
+                        }
                         drawCircle(data[i][0]*ss+WIDTH/2, data[i][1]*ss+HEIGHT/2, radius);
+                    }
+                    if(kernelid===4){
+                        //without Kmeans optimization
+                        if(!KMdata){
+                            // draw means
+                            ctx.strokeStyle = 'rgb(0,0,0)';
+                            radius = 10;
+                            ctx.lineWidth = 3;
+                            console.info(" ✏ DRAW MEANS 1: "+this.means[0].length);
+                            for(let i=0;i<this.means[0].length;i++) {
+                                ctx.fillStyle = 'rgb(100,200,100)'; //green
+                                drawCircle(this.means[0][i][0]*ss+WIDTH/2, this.means[0][i][1]*ss+HEIGHT/2, radius);
+                            }
+                            console.info(" ✏ DRAW MEANS 2: "+this.means[1].length);
+                            for(let i=0;i<this.means[1].length;i++) {
+                                ctx.fillStyle = 'rgb(200,100,100)'; //red
+                                drawCircle(this.means[1][i][0]*ss+WIDTH/2, this.means[1][i][1]*ss+HEIGHT/2, radius);
+                            }
+                        }
+                        else{
+                            // draw test data
+                            ctx.strokeStyle = 'rgb(0,0,0)';
+                            let L = dataOLD.length;
+                            let value = 0;
+                            let radius = 0;
+                            console.info(" ✏ DRAW TEST: "+L);
+                            let CM = [[0,0],[0,0]];
+                            for(let i=0;i<L;i++) {
+                                value = RBF(dataOLD[i][0],dataOLD[i][1]);
+                                if(value>0){ //positive
+                                    if(labelsOLD[i]===1) { //positive
+                                        ctx.fillStyle = 'rgb(100,200,100)'; //green
+                                        CM[0][0]++;
+                                    }
+                                    else { //false positive
+                                        ctx.fillStyle = 'rgb(55,55,250)'; //blue
+                                        CM[0][1]++;
+                                    }
+                                }
+                                else {
+                                    if(labelsOLD[i]===1) { //false negative
+                                        ctx.fillStyle = 'rgb(240,240,80)'; //yellow
+                                        CM[1][0]++;
+                                    }
+                                    else { //negative
+                                        ctx.fillStyle = 'rgb(200,100,100)'; //red
+                                        CM[1][1]++;
+                                    }
+                                }
+                                ctx.lineWidth = 1;
+                                radius = 6;
+                                //drawCircle(dataOLD[i][0]*ss+WIDTH/2, dataOLD[i][1]*ss+HEIGHT/2,radius);
+                                drawRect(dataOLD[i][0]*ss+WIDTH/2, dataOLD[i][1]*ss+HEIGHT/2,radius,radius);
+                            }
+                            //Confusion Matrix
+                            confusion_matrix.show();
+                            this.updateCM(CM);
+                        }
                     }
 
                     return;
@@ -416,6 +588,18 @@
                 ctx.fillText("C = " + svmC.toPrecision(2), 10, HEIGHT - 110);
             }
 
+            function updateCM(CM) {
+                console.info("updateCM");
+                let tp = CM[0][0];
+                let fp = CM[0][1];
+                let fn = CM[1][0];
+                let tn = CM[1][1];
+                document.getElementById("tp").innerText=tp;
+                document.getElementById("fp").innerText=fp;
+                document.getElementById("fn").innerText=fn;
+                document.getElementById("tn").innerText=tn;
+            }
+
             function mouseClick(x, y, shiftPressed){
 
                 // add datapoint at location of click
@@ -517,14 +701,17 @@
                 <button id="che" onclick="clickBtn(id),changeDistance(1)">Chebyshev</button>
                 <button id="maha" onclick="clickBtn(id),changeDistance(2)">Mahalanobis</button>
             </div>
-
+            <div id="kmeans" class="opts">
+                <button id="kmdata" onclick="clickBtn(id),setKMdata(!KMdata)">Kmeans as Data</button>
+            </div>
             <h3>Datasets</h3>
             <div id="s0" class="slider_container">
                 <div id="slider0"></div>
                 <br/>
-                <span id="nport">N = 10</span>
+                <span id="nport">N = 100</span>
             </div>
             <div class="datasets">
+                <button class="keys" id="databtn0" onclick="clickBtn(id),setDataSet(0)">Original</button>
                 <div><span class="keys">"0"</span>Original</div>
                 <div><span class="keys">"1"</span>Random</div>
                 <div><span class="keys">"2"</span>Circle</div>
@@ -545,6 +732,23 @@
 
         <div id="values">
             <h3>Values</h3>
+            <table id="CMtable">
+                <thead>
+                <tr>
+                    <th colspan="2">Confusion Matrix</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="tp">1</td>
+                    <td id="fp">2</td>
+                </tr>
+                <tr>
+                    <td id="fn">3</td>
+                    <td id="tn">4</td>
+                </tr>
+                </tbody>
+            </table>
             <div id="s1" class="slider_container">
                 <span id="creport">C = 1.0</span>
                 <div id="slider1"></div>
@@ -572,6 +776,18 @@
             <div id="s7" class="slider_container">
                 <span id="pport">Minkowski with P: 2</span>
                 <div id="slider7"></div>
+            </div>
+            <div id="s8" class="slider_container">
+                <span id="epsilonport">Epsilon : 0.1</span>
+                <div id="slider8"></div>
+            </div>
+            <div id="s9" class="slider_container">
+                <span id="kmeans1port">K1 (Means) : 3</span>
+                <div id="slider9"></div>
+            </div>
+            <div id="s10" class="slider_container">
+                <span id="kmeans2port">K2 (Means) : 3</span>
+                <div id="slider10"></div>
             </div>
         </div>
     </body>
