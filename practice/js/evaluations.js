@@ -142,7 +142,7 @@ function RBF(x,y) {
             diff = v1[j]-data[i][j];
             s += Math.pow(diff,2);
         }
-        rbf = Math.exp(-s/(2.0*Math.pow(rbfKernelSigma,2)));
+        rbf = Math.exp(-s/(2.0*Math.pow(rbfKernelSigma,2))); //extend with 1/(x+1) formula too
         rbfs += labels[i]*rbf; //sum of rbf evaluations with weight = labels[i]
     }
     

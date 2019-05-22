@@ -3,7 +3,7 @@ function refreshC(event, ui) {
     let logC = ui.value;
     svmC= Math.pow(10, logC);
     $("#creport").text("C = " + svmC.toPrecision(2));
-    retrainSVM();
+    // retrainSVM();
 }
 
 function refreshSig(event, ui) {
@@ -11,7 +11,7 @@ function refreshSig(event, ui) {
     rbfKernelSigma= Math.pow(10, logSig);
     $("#sigreport").text("RBF Kernel sigma = " + rbfKernelSigma.toPrecision(2));
     if(kernelid === 1) {
-        retrainSVM();
+        // retrainSVM();
     }
 }
 
@@ -21,7 +21,7 @@ function refreshDegree(event, ui) {
     Degree = ui.value;
     $("#degport").text("Polynomial Kernel degree = " + Degree.toPrecision(2));
     if(kernelid === 2) {
-        retrainSVM();
+        // retrainSVM();
     }
 }
 
@@ -29,7 +29,7 @@ function refreshInfluence(event, ui) {
     Influence =  ui.value;
     $("#infport").text("Polynomial Kernel influence = " + Influence.toPrecision(2));
     if(kernelid === 2) {
-        retrainSVM();
+        // retrainSVM();
     }
 }
 
@@ -37,7 +37,7 @@ function refreshUpperBound(event, ui) {
     ub =  ui.value;
     $("#ubport").text("Upper Bound = " + ub.toPrecision(2));
     if(ssca) {
-        retrainSVM();
+        //retrainSVM();
     }
 }
 
@@ -45,7 +45,7 @@ function refreshK(event, ui) {
     K =  ui.value;
     $("#kport").text("K = " + K.toPrecision(2));
     if(kernelid===3) {
-        retrainSVM();
+        //retrainSVM();
     }
 }
 
@@ -53,7 +53,7 @@ function refreshP(event, ui) {
     P =  ui.value;
     $("#pport").text("Minkowski with P = " + P.toPrecision(2));
     if(kernelid===3) {
-        retrainSVM();
+        //retrainSVM();
     }
 }
 
@@ -61,25 +61,24 @@ function refreshN(event, ui) {
     N =  ui.value;
     $("#nport").text("N = " + N.toPrecision(2));
     setDataSet(datasetID);
-    retrainSVM();
+    //retrainSVM();
 }
 
 function refreshEpsilon(event, ui) {
     Epsilon =  ui.value;
     $("#epsilonport").text("Epsilon = " + Epsilon.toPrecision(2));
-    retrainSVM();
+    //retrainSVM();
 }
 function refreshKmeans1(event, ui) {
     Km1 =  ui.value;
     $("#kmeans1port").text("K1 (Means) = " + Km1.toPrecision(2));
-    retrainSVM();
+    //retrainSVM();
 }
 function refreshKmeans2(event, ui) {
     Km2 =  ui.value;
     $("#kmeans2port").text("K2 (Means) = " + Km2.toPrecision(2));
-    retrainSVM();
+    //retrainSVM();
 }
-
 
 function toggleSSCA(value){
     setSSCA(value);
@@ -90,5 +89,5 @@ function toggleSSCA(value){
     else{
         $("#SSCAtoggle").text("SSCA off");
     }
-    retrainSVM();
+    //retrainSVM();
 }

@@ -9,16 +9,16 @@
 //keyUp(keycode)    gets called when key is released
 //keyDown(keycode)  gets called when key is pushed
 
-var canvas;
-var ctx;
-var WIDTH;
-var HEIGHT; 
-var FPS;
+let canvas;
+let ctx;
+let WIDTH;
+let HEIGHT;
+let FPS;
 
 function drawBubble(x, y, w, h, radius)
 {
-  var r = x + w;
-  var b = y + h;
+  let r = x + w;
+  let b = y + h;
   ctx.beginPath();
   ctx.strokeStyle="black";
   ctx.lineWidth="2";
@@ -46,7 +46,7 @@ function drawRect(x, y, w, h){
 
 function drawCircle(x, y, r){
   ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI*2, true); 
+  ctx.arc(x, y, r, 0, Math.PI*2, true);
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
@@ -64,10 +64,10 @@ function randf(s, e) {
 
 //normal distribution random number
 function randn(mean, variance) {
-  var V1, V2, S;
+  let V1, V2, S;
   do {
-    var U1 = Math.random();
-    var U2 = Math.random();
+    let U1 = Math.random();
+    let U2 = Math.random();
     V1 = 2 * U1 - 1;
     V2 = 2 * U2 - 1;
     S = V1 * V1 + V2 * V2;
@@ -78,10 +78,9 @@ function randn(mean, variance) {
 }
 
 function eventClick(e) {
-    
   //get position of cursor relative to top left of canvas
-  var x;
-  var y;
+  let x;
+  let y;
   if (e.pageX || e.pageY) { 
     x = e.pageX;
     y = e.pageY;
@@ -99,36 +98,34 @@ function eventClick(e) {
 //event codes can be found here:
 //http://www.aspdotnetfaq.com/Faq/What-is-the-list-of-KeyCodes-for-JavaScript-KeyDown-KeyPress-and-KeyUp-events.aspx
 function eventKeyUp(e) {
-  var keycode = ('which' in e) ? e.which : e.keyCode;
+  let keycode = ('which' in e) ? e.which : e.keyCode;
   keyUp(keycode);
 }
 
 function eventKeyDown(e) {
-  var keycode = ('which' in e) ? e.which : e.keyCode;
+  let keycode = ('which' in e) ? e.which : e.keyCode;
   keyDown(keycode);
 }
 
-function NPGinit(FPS){
+function NPGinit(FPS,id){
   //takes frames per secont to run at
-  
-  canvas = document.getElementById('NPGcanvas');
+  canvas = document.getElementById(id);
   ctx = canvas.getContext('2d');
   WIDTH = canvas.width;
   HEIGHT = canvas.height;
   canvas.addEventListener('click', eventClick, false);
-  
-  //canvas element cannot get focus by default. Requires to either set 
+  //canvas element cannot get focus by default. Requires to either set
   //tabindex to 1 so that it's focusable, or we need to attach listeners
   //to the document. Here we do the latter
   document.addEventListener('keyup', eventKeyUp, true);
   document.addEventListener('keydown', eventKeyDown, true);
   
-  setInterval(NPGtick, 1000/FPS);
+  //setInterval(NPGtick, 1000/FPS);
   
   myinit();
 }
 
 function NPGtick() {
     update();
-    draw();
+    drawTrainingData();
 }

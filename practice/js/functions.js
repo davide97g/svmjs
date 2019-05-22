@@ -115,7 +115,7 @@ $(function() {
 function changeKernel(id){
     if(kernelid !== id){
         kernelid = id;
-        retrainSVM();
+        //retrainSVM();
     }
 }
 
@@ -129,7 +129,7 @@ function changeDistance(id) {
         distanceF = mahalanobis;
     
     distanceid = id;
-    retrainSVM();
+    //retrainSVM();
 }
 /*
 function changeDataSet(id) {
@@ -180,8 +180,4 @@ function changeDataSet(id) {
 */
 function setSSCA(value) {
     ssca = value;
-}
-function setKMdata(value) {
-    KMdata = value;
-    dirty = true;
 }

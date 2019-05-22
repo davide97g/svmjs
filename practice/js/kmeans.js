@@ -290,7 +290,7 @@ KMeans.prototype.run = function() {
         this.run();
     } else {
         // Otherwise task has completed.
-        console.log('Iteration took for completion: ' + this.iterations);
+        //console.log('Iteration took for completion: ' + this.iterations);
         
     }
 };
