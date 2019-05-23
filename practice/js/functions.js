@@ -109,13 +109,24 @@ $(function() {
         value: 3
     });
     
+    // for K2 in Kmeans
+    $("#slider11").slider({
+        orientation: "horizontal",
+        slide: refreshNtest,
+        max: 1000,
+        min: 10,
+        step: 1,
+        value: 100
+    });
+    
 });
 
 
 function changeKernel(id){
     if(kernelid !== id){
         kernelid = id;
-        //retrainSVM();
+        hideUiThings();
+        showUiThings();
     }
 }
 
@@ -129,55 +140,11 @@ function changeDistance(id) {
         distanceF = mahalanobis;
     
     distanceid = id;
-    //retrainSVM();
+    hideUiThings();
+    showUiThings();
 }
-/*
-function changeDataSet(id) {
-    if(id===13){ //enter
-        setDataSet(datasetID);
-        retrainSVM();
-    }
-    if(id===187){ //+
-        if(datasetID!==0){
-            N+=10;
-            setDataSet(datasetID);
-            retrainSVM();
-        }
-    }
-    if(id===48){ //0
-        N=10;
-        $("#nport").value = N;
-        data = data.splice(0,10);
-        setDataSet(0);
-        retrainSVM();
-    }
-    else if(key===49){ //1
-        //N = 100;
-        setDataSet(1);
-        retrainSVM();
-    }
-    else if(key===50){ //2
-        //N = 100;
-        setDataSet(2);
-        retrainSVM();
-    }
-    else if(key===51){ //3
-        //N = 100;
-        setDataSet(3);
-        retrainSVM();
-    }
-    else if(key===52){ //4
-        //N = 100;
-        setDataSet(4);
-        retrainSVM();
-    }
-    else if(key===53){ //5
-        //N = 100;
-        setDataSet(5);
-        retrainSVM();
-    }
-}
-*/
+
 function setSSCA(value) {
     ssca = value;
+    
 }

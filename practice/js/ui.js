@@ -63,6 +63,12 @@ function refreshN(event, ui) {
     setDataSet(datasetID);
     //retrainSVM();
 }
+function refreshNtest(event, ui) {
+    Ntest =  ui.value;
+    $("#ntestport").text("N Test = " + Ntest.toPrecision(2));
+    setTrainingSet(datasetID);
+    //retrainSVM();
+}
 
 function refreshEpsilon(event, ui) {
     Epsilon =  ui.value;

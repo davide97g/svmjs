@@ -16,7 +16,7 @@ function circelData(N) {
     let radius;
     for(let i=0;i<N;i++){
         if(i<N/2) {
-            radius = randf(0.1,1.5);
+            radius = randf(0.1,2.5);
             let angle = Math.random()*Math.PI*2;
             let x = Math.cos(angle)*radius;
             let y = Math.sin(angle)*radius;
@@ -24,7 +24,7 @@ function circelData(N) {
             labels[i] = 1;
         }
         else{
-            radius = randf(2,2.5);
+            radius = randf(2.75,4);
             let angle = Math.random()*Math.PI*2;
             let x = Math.cos(angle)*radius;
             let y = Math.sin(angle)*radius;
@@ -64,14 +64,14 @@ function gaussianData(N) {
     let data = new Array(N);
     let labels = new Array(N);
     let radius;
-    let l = 2;
+    let l = 3;
     for(let i=0;i<N;i++){
         if(i<N*0.5){
             radius = randf(0,l-1);
             let angle = Math.random()*Math.PI*2;
             let x = Math.cos(angle)*radius;
             let y = Math.sin(angle)*radius;
-            data[i] = [x+l/2,y+l/2];
+            data[i] = [x+l/4,y+l/4];
             labels[i] = 1;
         }
         else{
@@ -79,7 +79,7 @@ function gaussianData(N) {
             let angle = Math.random()*Math.PI*2;
             let x = Math.cos(angle)*radius;
             let y = Math.sin(angle)*radius;
-            data[i] = [x-l/2,y-l/2];
+            data[i] = [x-l/4,y-l/4];
             labels[i] = -1;
         }
     }
@@ -89,15 +89,16 @@ function gaussianData(N) {
 function spiralData(N) {
     let data = new Array(N);
     let labels = new Array(N);
-    let radius;
-    let l = 2;
     let a = 0.1;
     let b = 0.5;
     let theta;
+    let perturbation = 0.2;
     for(let i=0;i<N/2;i++){
         theta = Math.random()*Math.PI*2;
         let x = (a+b*theta)*Math.cos(theta);
+        x = x + randf(-perturbation,perturbation);
         let y = (a+b*theta)*Math.sin(theta);
+        y = y + randf(-perturbation,perturbation);
         data[i] = [x,y];
         labels[i] = 1;
     }
@@ -106,7 +107,9 @@ function spiralData(N) {
     for(let i=N/2;i<N;i++){
         theta = Math.random()*Math.PI*2;
         let x = (a+b*theta)*Math.cos(theta);
+        x = x + randf(-perturbation,perturbation);
         let y = (a+b*theta)*Math.sin(theta);
+        y = y + randf(-perturbation,perturbation);
         data[i] = [x,y];
         labels[i] = -1;
     }

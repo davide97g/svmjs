@@ -5,18 +5,71 @@
 button{
     border: none;
     background-color: transparent;
-    padding: 5px;
 }
+.btn {
+    width: 90px;
+    height: 40px;
+    margin: 1%;
+    overflow: hidden;
+    font-weight: bolder;
+    border-width: 0;
+    outline: none;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+
+    background-color: #2ecc71;
+    color: #ecf0f1;
+
+    transition: background-color .3s;
+}
+
+.btn.orange{
+    background-color: #ff7a34;
+}
+.btn.blue{
+    background-color: #48beff;
+}
+.purple{
+    background-color: #c864ff;
+}
+.yellow{
+    background-color: #ffb241;
+}
+
+.btn:hover, .btn:focus {
+    background-color: #1eae7e;
+}
+.btn.orange:hover, .btn.orange:focus{
+    background-color: #e95f38;
+}
+.btn.blue:hover, .btn.blue:focus{
+    background-color: #1c8bff;
+}
+.btn.purple:hover, .btn.purple:focus{
+    background-color: #9353c5;
+}
+.btn.yellow:hover, .btn.yellow:focus{
+    background-color: #e0953f;
+}
+
+.btn:before {
+    content: "";
+    display: block;
+    background-color: rgba(236, 240, 241, .3);
+}
+
+
 canvas {
     border: 1px solid #555;
     margin-top: 10px;
 }
 body {
     text-align: center;
-    font-family: Verdana, Helvetica, sans-serif;
+    font-family: "Roboto Th",Verdana, Helvetica, sans-serif;
     font-size: 12px;
     padding: 0;
     margin: 0;
+
 }
 h1 {
     font-size: 16px;
@@ -25,8 +78,14 @@ p {
     padding-top: 0;
     padding-bottom: 0;
 }
-#CMtable{
-
+#CMtable, #CMtableTest{
+    margin: auto;
+    background-color: #488b7f;
+    color: ghostwhite;
+    padding: 1%;
+    border-color: ghostwhite;
+    border-width: thick;
+    border-style:solid;
 }
 #info {
     height: 120px;
@@ -39,10 +98,10 @@ p {
 }
 #options {
     text-align: left;
-    width: 30%;
+    width: 33%;
     height: 150px;
     margin-bottom: 20px;
-    margin-left: 5%;
+    margin-left: 2%;
     float: left;
 }
 #values {
@@ -95,9 +154,10 @@ p {
 #draw canvas{
     margin: 1%;
 }
-#canvasResult{
-    /*visibility: hidden;*/
+.stats div{
+    margin: 1%;
 }
-.waiting{
-    background-color: darkgoldenrod;
+#statisticsTest,#statisticsTraining{
+    float: left;
+    width: 50%;
 }
