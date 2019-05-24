@@ -26,6 +26,13 @@
                 <button type="button" class="btn" id="gobtn" onclick="start(10)">START</button>
             </div>
         </div>
+        <div class="datasets">
+            <button class="btn orange" onclick="setDataSet(1),start(10)">Random</button>
+            <button class="btn blue" onclick="setDataSet(2),start(10)">Circle</button>
+            <button class="btn yellow" onclick="setDataSet(3),start(10)">ExclusiveOr</button>
+            <button class="btn purple" onclick="setDataSet(4),start(10)">Gaussian</button>
+            <button class="btn" onclick="setDataSet(5),start(10)">Spiral</button>
+        </div>
         <div id="draw">
             <canvas id="canvasLVQ" width="400" height="400">Browser not supported for Canvas. Get a real browser.
             </canvas>

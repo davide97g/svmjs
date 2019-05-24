@@ -26,6 +26,9 @@ function KMeans(opts) {
     // Points to cluster.
     this.data = opts.data;
     
+    // Progressive exponential value
+    this.p = 1 || opts.p;
+    
     // Keeps track of which cluster centroid index each data point belongs to.
     this.assignments = [];
     
@@ -73,12 +76,12 @@ function KMeans(opts) {
  * console.log(extents); // [{min: 2, max: 4}, {min: 1, max: 7}]
  */
 KMeans.prototype.dataDimensionExtents = function() {
-    data = data || this.data;
+    //data = data || this.data;
+    let data = this.data;
     let extents = [];
     
     for (let i = 0; i < data.length; i++) {
         let point = data[i];
-    
         for (let j = 0; j < point.length; j++) {
             if (!extents[j]) {
                 extents[j] = {min: 1000, max: 0};
@@ -93,7 +96,6 @@ KMeans.prototype.dataDimensionExtents = function() {
             }
         }
     }
-    
     return extents;
 };
 /**
@@ -133,7 +135,6 @@ KMeans.prototype.seeds = function() {
         
         means.push(mean);
     }
-    
     return means;
 };
 

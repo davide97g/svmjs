@@ -24,7 +24,7 @@ function circelData(N) {
             labels[i] = 1;
         }
         else{
-            radius = randf(2.75,4);
+            radius = randf(2.25,4);
             let angle = Math.random()*Math.PI*2;
             let x = Math.cos(angle)*radius;
             let y = Math.sin(angle)*radius;

@@ -62,12 +62,12 @@
         let Influence = 0;
         let ssca = false;
         let ub = 0.5;
-        let CM;
-        let recall;
-        let precision;
-        let accurancy;
-        let specificity;
-        let fMeasure;
+        // let CM;
+        // let recall;
+        // let precision;
+        // let accurancy;
+        // let specificity;
+        // let fMeasure;
         let K = 1; //for KNN
         let P = 2; //for minkowski
         let v; //array of variances
@@ -84,9 +84,8 @@
         let canvasData = "canvasData";
 
         function setDataSet(id) {
-            if(kernelid===4 && KMdata){
+            if(KMdata)
                 N = dataOLD.length;
-            }
             datasetID = id;
             if(id===0){
                 //data = data.splice(0,10);
@@ -137,6 +136,8 @@
                 data = res.data;
                 labels = res.labels;
             }
+
+            setTrainingSet(datasetID);
         }
         function setTrainingSet(id) {
             if(id===1){
@@ -175,42 +176,35 @@
                 retrainSVM();
             }
             else if(kernelid === 1) {
-                addClassSelected("rbfk");
                 ssca = document.getElementById("ssca").checked;
-                trainstats= svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
+                //trainstats=
+                svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
             }
             else if(kernelid === 2){
-                addClassSelected("poly");
                 ssca = document.getElementById("ssca").checked;
-                trainstats= svm.train(data, labels, { kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
+                //trainstats=
+                svm.train(data, labels, { kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
                 if(Degree === 1)
                     wb = svm.getWeights();
             }
             else if(kernelid === 3){
-                addClassSelected("knn");
                 console.info("\tKNN: "+K);
                 console.info("\tDISTANCE: "+distanceF.name);
                 if(distanceid===0){
-                    addClassSelected("min");
                     console.info("\tP = "+P);
                 }
-                else if(distanceid === 1 ){
-                    addClassSelected("che");
-                }
                 else if(distanceid === 2){ //mahalanobis
-                    addClassSelected("maha");
                     v = variance(); //calcolo una volta sola per aggiornamento di data set
                 }
             }
             else if(kernelid === 4){
-                addClassSelected("rbf");
                 console.info("\tRBF");
-                console.info("\tKMEANS: \n\tKM1: " + Km1+"\n\tKM2: "+Km2);
-                //salvo i dati originali
-                dataOLD = data;
-                labelsOLD = labels;
-                this.KMEANS();
             }
+            console.info("\tKMEANS: \n\tKM1: " + Km1+"\n\tKM2: "+Km2);
+            //salvo i dati originali
+            dataOLD = data;
+            labelsOLD = labels;
+            this.KMEANS();
         }
 
         function myinit(){
@@ -224,15 +218,13 @@
 
         function myinitTest(){
             console.info("CREATE TEST CANVAS");
-            //N=100;
             Km1 = 3;
             Km2 = 3;
-            //setDataSet(2);
-            //retrainSVM();
-            //draw();
             execute();
         }
 
+
+        /*
         function clickBtn(ID) {
             removeAll();
             addClassSelected(ID);
@@ -253,19 +245,23 @@
             // for(let i=0;i<list.length;i++)
             //     list.remove(list[i]);
         }
+        */
 
         function KMEANS() {
             let separated = this.separateData();
             let kmeans1 = new KMeans({
                 canvas: document.getElementById('canvasData'),
                 data: separated[0],
-                k: Km1
+                k: Km1,
+                p: 1
             });
             let kmeans2 = new KMeans({
                 canvas: document.getElementById('canvasData'),
                 data: separated[1],
-                k: Km2
+                k: Km2,
+                p: 1
             });
+
             this.means = new Array(2);
             this.means[0] = kmeans1.means;
             this.means[1] = kmeans2.means;
@@ -307,24 +303,25 @@
         <script type="text/javascript">
 
             function update(){
+                /*
                 CM = trainstats.CM;
                 recall = trainstats.recall;
                 precision = trainstats.precision;
                 accurancy = trainstats.accurancy;
                 specificity = trainstats.specificity;
-                fMeasure = trainstats.fMeasure;
+                fMeasure = trainstats.fMeasure;*/
                 useTest = document.getElementById("test").checked;
-                if(kernelid<3){ //with kernels
+                /*if(kernelid<3){ //with kernels
                     data = trainstats.data;
                     labels = trainstats.labels;
-                }
-                else if(kernelid === 4){ //with rbf
+                }*/
+                //else if(kernelid === 4){ //with rbf
                     KMdata = document.getElementById("kmdata").checked; //update value
                     if( KMdata) {
                         data = this.newData;
                         labels = this.newLabels;
                     }
-                }
+                //}
             }
 
             function execute() {
@@ -341,7 +338,11 @@
 
             function test() {
                 console.info("TEST");
+                document.getElementById("test").checked = true;
+                let app = ctx;
+                ctx = ctxTest; //substitute
                 drawDataTest();
+                ctx = app; //return to normal
             }
 
             function drawTrainingData() {
@@ -415,7 +416,7 @@
                             ctx.fillStyle = 'rgb(200,100,100)'; //red
                         }
                     }
-
+                    //ctx.fillStyle = 'rgb(200,100,100)'; //red
                     drawCircle(data[i][0]*ss+WIDTH/2, data[i][1]*ss+HEIGHT/2, radius);
                     values.push(value);
                 }
@@ -426,10 +427,11 @@
             function drawDataTest() {
                 ctx.strokeStyle = 'rgb(0,0,0)';
                 let radius = 5;
-                let value = 0;
+                let res;
                 Ntest = datatest.length;
                 console.info(" ✏ DRAW DATA TEST: "+Ntest);
                 let values = [];
+                let value = 0;
                 for(let i=0;i<Ntest;i++) {
                     if(kernelid<3) {
                         value = svm.marginOne(datatest[i]);
@@ -471,7 +473,7 @@
                 density = 2;
                 for(let x=0.0; x<=WIDTH; x+= density) {
                     for(let y=0.0; y<=HEIGHT; y+= density) {
-                        ctx.fillStyle = getColor((x-WIDTH/2)/ss,(y-HEIGHT/2)/ss);
+                        ctx.fillStyle = getColor((x-WIDTH/2)/ss,(y-HEIGHT/2)/ss).color;
                         ctx.fillRect(x-density/2-1, y-density-1, density+2, density+2);
                     }
                 }
@@ -536,34 +538,18 @@
             }
 
             function drawDataKmeans() {
-                ctx.strokeStyle = 'rgb(0,0,0)';
                 let L = dataOLD.length;
-                let value = 0;
-                let radius = 0;
+                ctx.strokeStyle = 'rgb(0,0,0)';
+                let radius = 6;
+                ctx.lineWidth = 1;
                 console.info(" ✏ DRAW TEST: "+L);
                 let values = [];
+                let res;
                 for(let i=0;i<L;i++) {
-                    value = RBF(dataOLD[i][0],dataOLD[i][1]);
-                    if(value>0){ //positive
-                        if(labelsOLD[i]===1) { //positive
-                            ctx.fillStyle = 'rgb(100,200,100)'; //green
-                        }
-                        else { //false positive
-                            ctx.fillStyle = 'rgb(55,55,250)'; //blue
-                        }
-                    }
-                    else {
-                        if(labelsOLD[i]===1) { //false negative
-                            ctx.fillStyle = 'rgb(240,240,80)'; //yellow
-                        }
-                        else { //negative
-                            ctx.fillStyle = 'rgb(200,100,100)'; //red
-                        }
-                    }
-                    ctx.lineWidth = 1;
-                    radius = 6;
+                    res = getColor(dataOLD[i][0],dataOLD[i][1]);
+                    ctx.fillStyle = res.color;
                     drawRect(dataOLD[i][0]*ss+WIDTH/2, dataOLD[i][1]*ss+HEIGHT/2,radius,radius);
-                    values.push(value);
+                    values.push(res.value);
                 }
 
                 let stats = statisticEval(labelsOLD,values);
@@ -578,6 +564,9 @@
                 $("#s11").show();
                 $("#statisticsTraining").show();
                 $("#checkboxTest").show();
+                $("#s9").show(); //slider for Km1
+                $("#s10").show(); //slider for Km2
+                $("#kmeans").show();
                 if(useTest)
                     $("#statisticsTest").show();
                 if(kernelid<3){
@@ -600,9 +589,6 @@
                 }
                 if(kernelid===4){
                     $("#s8").show(); //slider for epsilon
-                    $("#s9").show(); //slider for Km1
-                    $("#s10").show(); //slider for Km2
-                    $("#kmeans").show();
                 }
             }
 
@@ -617,27 +603,27 @@
 
             function getColor(x,y) {
                 let color;
-                let label;
+                let value;
                 if(kernelid<3){
-                    let dec= svm.marginOne([x,y]);
-                    if(dec>0) color = 'rgb(150,250,150)';
+                    value= svm.marginOne([x,y]);
+                    if(value>0) color = 'rgb(150,250,150)';
                     else color = 'rgb(250,150,150)';
                 }
                 else if(kernelid===3) { //KNN
-                    label = KNN(x,y,K);
-                    if(label === 1) color = 'rgb(150,250,150)'; //green
-                    else if(label === 0) color = 'rgb(244,220,66)'; //yellow gold
+                    value = KNN(x,y,K);
+                    if(value === 1) color = 'rgb(150,250,150)'; //green
+                    else if(value === 0) color = 'rgb(244,220,66)'; //yellow gold
                     else color = 'rgb(250,150,150)'; //red
                 }
                 else if(kernelid===4){ //RBF
-                    label = RBF(x,y);
-                    if(label === 2) color = 'rgb(150,250,150)'; //green
-                    else if(label === 0) color = 'rgb(0,0,0)'; //pure black
-                    else if(label === 1) color = 'rgb(255,255,50)'; //yellow gold
-                    else if(label === -1) color = 'rgb(255,165,50)'; //orange
-                    else if(label === -2) color = 'rgb(250,150,150)'; //red
+                    value = RBF(x,y);
+                    if(value === 2) color = 'rgb(150,250,150)'; //green
+                    else if(value === 0) color = 'rgb(0,0,0)'; //pure black
+                    else if(value === 1) color = 'rgb(255,255,50)'; //yellow gold
+                    else if(value === -1) color = 'rgb(255,165,50)'; //orange
+                    else if(value === -2) color = 'rgb(250,150,150)'; //red
                 }
-                return color;
+                return {color:color,value:value};
             }
 
             function draw(){
@@ -652,10 +638,11 @@
                 drawAxes();
                 drawData();
 
-                if(useTest) {
-                    drawDataTest();
-                }
+                if(useTest) drawDataTest();
 
+                if(!KMdata) drawKmeans();
+                else drawDataKmeans();
+                /*
                 if(kernelid>=3){
                     if(kernelid===4){
                         if(!KMdata) drawKmeans();
@@ -671,6 +658,7 @@
                     //per kernelid < 3 and kernelid === 4 and KMdata === true
                     fillData();
                 }
+                */
             }
 
             function fillData() {
@@ -684,7 +672,6 @@
 
             function updateStats(stats) {
                 let CM = stats.CM;
-                console.info("updateStats");
                 let tp = CM[0][0];
                 let fp = CM[0][1];
                 let fn = CM[1][0];
@@ -703,7 +690,6 @@
 
             function updateStatsTest(stats) {
                 let CM = stats.CM;
-                console.info("updateStatsTest");
                 let tp = CM[0][0];
                 let fp = CM[0][1];
                 let fn = CM[1][0];
@@ -731,7 +717,6 @@
                 drawTrainingData();
                 //retrainSVM(); // retrain the svm
             }
-
 
             function keyUp(key){
 
@@ -775,34 +760,34 @@
             </div>
             <h3>Execute</h3>
             <div>
-                <button type="button" class="btn" id="gobtn" onclick="clickBtn(id),execute()">Execute</button>
-                <button type="button" class="btn" id="testbtn" onclick="clickBtn(id),test()">Test</button>
+                <button type="button" class="btn" id="gobtn" onclick="execute()">Execute</button>
+                <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
+            </div>
+            <h3>Test</h3>
+            <div id="checkboxTest" class="opts">
+                <label for="test">Test data</label><input type="checkbox" id="test"/>
             </div>
             <h3>Options</h3>
             <div id="kernels" class="opts">
                 <h4>Kernels</h4>
-                <button id="rbfk" class="btn" onclick="clickBtn(id),changeKernel(1)">RBF</button>
-                <button id="poly" class="btn" onclick="clickBtn(id),changeKernel(2)">Polynomial</button>
+                <button id="rbfk" class="btn" onclick="changeKernel(1)">RBF</button>
+                <button id="poly" class="btn" onclick="changeKernel(2)">Polynomial</button>
             </div>
             <div id="optimization" class="opts">
                 <h4>Optimization </h4>
                 <!-- <button id="SSCAtoggle" onclick="clickBtn(id),toggleSSCA(!ssca)">SSCA off</button> -->
                 <label for="ssca">SSCA</label><input type="checkbox" id="ssca"/>
             </div>
-            <div id="checkboxTest" class="opts">
-                <h4>Test data </h4>
-                <label for="test">TEST</label><input type="checkbox" id="test"/>
-            </div>
             <div id="evalutation" class="opts">
                 <h4>Evaluation functions</h4>
-                <button id="knn" class="btn" onclick="clickBtn(id),changeKernel(3)">KNN</button>
-                <button id="rbf" class="btn" onclick="clickBtn(id),changeKernel(4)">RBF</button>
+                <button id="knn" class="btn" onclick="changeKernel(3)">KNN</button>
+                <button id="rbf" class="btn" onclick="changeKernel(4)">RBF</button>
             </div>
             <div id="distances" class="opts">
                 <h4>Distances</h4>
-                <button id="min" class="btn" onclick="clickBtn(id),changeDistance(0)">Minkowski</button>
-                <button id="che" class="btn" onclick="clickBtn(id),changeDistance(1)">Chebyshev</button>
-                <button id="maha" class="btn" onclick="clickBtn(id),changeDistance(2)">Mahalanobis</button>
+                <button id="min" class="btn" onclick="changeDistance(0)">Minkowski</button>
+                <button id="che" class="btn" onclick="changeDistance(1)">Chebyshev</button>
+                <button id="maha" class="btn" onclick="changeDistance(2)">Mahalanobis</button>
             </div>
             <div id="kmeans" class="opts">
                 <!--<button id="kmdata" onclick="clickBtn(id),setKMdata(!KMdata)">Kmeans as Data</button>-->
@@ -820,18 +805,11 @@
             </div>
 
             <div class="datasets">
-                <!-- <button class="keys btn" id="databtn0" onclick="clickBtn(id),setDataSet(0),execute()">Original</button> -->
-                <button class="keys btn orange" id="databtn1" onclick="clickBtn(id),setDataSet(1),execute()">Random</button>
-                <button class="keys btn blue" id="databtn2" onclick="clickBtn(id),setDataSet(2),execute()">Circle</button>
-                <button class="keys btn yellow" id="databtn3" onclick="clickBtn(id),setDataSet(3),execute()">ExclusiveOr</button>
-                <button class="keys btn purple" id="databtn4" onclick="clickBtn(id),setDataSet(4),execute()">Gaussian</button>
-                <button class="keys btn" id="databtn5" onclick="clickBtn(id),setDataSet(5),execute()">Spiral</button>
-                <!--<div><span class="keys">"0"</span>Original</div>
-                <div><span class="keys">"1"</span>Random</div>
-                <div><span class="keys">"2"</span>Circle</div>
-                <div><span class="keys">"3"</span>ExclusiveOr</div>
-                <div><span class="keys">"4"</span>Gaussian</div>
-                <div><span class="keys">"5"</span>Spiral</div> -->
+                <button class="keys btn orange" id="databtn1" onclick="setDataSet(1),execute()">Random</button>
+                <button class="keys btn blue" id="databtn2" onclick="setDataSet(2),execute()">Circle</button>
+                <button class="keys btn yellow" id="databtn3" onclick="setDataSet(3),execute()">ExclusiveOr</button>
+                <button class="keys btn purple" id="databtn4" onclick="setDataSet(4),execute()">Gaussian</button>
+                <button class="keys btn" id="databtn5" onclick="setDataSet(5),execute()">Spiral</button>
             </div>
 
             <div id="values">

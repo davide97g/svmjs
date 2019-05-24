@@ -7,14 +7,40 @@
 let N = 10000; //dataset
 let L = 0; //chosen points
 let M = 0; //centers
+let C = 0; //centers kmeans
+let weightC = 20; //weight for the kmeans centers
 let seeds = new Array(N); //original
+let centers = new Array(C); //centers of kmeans
+let labelsC = new Array(C); //labels for centers of kmeans
 let chosen = []; //original
+let chosenLabels  = [];
+let fold = 200; //keeps track of the fold where are in speaking about chosen point array
 let data = new Array(M); //accumulative
+let labels = new Array(M);
 let canvasID = "canvasLVQ";
 let ss= 50.0; // scaling factor for drawing
 let density = 2; //drawing precision
-let rebornf = 600;
-let newf = 30;
+let Km1 = 5;
+let Km2 = 10;
+
+let datasetID = 2;
+
+function setDataSet(id) {
+    datasetID = id;
+}
+
+function getDataSet(id,n) {
+    if(id===1)
+        return randomData(n);
+    else if(id===2)
+        return circelData(n);
+    else if(id===3)
+        return exclusiveOrData(n);
+    else if(id===4)
+        return gaussianData(n);
+    else if(id===5)
+        return spiralData(n);
+}
 
 function myinitLVQ(){
     console.info("LVQ canvas");
@@ -22,42 +48,38 @@ function myinitLVQ(){
 }
 function start(FPS) {
     console.clear();
-    console.info("🔥 START");
+    console.info("🔥 START 🔥");
     L=0;
     
-    let res = spiralData(N);
+    let res = getDataSet(datasetID,N);
     for(let i=0;i<N;i++){
         seeds[i] = {};
         seeds[i].x = res.data[i][0];
         seeds[i].y = res.data[i][1];
         seeds[i].label = res.labels[i];
     }
-    //console.table(seeds);
     
     res = randomData(M);
     data = res.data;
     labels = res.labels;
     
+    
     //data = [[1,1],[-1,1],[-1,-1],[1,-1]];
     //labels = [1,1,-1,-1];
     M = data.length;
-    //console.table(data);
-    //console.table(labels);
     
-    setInterval(draw, 500/FPS);
+    setInterval(draw, 100/FPS);
 }
 
 function draw() {
     if(L>=N) return;
-    // console.info("DRAW");
-    
+    //console.info("DRAW");
     ctx.clearRect(0,0,WIDTH,HEIGHT);
-    
     newPoint();
-    //drawDataGrid();
     drawAxes();
     drawPoints();
-    drawData();
+    //drawData();
+    drawCenters();
 }
 
 function drawAxes(){
@@ -71,11 +93,10 @@ function drawAxes(){
     ctx.stroke();
 }
 function drawData() {
-    // draw datapoints
     ctx.strokeStyle = 'rgb(0,0,0)';
     let radius = 8;
     M = data.length;
-    // console.info(" ✏ DRAW DATA: "+M);
+    console.info("\tDRAW DATA: "+M);
     for(let i=0;i<M;i++) {
         if (labels[i] === 1) //positive
             ctx.fillStyle = 'rgb(100,200,100)';//green
@@ -85,27 +106,44 @@ function drawData() {
     }
 }
 function drawPoints() {
-    // console.info(" ✏ DRAW POINTS: "+L);
+    //console.info("\tDRAW POINTS: "+L);
     let point,x,y;
     for(let i=0;i<L;i++) {
         point = chosen[i];
         if (point.label === 1) //positive
-            ctx.fillStyle = 'rgb(100,200,100)';//green
+            ctx.fillStyle = 'rgba(100,200,100,0.5)';//green
         else //negative
-            ctx.fillStyle = 'rgb(200,100,100)'; //red
+            ctx.fillStyle = 'rgba(200,100,100,0.5)'; //red
         x = (point.x*ss+WIDTH/2);
         y = (point.y*ss+HEIGHT/2);
         ctx.fillRect(x-density/2-1, y-density-1, density+5, density+5);
     }
 }
-
+function drawCenters() {
+    ctx.strokeStyle = 'rgb(0,0,0)';
+    let radius = 8;
+    C = centers.length;
+    if(C===0) return;
+    // console.info("\tDRAW CENTERS: "+C);
+    for(let i=0;i<C;i++) {
+        if (labelsC[i] === 1) //positive
+            ctx.fillStyle = 'rgb(100,200,100)';//green
+        else //negative
+            ctx.fillStyle = 'rgb(200,100,100)'; //red
+        drawCircle(centers[i][0]*ss+WIDTH/2, centers[i][1]*ss+HEIGHT/2, radius);
+    }
+}
 function newPoint() {
     let z = randi(0,N);
     let point = seeds[z];
-    // console.info({point});
-    move(point);
-    
+    //move(point);
     chosen.push(point);
+    chosenLabels.push(point.label);
+    if(L%fold === 0 && L!==0){
+        evaluateCenters();
+        //fold++;
+    }
+    /*
     if(L% newf === 0){ //ogni 100 aggiungo un centro
         console.info("NEW DATA");
         data.push([point.x,point.y,0]);
@@ -121,123 +159,125 @@ function newPoint() {
             M--;
         }
     }
+    */
     L++;
 }
 
 
-// function getMax(point) {
-//     let index=0;
-//     let Dx,Dy,deltax,deltay;
-//     let delta = 0;
-//     let max = 0;
-//     for(let i=0;i<M;i++){
-//         Dx = Math.abs(data[i][0]-point.x);
-//         deltax = Math.exp(- Math.pow(Dx,2));
-//
-//         Dy = Math.abs(data[i][1]-point.y);
-//         deltay = Math.exp(-Math.pow(Dy,2));
-//
-//         delta = deltax+deltay;
-//         if(delta>max){
-//             max = delta;
-//             index = i;
-//         }
-//     }
-//     return index;
-// }
-
-/*
-function moveOne(point) {
+function evaluateCenters() {
+    console.info("\tEVALUATE");
+    let set = {data:[],labels:[]};
     
-    let alpha = 1e-1;
-    
-    let i = getMax(point);
-    
-    let Dx = Math.abs(data[i][0]-point.x);
-    let deltax = alpha*Math.exp(- Math.pow(Dx,2));
-    
-    let Dy = Math.abs(data[i][1]-point.y);
-    let deltay = alpha*Math.exp(-Math.pow(Dy,2));
-    
-    let datax = data[i][0];
-    let datay = data[i][1];
-    
-    if(point.label === labels[i]){ //stessa label ==> li avvicino
-        if(point.x < datax){
-            data[i][0] = datax - deltax;
-        }
-        else {
-            data[i][0] = datax + deltax;
-        }
-        if(point.y < datay){
-            data[i][1] = datay - deltay;
-        }
-        else {
-            data[i][1] = datay + deltay;
-        }
+    let input = setUpChosen();
+    let I = input.data.length;
+    if(C===0){ //è la prima volta che calcolo i centri dei KMeans
+        set.data = input.data;
+        set.labels = input.labels;
     }
     else{
-        if(point.x < datax){
-            data[i][0] = datax + deltax;
+        for(let i=0;i<C;i++){ //per tutti i centri
+            for(let j=0;j<weightC;j++){
+                set.data.push( centers[i] );
+                set.labels.push( labelsC[i] );
+            }
         }
-        else{
-            data[i][0] = datax - deltax;
-        }
-        if(point.y < datay){
-            data[i][1] = datay + deltay;
-        }
-        else {
-            data[i][1] = datay - deltay;
+        for(let i=0;i<I;i++){ //per tutti i chosen points
+            set.data.push( input.data[i] );
+            set.labels.push( input.labels[i] );
         }
     }
+    
+    console.info("\tCenters: "+C*weightC+"#");
+    console.info("\tInput: "+L+"#");
+    
+    let res =  KMEANS(set.data,set.labels);
+    centers = res.data;
+    labelsC = res.labels;
+    C = centers.length;
+    
 }
-*/
 
-
-function getAverage(label) {
-    let avg = 0;
-    let Dx, Dy,deltax,deltay, dist;
-    let sum = 0;
-    let max = 0;
-    let index = 0;
-    let counter = 0;
-    for(let i=0;i<M;i++){ //for all DATA
-        if(label === data[i][2]){
-            sum = 0;
-            /*
-            for(let j=0;j<L;j++){ //for all CHOSEN POINTS
-                Dx = data[i][0]-chosen[j].x;
-                Dy = data[i][1]-chosen[j].y;
-                deltax = Math.exp(-Math.pow(Dx,2));
-                deltay = Math.exp(-Math.pow(Dy,2));
-                dist = deltay+deltax;
-                sum += dist;
-            }*/
-            
-            for(let j=0;j<M;j++){ //for all CHOSEN POINTS
-                Dx = data[i][0]-data[j][0];
-                Dy = data[i][1]-data[j][1];
-                deltax = Math.exp(-Math.pow(Dx,2));
-                deltay = Math.exp(-Math.pow(Dy,2));
-                dist = deltay+deltax;
-                sum += dist;
-            }
-            if(sum>max){
-                max = sum;
-                index = i;
-            }
-            counter++; //data with equal label
-        }
+function setUpChosen() {
+    let res = {data:[],labels:[]};
+    for(let i=0;i<L;i++){
+        res.data.push([chosen[i].x,chosen[i].y]);
+        res.labels.push(chosenLabels[i]);
     }
-    avg = sum/counter;
-    return { average:avg, max:index };
+    return res;
 }
+
+function prepareData(data) {
+    let formatted = new Array(data.length);
+    let x,y;
+    for(let i=0;i<formatted.length;i++){
+        x = data[i].x;
+        y = data[i].y;
+        formatted[i] = [x,y];
+    }
+    return formatted;
+}
+
+function KMEANS(data,labels) {
+    let separated = separateData(data,labels);
+    //Km1 = separated[0].length/10;
+    //Km2 = separated[1].length/10;
+    let kmeans1 = new KMeans({
+        canvas: document.getElementById('canvasLVQ'),
+        data: separated[0],
+        k: Km1,
+        p: 1
+    });
+    let kmeans2 = new KMeans({
+        canvas: document.getElementById('canvasLVQ'),
+        data: separated[1],
+        k: Km2,
+        p: 1
+    });
+    
+    let means = new Array(2);
+    means[0] = kmeans1.means;
+    means[1] = kmeans2.means;
+    let L1 = means[0].length;
+    let L2 = means[1].length;
+    let Ltot = L1+L2;
+    
+    let newData = new Array(Ltot);
+    let newLabels = new Array(Ltot);
+    
+    for(let i=0;i<L1;i++){
+        newData[i] = means[0][i];
+        newLabels[i] = 1;
+    }
+    for(let i=L1;i<Ltot;i++) {
+        newData[i] = means[1][i-L1];
+        newLabels[i] = -1;
+    }
+
+    return {
+        data: newData,
+        labels: newLabels
+    };
+}
+
+function separateData(data,labels) {
+    let res = new Array(2);
+    res[0] = [];
+    res[1] = [];
+    for(let i=0;i<data.length;i++){
+        if(labels[i]===1)
+            res[0].push(data[i]);
+        else res[1].push(data[i]);
+    }
+    return res;
+}
+
 function move(point) {
     let Dx,Dy,deltax,deltay,datax,datay;
     let alpha = 1e-1;
     for(let i=0;i<M;i++){ //move every data point from 1 chosen seed
-    
+        
         data[i][2]++;
+        
         /*
         if(data[i][2] % rebornf === 0){ //fine vita
             data.splice(i,1);
@@ -299,6 +339,113 @@ function move(point) {
     }
 }
 
+// function getMax(point) {
+//     let index=0;
+//     let Dx,Dy,deltax,deltay;
+//     let delta = 0;
+//     let max = 0;
+//     for(let i=0;i<M;i++){
+//         Dx = Math.abs(data[i][0]-point.x);
+//         deltax = Math.exp(- Math.pow(Dx,2));
+//
+//         Dy = Math.abs(data[i][1]-point.y);
+//         deltay = Math.exp(-Math.pow(Dy,2));
+//
+//         delta = deltax+deltay;
+//         if(delta>max){
+//             max = delta;
+//             index = i;
+//         }
+//     }
+//     return index;
+// }
+/*
+function moveOne(point) {
+    
+    let alpha = 1e-1;
+    
+    let i = getMax(point);
+    
+    let Dx = Math.abs(data[i][0]-point.x);
+    let deltax = alpha*Math.exp(- Math.pow(Dx,2));
+    
+    let Dy = Math.abs(data[i][1]-point.y);
+    let deltay = alpha*Math.exp(-Math.pow(Dy,2));
+    
+    let datax = data[i][0];
+    let datay = data[i][1];
+    
+    if(point.label === labels[i]){ //stessa label ==> li avvicino
+        if(point.x < datax){
+            data[i][0] = datax - deltax;
+        }
+        else {
+            data[i][0] = datax + deltax;
+        }
+        if(point.y < datay){
+            data[i][1] = datay - deltay;
+        }
+        else {
+            data[i][1] = datay + deltay;
+        }
+    }
+    else{
+        if(point.x < datax){
+            data[i][0] = datax + deltax;
+        }
+        else{
+            data[i][0] = datax - deltax;
+        }
+        if(point.y < datay){
+            data[i][1] = datay + deltay;
+        }
+        else {
+            data[i][1] = datay - deltay;
+        }
+    }
+}
+*/
+/*
+function getAverage(label) {
+    let avg = 0;
+    let Dx, Dy,deltax,deltay, dist;
+    let sum = 0;
+    let max = 0;
+    let index = 0;
+    let counter = 0;
+    for(let i=0;i<M;i++){ //for all DATA
+        if(label === data[i][2]){
+            sum = 0;
+            
+            for(let j=0;j<L;j++){ //for all CHOSEN POINTS
+                Dx = data[i][0]-chosen[j].x;
+                Dy = data[i][1]-chosen[j].y;
+                deltax = Math.exp(-Math.pow(Dx,2));
+                deltay = Math.exp(-Math.pow(Dy,2));
+                dist = deltay+deltax;
+                sum += dist;
+            }
+            
+            for(let j=0;j<M;j++){ //for all CHOSEN POINTS
+                Dx = data[i][0]-data[j][0];
+                Dy = data[i][1]-data[j][1];
+                deltax = Math.exp(-Math.pow(Dx,2));
+                deltay = Math.exp(-Math.pow(Dy,2));
+                dist = deltay+deltax;
+                sum += dist;
+            }
+            if(sum>max){
+                max = sum;
+                index = i;
+            }
+            counter++; //data with equal label
+        }
+    }
+    avg = sum/counter;
+    return { average:avg, max:index };
+}
+*/
+/*
 function drawDataGrid() {
     // draw decisions in the grid
     density = 2;
@@ -308,4 +455,4 @@ function drawDataGrid() {
             ctx.fillRect(x-density/2-1, y-density-1, density+2, density+2);
         }
     }
-}
+}*/

@@ -119,7 +119,7 @@ function KNN(x,y,n){
         c+=nearest[i].label;
     }
     if(c>0) return 1;
-    if(c===0){//indecision between two classes -> could approximate findind the value for n-1 of n+1
+    if(c===0){//indecision between two classes -> could approximate finding the value for n-1 of n+1
         //return KNN(x,y,n+1); //equal to call knn on the next k
         //return KNN(x,y,n-1); //equal to call knn on the previous k
         return 0;
