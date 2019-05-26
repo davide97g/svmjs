@@ -10,7 +10,40 @@ function randomData(N){
     return {data:data, labels:labels};
 }
 
-function circelData(N) {
+function circleMultipleData(N) {
+    let data = new Array(N);
+    let labels = new Array(N);
+    let radius;
+    for(let i=0;i<N;i++){
+        if(i<N/3) {
+            radius = randf(0.1,2.5);
+            let angle = Math.random()*Math.PI*2;
+            let x = Math.cos(angle)*radius;
+            let y = Math.sin(angle)*radius;
+            data[i] = [x,y];
+            labels[i] = 1;
+        }
+        else if(i<N*2/3){
+            radius = randf(2,3);
+            let angle = Math.random()*Math.PI*2;
+            let x = Math.cos(angle)*radius;
+            let y = Math.sin(angle)*radius;
+            data[i] = [x,y];
+            labels[i] = -1;
+        }
+        else{
+            radius = randf(2.75,4);
+            let angle = Math.random()*Math.PI*2;
+            let x = Math.cos(angle)*radius;
+            let y = Math.sin(angle)*radius;
+            data[i] = [x,y];
+            labels[i] = 1;
+        }
+    }
+    return {data:data, labels:labels};
+}
+
+function circleData(N) {
     let data = new Array(N);
     let labels = new Array(N);
     let radius;
@@ -34,6 +67,7 @@ function circelData(N) {
     }
     return {data:data, labels:labels};
 }
+
 
 function exclusiveOrData(N) {
     let data = new Array(N);

@@ -33,13 +33,15 @@ function getDataSet(id,n) {
     if(id===1)
         return randomData(n);
     else if(id===2)
-        return circelData(n);
+        return circleData(n);
     else if(id===3)
         return exclusiveOrData(n);
     else if(id===4)
         return gaussianData(n);
     else if(id===5)
         return spiralData(n);
+    else if(id===6)
+        return circleMultipleData(n);
 }
 
 function myinitLVQ(){

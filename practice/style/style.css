@@ -32,7 +32,7 @@ button{
     background-color: #ffb241;
 }
 
-.btn:hover, .btn:focus {
+.btn:hover, .btn:focus{
     background-color: #1eae7e;
 }
 .btn.orange:hover, .btn.orange:focus{
@@ -76,12 +76,10 @@ p {
 }
 #CMtable, #CMtableTest{
     margin: auto;
-    background-color: #488b7f;
-    color: ghostwhite;
     padding: 1%;
-    border-color: ghostwhite;
-    border-width: thick;
-    border-style:solid;
+    border-color: darkslategray;
+    border-width: 1px;
+    border-style: solid;
 }
 #info {
     height: 120px;
@@ -156,4 +154,16 @@ p {
 #statisticsTest,#statisticsTraining{
     float: left;
     width: 50%;
+}
+#tp,#tp2{
+    background-color: rgba(32, 255, 59, 0.75);
+}
+#fp,#fp2{
+    background-color: rgba(28, 95, 255, 0.75);
+}
+#fn,#fn2{
+    background-color: rgba(255, 233, 33, 0.75);
+}
+#tn,#tn2{
+    background-color: rgba(255, 30, 35, 0.75);
 }

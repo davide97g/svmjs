@@ -29,8 +29,8 @@
         as well as some events keyUp(), mouseClick() etc.
         */
 
-        let N = 10; //number of data points
-        let Ntest = 10;
+        let N = 100; //number of data points
+        let Ntest = 100;
         let data = new Array(N);
         let labels = new Array(N);
         let datatest = new Array(N);
@@ -46,28 +46,11 @@
         let svmC = 1.0;
         let memo = true;
 
-        let trainstats = {
-            data: null,
-            labels: null,
-            CM:null,
-            recall: null,
-            precision : null,
-            accurancy : null,
-            specificity : null,
-            fMeasure : null
-        };
-
         let kernelid= 4;
         let Degree = 2;
         let Influence = 0;
         let ssca = false;
         let ub = 0.5;
-        // let CM;
-        // let recall;
-        // let precision;
-        // let accurancy;
-        // let specificity;
-        // let fMeasure;
         let K = 1; //for KNN
         let P = 2; //for minkowski
         let v; //array of variances
@@ -117,7 +100,7 @@
                 labels = res.labels;
             }
             else if(id===2){
-                let res = circelData(N);
+                let res = circleData(N);
                 data = res.data;
                 labels = res.labels;
             }
@@ -139,6 +122,7 @@
 
             setTrainingSet(datasetID);
         }
+
         function setTrainingSet(id) {
             if(id===1){
                 let res = randomData(Ntest);
@@ -146,7 +130,7 @@
                 labelstest = res.labels;
             }
             else if(id===2){
-                let res = circelData(Ntest);
+                let res = circleData(Ntest);
                 datatest = res.data;
                 labelstest = res.labels;
             }
@@ -168,8 +152,13 @@
         }
 
         function retrainSVM() {
-            console.clear();
+
             console.info("🐵 DATASET "+datasetID);
+            N = data.length;
+            if(KMdata) {
+                N = dataOLD.length;
+            }
+
             if(kernelid === 0) {
                 kernelid = 2;
                 Degree = 1;
@@ -177,12 +166,10 @@
             }
             else if(kernelid === 1) {
                 ssca = document.getElementById("ssca").checked;
-                //trainstats=
                 svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
             }
             else if(kernelid === 2){
                 ssca = document.getElementById("ssca").checked;
-                //trainstats=
                 svm.train(data, labels, { kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
                 if(Degree === 1)
                     wb = svm.getWeights();
@@ -204,48 +191,16 @@
             //salvo i dati originali
             dataOLD = data;
             labelsOLD = labels;
+
+
             this.KMEANS();
         }
 
         function myinit(){
-            console.info("CREATE DATA CANVAS");
-            N=100;
-            Ntest = 100;
             setDataSet(2);
-            setTrainingSet(2);
-            drawTrainingData();
         }
 
-        function myinitTest(){
-            console.info("CREATE TEST CANVAS");
-            Km1 = 3;
-            Km2 = 3;
-            execute();
-        }
-
-
-        /*
-        function clickBtn(ID) {
-            removeAll();
-            addClassSelected(ID);
-        }
-        function addClassSelected(ID) {
-            document.getElementById(ID).classList.add("selected");
-            // document.getElementById(ID).classList.add("btn");
-        }
-        function removeAll() {
-            let buttons = document.getElementsByTagName("button");
-            for (let i=0;i<buttons.length;i++){
-                removeAllClasses(buttons.item(i).id);
-            }
-        }
-        function removeAllClasses(ID) {
-            document.getElementById(ID).classList.remove("selected");
-            // let list = document.getElementById(ID).classList;
-            // for(let i=0;i<list.length;i++)
-            //     list.remove(list[i]);
-        }
-        */
+        function myinitTest(){}
 
         function KMEANS() {
             let separated = this.separateData();
@@ -303,56 +258,74 @@
         <script type="text/javascript">
 
             function update(){
-                /*
-                CM = trainstats.CM;
-                recall = trainstats.recall;
-                precision = trainstats.precision;
-                accurancy = trainstats.accurancy;
-                specificity = trainstats.specificity;
-                fMeasure = trainstats.fMeasure;*/
                 useTest = document.getElementById("test").checked;
-                /*if(kernelid<3){ //with kernels
-                    data = trainstats.data;
-                    labels = trainstats.labels;
-                }*/
-                //else if(kernelid === 4){ //with rbf
-                    KMdata = document.getElementById("kmdata").checked; //update value
-                    if( KMdata) {
-                        data = this.newData;
-                        labels = this.newLabels;
-                    }
-                //}
+                KMdata = document.getElementById("kmdata").checked; //update value
+                if(KMdata) {
+                    data = this.newData;
+                    labels = this.newLabels;
+                }
             }
 
             function execute() {
-                retrainSVM();
+                console.clear();
                 console.info("🔨 EXECUTE");
-                N = data.length;
-                drawTrainingData();
-
-                let app = ctx;
-                ctx = ctxTest; //substitute
+                retrainSVM();
                 draw();
-                ctx = app; //return to normal
             }
 
             function test() {
                 console.info("TEST");
-                document.getElementById("test").checked = true;
+                if(!useTest) {
+                    document.getElementById("test").checked = true;
+                    useTest = true;
+                }
+                hideUiThings();
+                showUiThings();
                 let app = ctx;
                 ctx = ctxTest; //substitute
-                drawDataTest();
+                ctx.lineWidth = 1;
+                drawTest();
                 ctx = app; //return to normal
             }
 
-            function drawTrainingData() {
+            function draw(){
+
+                N = data.length;
+                drawTraining();
+
+                let app = ctx;
+                ctx = ctxTest; //substitute
+
+                ctx.clearRect(0,0,WIDTH,HEIGHT);
+                update();
+
+                hideUiThings();
+                showUiThings();
+
+                drawGrid();
+                drawAxes();
+
+                drawData();
+
+                if(useTest) drawTest();
+
+                if(!KMdata) drawKmeans();
+                else drawDataKmeans();
+
+                if( kernelid===0 || (kernelid === 2 && Degree ===  1))
+                    drawDataLinearKernel();
+
+                ctx = app; //return to normal
+            }
+
+            function drawTraining() {
                 ctx.clearRect(0,0,WIDTH,HEIGHT); //clear canvas
                 // draw axes
                 drawAxes();
                 // draw datapoints
                 ctx.strokeStyle = 'rgb(0,0,0)';
                 let radius = 5;
-                console.info(" ✏ DRAW DATA: "+N);
+                console.info(" ✏ DRAW TRAINING DATA: "+N);
                 for(let i=0;i<N;i++) {
                     if(labels[i]===1) //positive{
                         ctx.fillStyle = 'rgb(100,200,100)';//green
@@ -382,7 +355,6 @@
                 let values = [];
                 for(let i=0;i<N;i++) {
                     if(kernelid<3) {
-                        value = svm.marginOne(data[i]);
                         if(svm.alpha[i]>1e-7) {
                             ctx.lineWidth = 3; // distinguish support vectors
                             radius = Math.floor(3+svm.alpha[i]*5.0/svmC);
@@ -392,20 +364,14 @@
                             radius = 4;
                         }
                     }
-                    else if(kernelid===3){
-                        value = KNN(data[i][0],data[i][1],K);
-                    }
-                    else if(kernelid===4){
-                        value = RBF(data[i][0],data[i][1]);
-                    }
-
+                    value = getValue(data[i][0],data[i][1]);
                     //COLORS
                     if(value>0){ //positive
                         if(labels[i]===1) { //positive
-                            ctx.fillStyle = 'rgba(100,200,100,0.75)'; //green
+                            ctx.fillStyle = 'rgb(100,200,100)'; //green
                         }
                         else { //false positive
-                            ctx.fillStyle = 'rgba(55,55,250,0.75)'; //blue
+                            ctx.fillStyle = 'rgb(55,55,250)'; //blue
                         }
                     }
                     else {
@@ -416,7 +382,7 @@
                             ctx.fillStyle = 'rgb(200,100,100)'; //red
                         }
                     }
-                    //ctx.fillStyle = 'rgb(200,100,100)'; //red
+
                     drawCircle(data[i][0]*ss+WIDTH/2, data[i][1]*ss+HEIGHT/2, radius);
                     values.push(value);
                 }
@@ -424,32 +390,22 @@
                 updateStats(stats);
             }
 
-            function drawDataTest() {
+            function drawTest() {
                 ctx.strokeStyle = 'rgb(0,0,0)';
                 let radius = 5;
-                let res;
                 Ntest = datatest.length;
                 console.info(" ✏ DRAW DATA TEST: "+Ntest);
                 let values = [];
                 let value = 0;
                 for(let i=0;i<Ntest;i++) {
-                    if(kernelid<3) {
-                        value = svm.marginOne(datatest[i]);
-                    }
-                    else if(kernelid===3){
-                        value = KNN(datatest[i][0],datatest[i][1],K);
-                    }
-                    else if(kernelid===4){
-                        value = RBF(datatest[i][0],datatest[i][1]);
-                    }
-
+                    value = getValue(datatest[i][0],datatest[i][1]);
                     //COLORS
                     if(value>0){ //positive
                         if(labelstest[i]===1) { //positive
-                            ctx.fillStyle = 'rgba(100,200,100,0.75)'; //green
+                            ctx.fillStyle = 'rgb(100,200,100)'; //green
                         }
                         else { //false positive
-                            ctx.fillStyle = 'rgba(55,55,250,0.75)'; //blue
+                            ctx.fillStyle = 'rgb(55,55,250)'; //blue
                         }
                     }
                     else {
@@ -468,12 +424,67 @@
                 updateStatsTest(stats);
             }
 
-            function drawDataGrid() {
-                // draw decisions in the grid
+            function drawKmeans() {
+                // draw means
+                ctx.strokeStyle = 'rgb(0,0,0)';
+                let radius = 10;
+                ctx.lineWidth = 3;
+                console.info(" ✏ DRAW MEANS 1: "+this.means[0].length);
+                for(let i=0;i<this.means[0].length;i++) {
+                    ctx.fillStyle = 'rgb(100,200,100)'; //green
+                    drawCircle(this.means[0][i][0]*ss+WIDTH/2, this.means[0][i][1]*ss+HEIGHT/2, radius);
+                }
+                console.info(" ✏ DRAW MEANS 2: "+this.means[1].length);
+                for(let i=0;i<this.means[1].length;i++) {
+                    ctx.fillStyle = 'rgb(200,100,100)'; //red
+                    drawCircle(this.means[1][i][0]*ss+WIDTH/2, this.means[1][i][1]*ss+HEIGHT/2, radius);
+                }
+            }
+
+            function drawDataKmeans() {
+                let L = dataOLD.length;
+                ctx.strokeStyle = 'rgb(0,0,0)';
+                let radius = 6;
+                ctx.lineWidth = 1;
+                console.info(" ✏ DRAW DATA KMEANS: "+L);
+                let values = [];
+                let value;
+                for(let i=0;i<L;i++) {
+                    value = getValue(dataOLD[i][0],dataOLD[i][1]);
+                    //COLORS
+                    if(value>0){ //positive
+                        if(labelsOLD[i]===1) { //positive
+                            ctx.fillStyle = 'rgb(100,200,100)'; //green
+                        }
+                        else { //false positive
+                            ctx.fillStyle = 'rgb(55,55,250)'; //blue
+                        }
+                    }
+                    else {
+                        if(labelsOLD[i]===1) { //false negative
+                            ctx.fillStyle = 'rgb(240,240,80)'; //yellow
+                        }
+                        else { //negative
+                            ctx.fillStyle = 'rgb(200,100,100)'; //red
+                        }
+                    }
+
+                    drawRect(dataOLD[i][0]*ss+WIDTH/2, dataOLD[i][1]*ss+HEIGHT/2,radius,radius);
+                    values.push(value);
+                }
+
+                let stats = statisticEval(labelsOLD,values);
+                this.updateStats(stats);
+
+                data = dataOLD;
+                labels = labelsOLD;
+            }
+
+            function drawGrid() {
                 density = 2;
                 for(let x=0.0; x<=WIDTH; x+= density) {
                     for(let y=0.0; y<=HEIGHT; y+= density) {
-                        ctx.fillStyle = getColor((x-WIDTH/2)/ss,(y-HEIGHT/2)/ss).color;
+                        ctx.fillStyle = getColor((x-WIDTH/2)/ss,(y-HEIGHT/2)/ss);
                         ctx.fillRect(x-density/2-1, y-density-1, density+2, density+2);
                     }
                 }
@@ -520,154 +531,43 @@
                 ctx.stroke();
             }
 
-            function drawKmeans() {
-                // draw means
-                ctx.strokeStyle = 'rgb(0,0,0)';
-                let radius = 10;
-                ctx.lineWidth = 3;
-                console.info(" ✏ DRAW MEANS 1: "+this.means[0].length);
-                for(let i=0;i<this.means[0].length;i++) {
-                    ctx.fillStyle = 'rgb(100,200,100)'; //green
-                    drawCircle(this.means[0][i][0]*ss+WIDTH/2, this.means[0][i][1]*ss+HEIGHT/2, radius);
-                }
-                console.info(" ✏ DRAW MEANS 2: "+this.means[1].length);
-                for(let i=0;i<this.means[1].length;i++) {
-                    ctx.fillStyle = 'rgb(200,100,100)'; //red
-                    drawCircle(this.means[1][i][0]*ss+WIDTH/2, this.means[1][i][1]*ss+HEIGHT/2, radius);
-                }
-            }
-
-            function drawDataKmeans() {
-                let L = dataOLD.length;
-                ctx.strokeStyle = 'rgb(0,0,0)';
-                let radius = 6;
-                ctx.lineWidth = 1;
-                console.info(" ✏ DRAW TEST: "+L);
-                let values = [];
-                let res;
-                for(let i=0;i<L;i++) {
-                    res = getColor(dataOLD[i][0],dataOLD[i][1]);
-                    ctx.fillStyle = res.color;
-                    drawRect(dataOLD[i][0]*ss+WIDTH/2, dataOLD[i][1]*ss+HEIGHT/2,radius,radius);
-                    values.push(res.value);
-                }
-
-                let stats = statisticEval(labelsOLD,values);
-                this.updateStats(stats);
-
-                data = dataOLD;
-                labels = labelsOLD;
-            }
-
-            function showUiThings() {
-                $("#s0").show();
-                $("#s11").show();
-                $("#statisticsTraining").show();
-                $("#checkboxTest").show();
-                $("#s9").show(); //slider for Km1
-                $("#s10").show(); //slider for Km2
-                $("#kmeans").show();
-                if(useTest)
-                    $("#statisticsTest").show();
+            function getValue(x,y) {
+                let value = 0;
                 if(kernelid<3){
-                    $("#s1").show();
-                    $("#optimization").show();
-                    if(kernelid === 1){
-                        $("#s2").show();
-                    }
-                    if(kernelid === 2){
-                        $("#s3").show();
-                        $("#s4").show();
-                    }
-                    if(ssca) $("#s5").show();
+                    value= svm.marginOne([x,y]);
                 }
-                if(kernelid===3) {
-                    $("#s6").show(); //slider for K in KNN
-                    $("#distances").show(); //distances buttons
-                    if(distanceid===0)  //minkowski
-                        $("#s7").show(); //slider for minkowski P
+                else if(kernelid===3) { //KNN
+                    value = KNN(x,y,K);
                 }
-                if(kernelid===4){
-                    $("#s8").show(); //slider for epsilon
+                else if(kernelid===4){ //RBF
+                    value = RBF(x,y);
                 }
-            }
-
-            function hideUiThings() {
-                $("#optimization").hide();
-                $("#distances").hide();
-                $("#statisticsTraining").hide();
-                $("#statisticsTest").hide();
-                $("#kmeans").hide();
-                $(".slider_container").hide(); // per nascondere gli slider che non servono
+                return value;
             }
 
             function getColor(x,y) {
                 let color;
                 let value;
                 if(kernelid<3){
-                    value= svm.marginOne([x,y]);
+                    value= getValue(x,y);
                     if(value>0) color = 'rgb(150,250,150)';
                     else color = 'rgb(250,150,150)';
                 }
                 else if(kernelid===3) { //KNN
-                    value = KNN(x,y,K);
+                    value = getValue(x,y);
                     if(value === 1) color = 'rgb(150,250,150)'; //green
                     else if(value === 0) color = 'rgb(244,220,66)'; //yellow gold
                     else color = 'rgb(250,150,150)'; //red
                 }
                 else if(kernelid===4){ //RBF
-                    value = RBF(x,y);
+                    value = getValue(x,y);
                     if(value === 2) color = 'rgb(150,250,150)'; //green
                     else if(value === 0) color = 'rgb(0,0,0)'; //pure black
                     else if(value === 1) color = 'rgb(255,255,50)'; //yellow gold
                     else if(value === -1) color = 'rgb(255,165,50)'; //orange
                     else if(value === -2) color = 'rgb(250,150,150)'; //red
                 }
-                return {color:color,value:value};
-            }
-
-            function draw(){
-
-                ctx.clearRect(0,0,WIDTH,HEIGHT);
-                update();
-
-                hideUiThings();
-                showUiThings();
-
-                drawDataGrid();
-                drawAxes();
-                drawData();
-
-                if(useTest) drawDataTest();
-
-                if(!KMdata) drawKmeans();
-                else drawDataKmeans();
-                /*
-                if(kernelid>=3){
-                    if(kernelid===4){
-                        if(!KMdata) drawKmeans();
-                        else drawDataKmeans();
-                    }
-                }
-                else {
-                    // if linear kernel, draw decision boundary and margin lines
-                    //modified: also if kernel is polynomial and degree is 1: should be equal to linear kernel
-                    if( kernelid===0 || (kernelid === 2 && Degree ===  1))
-                        drawDataLinearKernel();
-
-                    //per kernelid < 3 and kernelid === 4 and KMdata === true
-                    fillData();
-                }
-                */
-            }
-
-            function fillData() {
-
-                ctx.fillStyle= 'rgb(0,0,0)';
-                let numsupp=0;
-                for(let i=0;i<N;i++) { if(svm.alpha[i] > 1e-5) numsupp++; }
-                ctx.fillText("Support vectors: " + numsupp + " / " + N, 10, HEIGHT-10);
-
+                return color;
             }
 
             function updateStats(stats) {
@@ -685,7 +585,6 @@
                 document.getElementById("accurancy").innerText=(stats.accurancy*100).toPrecision(3);
                 document.getElementById("specificity").innerText=(stats.specificity*100).toPrecision(3);
                 document.getElementById("fmeasure").innerText=(stats.fMeasure*100).toPrecision(3);
-
             }
 
             function updateStatsTest(stats) {
@@ -705,36 +604,9 @@
                 document.getElementById("fmeasure2").innerText=(stats.fMeasure*100).toPrecision(3);
             }
 
-            function mouseClick(x, y, shiftPressed){
-
-                // add datapoint at location of click
-                N = data.length;
-                data[N] = [(x-WIDTH/2)/ss, (y-HEIGHT/2)/ss];
-                labels[N] = shiftPressed ? 1 : -1;
-                if(labels[N]===1) console.info("Added 💚");
-                else console.info("Added ❤️");
-                N += 1;
-                drawTrainingData();
-                //retrainSVM(); // retrain the svm
-            }
-
-            function keyUp(key){
-
-                if(key===13){ //enter
-                    /*
-                    setDataSet(datasetID);
-                    retrainSVM();
-                    dirty = true;
-                    dirty = true;
-                    draw();
-                    */
-                    execute();
-                }
-            }
-
-            function keyDown(key){}
-
         </script>
+
+        <script src="./js/events.js"></script>
 
         <!-- ui functions -->
         <script type="text/javascript" src="js/ui.js"></script>
@@ -744,7 +616,7 @@
 
     </head>
 
-    <body onLoad="NPGinit(10,canvasData), drawTestInit(10,canvasResult)"> <!-- 24 FPS -->
+    <body onLoad="NPGinit(10,canvasData), drawTestInit(10,canvasResult),execute()"> <!-- 24 FPS -->
         <div id="info">
             <br /><h1>Support Vector Machine in Javascript (Pratice Mode) 🐧✌️</h1>
             <p>
