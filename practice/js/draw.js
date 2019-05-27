@@ -1,3 +1,64 @@
+let drawerjs = (function (exports) {
+    let drawer = function (options) {};
+    drawer.prototype = {
+        setup: function (canvas_id,options){
+            this.status = 0;
+            //creo un nuovo oggetto per le canvas
+            options.eventClick = true;
+            try {
+                this.engine = new Engine(canvas_id, options);
+                //collego le funzioni per il controllo utente
+                this.status = 1;
+            }
+            catch (e) {
+                console.info(e);
+            }
+        },
+        draw: function (training_set_input,test_set_input,options) {
+
+            if(this.status){
+                //prosegui
+                // let training = {
+                //     data: training_set_input.data,
+                //     labels: training_set_input.labels,
+                // };
+                let training = training_set_input;
+                let test = test_set_input;
+
+                let kmeans = options.kmeans || false;
+                this.status = 2;
+            }
+            else{
+                //avviso utente di fare il setup
+                console.info("need to setup the drawer to proceed");
+            }
+            drawTraining(ctx);
+
+            ctxTest.clearRect(0,0,WIDTH,HEIGHT);
+
+            drawGrid(ctxTest);
+            drawAxes(ctxTest);
+
+            drawData(ctxTest);
+
+            //draw test points
+            if(useTest) drawTest(ctxTest);
+
+            //draw kmeans centers
+            if(!KMdata) drawKmeans(ctxTest);
+            else drawDataKmeans(ctxTest);
+
+            //draw linear kernel lines and support vector
+            if( kernelid===0 || (kernelid === 2 && Degree ===  1))
+                drawDataLinearKernel(ctxTest);
+        },
+    };
+    // export public members
+    exports = exports || {};
+    exports.drawer = drawer;
+    return exports;
+
+})(typeof module != 'undefined' && module.exports);  // add exports to module.exports if in node.js
 
 function draw(){
 
@@ -10,12 +71,14 @@ function draw(){
 
     drawData(ctxTest);
 
-
     //draw test points
     if(useTest) drawTest(ctxTest);
 
     //draw kmeans centers
-    if(!KMdata) drawKmeans(ctxTest);
+    if(!KMdata) {
+        if(drawKmeansPoints)
+            drawKmeans(ctxTest);
+    }
     else drawDataKmeans(ctxTest);
 
     //draw linear kernel lines and support vector
@@ -143,15 +206,15 @@ function drawKmeans(ctx) {
     ctx.strokeStyle = 'rgb(0,0,0)';
     let radius = 10;
     ctx.lineWidth = 3;
-    console.info(" ✏ DRAW MEANS 1: "+this.means[0].length);
-    for(let i=0;i<this.means[0].length;i++) {
+    console.info(" ✏ DRAW MEANS 1: "+means[0].length);
+    for(let i=0;i<means[0].length;i++) {
         ctx.fillStyle = 'rgb(100,200,100)'; //green
-        drawCircleTest(this.means[0][i][0]*ss+WIDTH/2, this.means[0][i][1]*ss+HEIGHT/2, radius);
+        drawCircleTest(means[0][i][0]*ss+WIDTH/2, means[0][i][1]*ss+HEIGHT/2, radius);
     }
-    console.info(" ✏ DRAW MEANS 2: "+this.means[1].length);
-    for(let i=0;i<this.means[1].length;i++) {
+    console.info(" ✏ DRAW MEANS 2: "+means[1].length);
+    for(let i=0;i<means[1].length;i++) {
         ctx.fillStyle = 'rgb(200,100,100)'; //red
-        drawCircleTest(this.means[1][i][0]*ss+WIDTH/2, this.means[1][i][1]*ss+HEIGHT/2, radius);
+        drawCircleTest(means[1][i][0]*ss+WIDTH/2, means[1][i][1]*ss+HEIGHT/2, radius);
     }
 }
 
@@ -188,7 +251,7 @@ function drawDataKmeans(ctx) {
     }
 
     let stats = statisticEval(labelsOLD,values);
-    this.updateStats(stats);
+    updateStats(stats);
 
     data = dataOLD;
     labels = labelsOLD;

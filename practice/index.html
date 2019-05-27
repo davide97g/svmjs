@@ -38,13 +38,15 @@
         let dataOLD = [];
         let labelsOLD = [];
         let wb; // weights and offset structure
-        let ss= 50.0; // scaling factor for drawing
+        let ss= 40.0; // scaling factor for drawing
         let svm= new svmjs.SVM();
         let svmo = new svmojs.SVMO();
-        let dirty= true;
+
         let rbfKernelSigma = 0.5;
         let svmC = 1.0;
-        let memo = true;
+        let memo = false;
+        let x2 = false;
+        let y2 = false;
 
         let kernelid= 4;
         let Degree = 2;
@@ -57,8 +59,10 @@
         let distanceid = 0; //for distances in KNN evalutations
         let datasetID = 1; //initially random
         let Epsilon = 0.1; //for rbf function evaluation
+        let drawKmeansPoints = true; //only for the drawing thing
         let Km1 = 3; //K for kmeans
         let Km2 = 3; //K for kmeans
+        let means;
         let KMdata = false; //use or not Kmeans as data
         let useTest = false; //show the tests
         let density = 2; //drawing canvas points
@@ -72,31 +76,7 @@
                 datasetID = id;
                 dataset_modified = true;
             }
-            if(id===0){
-                //data = data.splice(0,10);
-                data[0]=[-0.4326  ,  1.1909 ];
-                data[1]= [3.0, 4.0];
-                data[2]=[0.1253 , -0.0376   ];
-                data[3]=[0.2877 ,   0.3273  ];
-                data[4]=[-1.1465 ,   0.1746 ];
-                data[5]=[1.8133 ,   2.1139  ];
-                data[6]=[2.7258 ,   3.0668  ];
-                data[7]=[1.4117 ,   2.0593  ];
-                data[8]=[4.1832 ,   1.9044  ];
-                data[9]=[1.8636 ,   1.1677  ];
-
-                labels[0]= 1;
-                labels[1]= 1;
-                labels[2]= 1;
-                labels[3]= 1;
-                labels[4]= 1;
-                labels[5]= -1;
-                labels[6]= -1;
-                labels[7]= -1;
-                labels[8]= -1;
-                labels[9]= -1;
-            }
-            else if(id===1){
+            if(id===1){
                 let res = randomData(N);
                 data = res.data;
                 labels = res.labels;
@@ -176,7 +156,7 @@
             }
             else if(kernelid === 2){
                 ssca = document.getElementById("ssca").checked;
-                svm.train(data, labels, { kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
+                svm.train(data, labels, { kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo, x2: x2,y2:y2,});
                 if(Degree === 1)
                     wb = svm.getWeights();
             }
@@ -216,27 +196,26 @@
                 p: 1
             });
 
-            this.means = new Array(2);
-            this.means[0] = kmeans1.means;
-            this.means[1] = kmeans2.means;
-            let L1 = this.means[0].length;
-            let L2 = this.means[1].length;
+            means = new Array(2);
+            means[0] = kmeans1.means;
+            means[1] = kmeans2.means;
+            let L1 = means[0].length;
+            let L2 = means[1].length;
             let L = L1+L2;
             let newData = new Array(L);
             let newLabels = new Array(L);
             for(let i=0;i<L1;i++){
-                newData[i] = this.means[0][i];
+                newData[i] = means[0][i];
                 newLabels[i] = 1;
             }
             for(let i=L1;i<L;i++) {
-                newData[i] = this.means[1][i-L1];
+                newData[i] = means[1][i-L1];
                 newLabels[i] = -1;
             }
-            let res = {
-              data: newData,
-              labels: newLabels
+            return {
+                data: newData,
+                labels: newLabels
             };
-            return res;
         }
         function separateData(data) {
             let res = new Array(2);
@@ -265,6 +244,9 @@
                 console.info("UPDATE");
                 //check values on checkbox
                 useTest = document.getElementById("test").checked;
+                x2 = document.getElementById("x2").checked;
+                y2 = document.getElementById("y2").checked;
+                drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
                 let value = document.getElementById("kmdata").checked;
                 //eseguo il calcolo dei centri kmeans
                 let res = KMEANS(data);
@@ -348,7 +330,7 @@
 
     <body onLoad="NPGinit(10,canvasData), drawTestInit(10,canvasResult),execute()"> <!-- 24 FPS -->
         <div id="info">
-            <br /><h1>Support Vector Machine in Javascript (Pratice Mode) 🐧✌️</h1>
+            <br /><h1>Support Vector Machine in Javascript</h1>
             <p>
                 Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
                 This version is based on the work of Andrej Karpathy. Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
@@ -377,8 +359,9 @@
             </div>
             <div id="optimization" class="opts">
                 <h4>Optimization </h4>
-                <!-- <button id="SSCAtoggle" onclick="clickBtn(id),toggleSSCA(!ssca)">SSCA off</button> -->
                 <label for="ssca">SSCA</label><input type="checkbox" id="ssca"/>
+                <label for="x2">X^2</label><input type="checkbox" id="x2"/>
+                <label for="y2">Y^2</label><input type="checkbox" id="y2"/>
             </div>
             <div id="evalutation" class="opts">
                 <h4>Evaluation functions</h4>
@@ -392,8 +375,8 @@
                 <button id="maha" class="btn" onclick="changeDistance(2)">Mahalanobis</button>
             </div>
             <div id="kmeans" class="opts">
-                <!--<button id="kmdata" onclick="clickBtn(id),setKMdata(!KMdata)">Kmeans as Data</button>-->
-                <label for="kmdata">Kmeans as Data</label><input type="checkbox" id="kmdata"/>
+                <label for="draw_kmeans_points">Draw Kmeans Centers</label><input type="checkbox" id="draw_kmeans_points"/>
+                <label for="kmdata">Use Kmeans as Data</label><input type="checkbox" id="kmdata"/>
             </div>
             <h3>Datasets</h3>
 
@@ -459,12 +442,13 @@
                 </div>
             </div>
         </div>
-
         <div id="draw">
-            <canvas id="canvasData" width="400" height="400">Browser not supported for Canvas. Get a real browser.
+            <canvas id="canvasData" width="400px" height="400px">Browser not supported for Canvas. Get a real browser.
             </canvas>
-            <canvas id="canvasResult" width="400" height="400">Browser not supported for Canvas. Get a real browser.
+            <canvas id="canvasResult" width="400px" height="400px">Browser not supported for Canvas. Get a real browser.
             </canvas>
+        </div>
+        <div id="statistics">
             <div id="statisticsTraining">
                 <h3>Statistics Training</h3>
                 <table id="CMtable">
@@ -515,49 +499,49 @@
             <div id="statisticsTest">
                 <h3>Statistics Test</h3>
                 <table id="CMtableTest">
-                <thead>
-                <tr>
-                    <th colspan="2">Confusion Matrix Test</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td id="tp2">-</td>
-                    <td id="fp2">-</td>
-                </tr>
-                <tr>
-                    <td id="fn2">-</td>
-                    <td id="tn2">-</td>
-                </tr>
-                </tbody>
-            </table>
+                    <thead>
+                    <tr>
+                        <th colspan="2">Confusion Matrix Test</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td id="tp2">-</td>
+                        <td id="fp2">-</td>
+                    </tr>
+                    <tr>
+                        <td id="fn2">-</td>
+                        <td id="tn2">-</td>
+                    </tr>
+                    </tbody>
+                </table>
                 <div class="stats">
-                <div>
-                    Precision:
-                    <span class="value" id="precision2">-</span>
-                    %
+                    <div>
+                        Precision:
+                        <span class="value" id="precision2">-</span>
+                        %
+                    </div>
+                    <div>
+                        Recall:
+                        <span class="value" id="recall2">-</span>
+                        %
+                    </div>
+                    <div>
+                        Accurancy:
+                        <span class="value" id="accurancy2">-</span>
+                        %
+                    </div>
+                    <div>
+                        Specificity:
+                        <span class="value" id="specificity2">-</span>
+                        %
+                    </div>
+                    <div>
+                        F-Measure:
+                        <span class="value" id="fmeasure2">-</span>
+                        %
+                    </div>
                 </div>
-                <div>
-                    Recall:
-                    <span class="value" id="recall2">-</span>
-                    %
-                </div>
-                <div>
-                    Accurancy:
-                    <span class="value" id="accurancy2">-</span>
-                    %
-                </div>
-                <div>
-                    Specificity:
-                    <span class="value" id="specificity2">-</span>
-                    %
-                </div>
-                <div>
-                    F-Measure:
-                    <span class="value" id="fmeasure2">-</span>
-                    %
-                </div>
-            </div>
             </div>
         </div>
 

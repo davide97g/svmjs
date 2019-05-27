@@ -90,11 +90,11 @@ function eventClick(e) {
     }
     x -= canvasTest.offsetLeft;
     y -= canvasTest.offsetTop;
-    
+
     //call user-defined callback
     mouseClick(x, y, e.shiftKey);
-}*/
-
+}
+*/
 //event codes can be found here:
 //http://www.aspdotnetfaq.com/Faq/What-is-the-list-of-KeyCodes-for-JavaScript-KeyDown-KeyPress-and-KeyUp-events.aspx
 function eventKeyUp(e) {
@@ -119,13 +119,43 @@ function drawTestInit(FPS,id){
     //to the document. Here we do the latter
     document.addEventListener('keyup', eventKeyUp, true);
     document.addEventListener('keydown', eventKeyDown, true);
-    
-    //setInterval(NPGtickTest, 1000/FPS);
-    
+
     myinitTest();
 }
-/*
-function NPGtickTest() {
-    update();
-    draw();
-}*/
+
+class Engine {
+    constructor(id,options){
+        console.info("new ENGINE");
+        let canvas = document.getElementById(id);
+        if(canvas) {
+            this.canvas = canvas;
+            this.ctx = this.canvas.getContext('2d');
+            this.width = this.canvas.width;
+            this.height = this.canvas.height;
+            if(options){
+                if(options.eventClick)
+                    this.canvas.addEventListener('click', this.eventClick, false);
+            }
+        }
+        else {
+            throw "Canvas not defined";
+        }
+    }
+    eventClick(e) {
+        //get position of cursor relative to top left of canvasTest
+        let x;
+        let y;
+        if (e.pageX || e.pageY) {
+            x = e.pageX;
+            y = e.pageY;
+        } else {
+            x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+        x -= this.canvas.offsetLeft;
+        y -= this.canvas.offsetTop;
+
+        //call user-defined callback
+        mouseClick(x, y, e.shiftKey);
+    }
+}
