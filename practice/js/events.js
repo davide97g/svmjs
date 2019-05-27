@@ -7,7 +7,8 @@ function mouseClick(x, y, shiftPressed){
     if(labels[N]===1) console.info("Added 💚");
     else console.info("Added ❤️");
     N += 1;
-    drawTraining();
+    drawTraining(ctx);
+    document.getElementById("kmdata").checked = false;
 }
 
 function keyUp(key){}
