@@ -85,6 +85,10 @@ function showUiThings() {
     if(kernelid<3){
         $("#s1").show();
         $("#optimization").show();
+        $("#input_transformations").show();
+        if(input_transformation){
+            $("#input").show();
+        }
         if(kernelid === 1){
             $("#s2").show();
         }
@@ -107,6 +111,7 @@ function showUiThings() {
 
 function hideUiThings() {
     $("#optimization").hide();
+    // $("#input").hide();
     $("#distances").hide();
     $("#statisticsTraining").hide();
     $("#statisticsTest").hide();

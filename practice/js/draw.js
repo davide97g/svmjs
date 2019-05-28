@@ -142,7 +142,7 @@ function drawData(ctx) {
                 radius = 4;
             }
         }
-        value = getValue(data[i][0],data[i][1]);
+        value = getValue(data[i]);
         //COLORS
         if(value>0){ //positive
             if(labels[i]===1) { //positive
@@ -175,7 +175,7 @@ function drawTest(ctx) {
     let values = [];
     let value = 0;
     for(let i=0;i<Ntest;i++) {
-        value = getValue(datatest[i][0],datatest[i][1]);
+        value = getValue(datatest[i]);
         //COLORS
         if(value>0){ //positive
             if(labelstest[i]===1) { //positive
@@ -227,7 +227,7 @@ function drawDataKmeans(ctx) {
     let values = [];
     let value;
     for(let i=0;i<L;i++) {
-        value = getValue(dataOLD[i][0],dataOLD[i][1]);
+        value = getValue(dataOLD[i]);
         //COLORS
         if(value>0){ //positive
             if(labelsOLD[i]===1) { //positive
@@ -261,7 +261,7 @@ function drawGrid(ctx) {
     density = 2;
     for(let x=0.0; x<=WIDTH; x+= density) {
         for(let y=0.0; y<=HEIGHT; y+= density) {
-            ctx.fillStyle = getColor((x-WIDTH/2)/ss,(y-HEIGHT/2)/ss);
+            ctx.fillStyle = getColor([(x-WIDTH/2)/ss,(y-HEIGHT/2)/ss]);
             ctx.fillRect(x-density/2-1, y-density-1, density+2, density+2);
         }
     }
@@ -308,10 +308,39 @@ function drawDataLinearKernel(ctx) {
     ctx.stroke();
 }
 
-function getValue(x,y) {
+function getValue(v) {
     let value = 0;
+    let x = v[0];
+    let y = v[1];
+
     if(kernelid<3){
-        value= svm.marginOne([x,y]);
+        /*
+        if(x2||y2||x2y2||xy||x2_y2||sinx||cosx) {
+            let coord = 0;
+            if (x2) {
+                coord = Math.pow(x,2);
+            }
+            if (y2) {
+                coord = Math.pow(y,2);
+            }
+            if (x2y2) {
+                coord = Math.pow(x,2)+Math.pow(y,2);
+            }
+            if (x2_y2) {
+                coord = Math.pow(x,2)-Math.pow(y,2);
+            }
+            if (xy) {
+                coord = x*y;
+            }
+            if (sinx) {
+                coord = Math.sin(x);
+            }
+            if (cosx) {
+                coord = Math.cos(x);
+            }*/
+        if(input_transformation)
+            v = [v[0], v[1], input_f(v)];
+        value= svm.marginOne(v);
     }
     else if(kernelid===3) { //KNN
         value = KNN(x,y,K);
@@ -322,22 +351,22 @@ function getValue(x,y) {
     return value;
 }
 
-function getColor(x,y) {
+function getColor(v) {
     let color;
-    let value;
+    let value = getValue(v);
     if(kernelid<3){
-        value= getValue(x,y);
+        // value= getValue(v);
         if(value>0) color = 'rgb(150,250,150)';
         else color = 'rgb(250,150,150)';
     }
     else if(kernelid===3) { //KNN
-        value = getValue(x,y);
+        // value = getValue(v);
         if(value === 1) color = 'rgb(150,250,150)'; //green
         else if(value === 0) color = 'rgb(244,220,66)'; //yellow gold
         else color = 'rgb(250,150,150)'; //red
     }
     else if(kernelid===4){ //RBF
-        value = getValue(x,y);
+        // value = getValue(v);
         if(value === 2) color = 'rgb(150,250,150)'; //green
         else if(value === 0) color = 'rgb(0,0,0)'; //pure black
         else if(value === 1) color = 'rgb(255,255,50)'; //yellow gold

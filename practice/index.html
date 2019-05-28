@@ -12,6 +12,7 @@
         <script src="../lib/stats.js"></script>
         <script src="../lib/utils.js"></script>
         <script src="../lib/kernels.js"></script>
+        <script src="../lib/input_transformations.js"></script>
 
         <script src="./js/kmeans.js"></script>
         <script src="../lib/svm.js"></script>
@@ -45,11 +46,22 @@
         let rbfKernelSigma = 0.5;
         let svmC = 1.0;
         let memo = false;
+        let input_transformation = false;
         let x2 = false;
         let y2 = false;
+        let x2y2 = false;
+        let x2_y2 = false;
+        let xy = false;
+        let sinx = false;
+        let cosx = false;
+        let siny = false;
+        let cosy = false;
+        let sinxcosy = false;
+        let sinycosx = false;
+        let input_f = (function(){});
 
-        let kernelid= 4;
-        let Degree = 2;
+        let kernelid= 2;
+        let Degree = 1;
         let Influence = 0;
         let ssca = false;
         let ub = 0.5;
@@ -156,9 +168,26 @@
             }
             else if(kernelid === 2){
                 ssca = document.getElementById("ssca").checked;
-                svm.train(data, labels, { kernel: 'poly', degree: Degree, influence: Influence, C: svmC, SSCA: ssca, UB: ub, memoize: memo, x2: x2,y2:y2,});
-                if(Degree === 1)
+                svm.train(data, labels, {
+                        kernel: 'poly',
+                        degree: Degree,
+                        influence: Influence,
+                        C: svmC,
+                        SSCA: ssca,
+                        UB: ub,
+                        memoize: memo,
+                        input_f: input_f
+                    }
+                    );
+                if(Degree === 1) {
                     wb = svm.getWeights();
+                    let fLinear = svm.getFormulaLinear(wb);
+                    // console.info(fLinear);
+                    document.getElementById("formulaL").innerText = fLinear;
+                }
+                // let formula = svm.getFormula();
+                // console.info(formula);
+                //document.getElementById("formulaP").innerText = formula;
             }
             else if(kernelid === 3){
                 console.info("\tKNN: "+K);
@@ -240,12 +269,48 @@
         <!-- main functions -->
         <script type="text/javascript">
 
+            function inputFunctionUpdate(){
+                x2 = document.getElementById("x2").checked;
+                y2 = document.getElementById("y2").checked;
+                x2y2 = document.getElementById("x2y2").checked;
+                x2_y2 = document.getElementById("x2_y2").checked;
+                xy = document.getElementById("xy").checked;
+                sinx = document.getElementById("sinx").checked;
+                cosx = document.getElementById("cosx").checked;
+                siny = document.getElementById("siny").checked;
+                cosy = document.getElementById("cosy").checked;
+                sinxcosy = document.getElementById("sinxcosy").checked;
+                sinycosx = document.getElementById("sinycosx").checked;
+
+                if(x2) input_f = fx2;
+                if(y2) input_f = fy2;
+
+                if(x2y2) input_f = fx2y2;
+                if(x2_y2) input_f = fx2_y2;
+
+                if(xy) input_f = fxy;
+
+                if(sinx) input_f = fsinx;
+                if(cosx) input_f = fcosx;
+
+                if(siny) input_f = fsiny;
+                if(cosy) input_f = fcosy;
+
+                if(sinxcosy) input_f = fsinxcosy;
+                if(sinycosx) input_f = fsinycosx;
+
+            }
+
             function update(){
                 console.info("UPDATE");
                 //check values on checkbox
                 useTest = document.getElementById("test").checked;
-                x2 = document.getElementById("x2").checked;
-                y2 = document.getElementById("y2").checked;
+                input_transformation = document.getElementById("input_transformations").checked;
+                if(input_transformation) {
+                    inputFunctionUpdate();
+                }
+                else input_f = null;
+
                 drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
                 let value = document.getElementById("kmdata").checked;
                 //eseguo il calcolo dei centri kmeans
@@ -360,8 +425,21 @@
             <div id="optimization" class="opts">
                 <h4>Optimization </h4>
                 <label for="ssca">SSCA</label><input type="checkbox" id="ssca"/>
-                <label for="x2">X^2</label><input type="checkbox" id="x2"/>
-                <label for="y2">Y^2</label><input type="checkbox" id="y2"/>
+                <h4>Input </h4>
+                <label for="input_transformations">Transformations</label><input type="checkbox" id="input_transformations"/>
+                <div id="input">
+                    <label for="x2">X^2</label><input type="checkbox" id="x2"/>
+                    <label for="y2">Y^2</label><input type="checkbox" id="y2"/>
+                    <label for="x2y2">X^2+Y^2</label><input type="checkbox" id="x2y2"/>
+                    <label for="x2_y2">X^2-Y^2</label><input type="checkbox" id="x2_y2"/>
+                    <label for="x2y2">X*Y</label><input type="checkbox" id="xy"/>
+                    <label for="sinx">SIN(X)</label><input type="checkbox" id="sinx"/>
+                    <label for="cosx">COS(X)</label><input type="checkbox" id="cosx"/>
+                    <label for="siny">SIN(Y)</label><input type="checkbox" id="siny"/>
+                    <label for="cosy">COS(Y)</label><input type="checkbox" id="cosy"/>
+                    <label for="sinxcosy">SIN(X)*COS(Y)</label><input type="checkbox" id="sinxcosy"/>
+                    <label for="sinycosx">SIN(Y)*COS(X)</label><input type="checkbox" id="sinycosx"/>
+                </div>
             </div>
             <div id="evalutation" class="opts">
                 <h4>Evaluation functions</h4>
@@ -447,6 +525,12 @@
             </canvas>
             <canvas id="canvasResult" width="400px" height="400px">Browser not supported for Canvas. Get a real browser.
             </canvas>
+            <p id ="formulaL">
+                FORMULA LINEAR
+            </p>
+            <p id ="formulaP">
+                FORMULA POLY
+            </p>
         </div>
         <div id="statistics">
             <div id="statisticsTraining">
