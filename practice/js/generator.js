@@ -149,3 +149,106 @@ function spiralData(N) {
     }
     return {data:data, labels:labels};
 }
+
+function stripesVData(N) {
+    let data = new Array(N);
+    let labels = new Array(N);
+    let x,y;
+    for(let i=0;i<N;i++){
+        y=randf(-4,4);
+        /*
+        if(i<N/6){
+            x=randf(-3,-2);
+            labels[i] = 1;
+        }
+        else if(i<N/3){
+            x=randf(-2,-1);
+            labels[i] = -1;
+        }
+        else if(i<N/2){
+            x=randf(-1,0);
+            labels[i] = 1;
+        }
+        else if(i<N*2/3){
+            x=randf(0,1);
+            labels[i] = -1;
+        }
+        else if(i<N*5/6){
+            x=randf(1,2);
+            labels[i] = 1;
+        }
+        else{
+            x = randf(2,3);
+            labels[i] = -1;
+        }*/
+        if(i<N/4){
+            x=randf(-3,-1.75);
+            labels[i] = 1;
+        }
+        else if(i<N/2){
+            x=randf(-1.5,-0.25);
+            labels[i] = -1;
+        }
+        else if(i<N*3/4){
+            x=randf(0.25,1.5);
+            labels[i] = 1;
+        }
+        else{
+            x=randf(1.75,3);
+            labels[i] = -1;
+        }
+        data[i] = [x,y];
+    }
+    return {data:data, labels:labels};
+}
+function stripesHData(N) {
+    let data = new Array(N);
+    let labels = new Array(N);
+    let x,y;
+    for(let i=0;i<N;i++){
+        x=randf(-4,4);
+        /*
+        if(i<N/6){
+            x=randf(-3,-2);
+            labels[i] = 1;
+        }
+        else if(i<N/3){
+            x=randf(-2,-1);
+            labels[i] = -1;
+        }
+        else if(i<N/2){
+            x=randf(-1,0);
+            labels[i] = 1;
+        }
+        else if(i<N*2/3){
+            x=randf(0,1);
+            labels[i] = -1;
+        }
+        else if(i<N*5/6){
+            x=randf(1,2);
+            labels[i] = 1;
+        }
+        else{
+            x = randf(2,3);
+            labels[i] = -1;
+        }*/
+        if(i<N/4){
+            y=randf(-3,-1.75);
+            labels[i] = 1;
+        }
+        else if(i<N/2){
+            y=randf(-1.5,-0.25);
+            labels[i] = -1;
+        }
+        else if(i<N*3/4){
+            y=randf(0.25,1.5);
+            labels[i] = 1;
+        }
+        else{
+            y=randf(1.75,3);
+            labels[i] = -1;
+        }
+        data[i] = [x,y];
+    }
+    return {data:data, labels:labels};
+}

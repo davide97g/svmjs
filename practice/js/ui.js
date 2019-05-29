@@ -61,17 +61,6 @@ function refreshKmeans2(event, ui) {
     $("#kmeans2port").text("K2 (Means) = " + Km2.toPrecision(2));
 }
 
-function toggleSSCA(value){
-    setSSCA(value);
-    
-    if(value) {
-        $("#SSCAtoggle").text("SSCA on");
-    }
-    else{
-        $("#SSCAtoggle").text("SSCA off");
-    }
-}
-
 function showUiThings() {
     $("#s0").show();
     $("#s11").show();
@@ -84,17 +73,18 @@ function showUiThings() {
         $("#statisticsTest").show();
     if(kernelid<3){
         $("#s1").show();
-        $("#optimization").show();
-        $("#input_transformations").show();
-        if(input_transformation){
-            $("#input").show();
-        }
+        // $("#optimization").show();
+        $("#statistics_svm").show();
         if(kernelid === 1){
             $("#s2").show();
         }
         if(kernelid === 2){
             $("#s3").show();
             $("#s4").show();
+            $("#input").show();
+            if (input_transformation) {
+                $("#input_choice").show();
+            }
         }
         if(ssca) $("#s5").show();
     }
@@ -110,11 +100,14 @@ function showUiThings() {
 }
 
 function hideUiThings() {
+    $("#fakeInputFormula").hide();
     $("#optimization").hide();
-    // $("#input").hide();
+    $("#input").hide();
+    $("#input_choice").hide();
     $("#distances").hide();
     $("#statisticsTraining").hide();
     $("#statisticsTest").hide();
+    $("#statistics_svm").hide();
     $("#kmeans").hide();
     $(".slider_container").hide(); // per nascondere gli slider che non servono
 }

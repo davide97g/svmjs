@@ -60,12 +60,21 @@ let drawerjs = (function (exports) {
 
 })(typeof module != 'undefined' && module.exports);  // add exports to module.exports if in node.js
 
+function clean() {
+    ctx.clearRect(0,0,WIDTH,HEIGHT);
+    data = [];
+    labels = [];
+    N = 0;
+    Ntest = 0;
+    draw();
+}
+
 function draw(){
 
     drawTraining(ctx);
 
     ctxTest.clearRect(0,0,WIDTH,HEIGHT);
-
+    if(N===0) return;
     drawGrid(ctxTest);
     drawAxes(ctxTest);
 
@@ -82,7 +91,7 @@ function draw(){
     else drawDataKmeans(ctxTest);
 
     //draw linear kernel lines and support vector
-    if( kernelid===0 || (kernelid === 2 && Degree ===  1))
+    if( !input_transformation && (kernelid===0 || (kernelid === 2 && Degree ===  1)))
         drawDataLinearKernel(ctxTest);
 }
 
@@ -314,33 +323,14 @@ function getValue(v) {
     let y = v[1];
 
     if(kernelid<3){
-        /*
-        if(x2||y2||x2y2||xy||x2_y2||sinx||cosx) {
-            let coord = 0;
-            if (x2) {
-                coord = Math.pow(x,2);
+        if(kernelid===2 && input_transformation){
+            let input_f = (function () {});
+            for(let i=0;i<input_functions.length;i++){
+                input_f = input_functions[i];
+                v = input_f(v);
             }
-            if (y2) {
-                coord = Math.pow(y,2);
-            }
-            if (x2y2) {
-                coord = Math.pow(x,2)+Math.pow(y,2);
-            }
-            if (x2_y2) {
-                coord = Math.pow(x,2)-Math.pow(y,2);
-            }
-            if (xy) {
-                coord = x*y;
-            }
-            if (sinx) {
-                coord = Math.sin(x);
-            }
-            if (cosx) {
-                coord = Math.cos(x);
-            }*/
-        if(input_transformation)
-            v = [v[0], v[1], input_f(v)];
-        value= svm.marginOne(v);
+        }
+        value = svm.marginOne(v);
     }
     else if(kernelid===3) { //KNN
         value = KNN(x,y,K);

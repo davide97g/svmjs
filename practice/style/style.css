@@ -1,9 +1,6 @@
-button{
-    border: none;
-    background-color: transparent;
-}
 .btn {
-    width: 90px;
+    /*width: 90px;*/
+    min-width: 90px;
     height: 40px;
     margin: 1%;
     overflow: hidden;
@@ -22,13 +19,16 @@ button{
 .btn.orange{
     background-color: #ff7a34;
 }
+.btn.red{
+    background-color: #ff2c44;
+}
 .btn.blue{
     background-color: #48beff;
 }
-.purple{
+.btn.purple{
     background-color: #c864ff;
 }
-.yellow{
+.btn.yellow{
     background-color: #ffb241;
 }
 
@@ -37,6 +37,9 @@ button{
 }
 .btn.orange:hover, .btn.orange:focus{
     background-color: #e95f38;
+}
+.btn.red:hover, .btn.red:focus{
+    background-color: #ff2c44;
 }
 .btn.blue:hover, .btn.blue:focus{
     background-color: #1c8bff;
@@ -61,7 +64,8 @@ canvas {
 }
 body {
     text-align: center;
-    font-family: "Roboto Th",Verdana, Helvetica, sans-serif;
+    font-family: Roboto,Verdana, Helvetica, sans-serif;
+    font-weight: 300;
     font-size: 12px;
     padding: 0;
     margin: 0;
@@ -73,53 +77,79 @@ p {
     padding-top: 0;
     padding-bottom: 0;
 }
-#CMtable, #CMtableTest{
-    margin: auto;
-    padding: 1%;
-    border-color: darkslategray;
-    border-width: 1px;
-    border-style: solid;
-}
+
 #info {
-    height: 120px;
-    background-color: #488b7f;
-    border-bottom: 1px solid #000000;
-    margin-bottom: 30px;
+    background-color: #212e30;
+    color: white;
+}
+#nSV{
+    font-weight: 800;
+}
+a{
+    color: #77ffc2;
+}
+.red{
+    color: #FF4D5D;
+}
+#nSV.yellow{
+    color: #ffb241;
+}
+.green{
+    color: #5dff91;
+}
+#instructions {
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+#options {
+    background-color: white;
+    margin: 2%;
+    padding: 2%;
+    text-align: center;
+    width: 92%;
+    float: left;
 }
 #draw{
     float: left;
-    width: 50%;
-}
-#options {
-    text-align: left;
-    width: 20%;
-    margin-left: 2%;
-    float: left;
-}
-#statistics{
-    float: left;
-    width: 15%;
+    width: 100%;
     text-align: center;
 }
+#statistics{
+    background-color: white;
+    margin: 2%;
+    padding: 2%;
+    text-align: center;
+    width: 92%;
+    float: left;
+}
+
+#values,#datasets{
+    float:left;
+    width: 42%;
+    margin: 2%;
+    padding: 2%;
+}
+#kernels,#evalutation,#input,#kmeans,#distances{
+    float: left;
+    width: 46%;
+    margin: 2%;
+}
+
+
 .slider_container{
     text-align: center;
     float: left;
     margin-left: auto;
     margin-right: auto;
-    width: 90%;
+    width: 50%;
     margin-bottom: 2%;
-}
-#s0{
-    margin-left: 0;
-    margin-right: 0;
-    width: 90%;
-    text-align: center;
 }
 .slider_container div {
     -webkit-appearance: none;
     height: 10px;
     border-radius: 5px;
-    background: #488b7f;
+    background: #2ecc71;
     outline: none;
     opacity: 0.7;
     -webkit-transition: .2s;
@@ -129,30 +159,29 @@ p {
 .slider_container div:hover{
     opacity: 1;
 }
-.opts{
-    margin: 1%;
-}
-.datasets{
-    text-align: left;
-}
-.datasets div{
-    margin-top: 2%;
-}
-.keys{
-}
-#draw{
-    float: left;
-    text-align: center;
-}
-#draw canvas{
-    margin: 1%;
-}
-.stats div{
-    margin: 1%;
-}
+
+
 #statisticsTest,#statisticsTraining{
     float: left;
-    width: 100%;
+    width: 47%;
+}
+#statistics_svm{
+    padding: 2%;
+    width: 60%;
+}
+table{
+    float: left;
+    width: 25%;
+    text-align: center;
+    border-color: darkslategray;
+    border-width: 1px;
+    border-style: solid;
+}
+.stats{
+    float: left;
+    width: 58%;
+    text-align: left;
+    padding-left: 2%;
 }
 #tp,#tp2{
     background-color: rgba(32, 255, 59, 0.75);
@@ -165,4 +194,95 @@ p {
 }
 #tn,#tn2{
     background-color: rgba(255, 30, 35, 0.75);
+}
+
+#formulaL{
+    padding: 3%;
+    font-family: "Calibri",sans-serif;
+}
+
+body {
+    background: #e2e1e0;
+    text-align: center;
+}
+
+.card {
+    background: #fff;
+    border-radius: 2px;
+    display: inline-block;
+    /*height: 300px;*/
+    margin: 1rem;
+    position: relative;
+    /*width: 300px;*/
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+}
+.nopadding{
+    padding: 0;
+}
+.card-1 {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-1:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.card-2 {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-3 {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-4 {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card-5 {
+    box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }

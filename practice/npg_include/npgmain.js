@@ -90,9 +90,8 @@ function eventClick(e) {
   } 
   x -= canvas.offsetLeft;
   y -= canvas.offsetTop;
-  
   //call user-defined callback
-  mouseClick(x, y, e.shiftKey);
+  mouseClick(x, y, e.shiftKey, e.ctrlKey);
 }
 
 //event codes can be found here:

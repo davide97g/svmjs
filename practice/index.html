@@ -2,6 +2,7 @@
 <html lang="it">
     <head>
         <title>SVM Javascript</title>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700&display=swap" rel="stylesheet">
         <link type="text/css" href="./jqueryui/css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />
         <link type="text/css" rel="stylesheet" href="style/style.css"/>
         <script type="text/javascript" src="./jqueryui/js/jquery-1.7.2.min.js"></script>
@@ -47,18 +48,7 @@
         let svmC = 1.0;
         let memo = false;
         let input_transformation = false;
-        let x2 = false;
-        let y2 = false;
-        let x2y2 = false;
-        let x2_y2 = false;
-        let xy = false;
-        let sinx = false;
-        let cosx = false;
-        let siny = false;
-        let cosy = false;
-        let sinxcosy = false;
-        let sinycosx = false;
-        let input_f = (function(){});
+        let input_functions = [];
 
         let kernelid= 2;
         let Degree = 1;
@@ -71,11 +61,12 @@
         let distanceid = 0; //for distances in KNN evalutations
         let datasetID = 1; //initially random
         let Epsilon = 0.1; //for rbf function evaluation
-        let drawKmeansPoints = true; //only for the drawing thing
+        let drawKmeansPoints = false; //only for the drawing thing
         let Km1 = 3; //K for kmeans
         let Km2 = 3; //K for kmeans
         let means;
         let KMdata = false; //use or not Kmeans as data
+        let KMdataUser = false;
         let useTest = false; //show the tests
         let density = 2; //drawing canvas points
         let dataset_modified = true;
@@ -118,6 +109,16 @@
                 data = res.data;
                 labels = res.labels;
             }
+            else if(id===7){
+                let res = stripesVData(N);
+                data = res.data;
+                labels = res.labels;
+            }
+            else if(id===8){
+                let res = stripesHData(N);
+                data = res.data;
+                labels = res.labels;
+            }
             setTrainingSet(datasetID);
         }
         function setTrainingSet(id) {
@@ -151,11 +152,38 @@
                 datatest = res.data;
                 labelstest = res.labels;
             }
+            else if(id===7){
+                let res = stripesVData(Ntest);
+                datatest = res.data;
+                labelstest = res.labels;
+            }
+            else if(id===8){
+                let res = stripesHData(Ntest);
+                datatest = res.data;
+                labelstest = res.labels;
+            }
+        }
+
+        function countSV(svm) {
+            let n=0;
+            for(let i=0;i<data.length;i++){
+                if(svm.alpha[i]>1e-7) {
+                    n++;
+                }
+            }
+            return n;
         }
 
         function retrainSVM() {
+            document.getElementById("formulaL").innerHTML = "---";
+            document.getElementById("nSV").innerHTML = "---";
+            document.getElementById("nDim").innerHTML = "---";
 
             console.info("🐵 DATASET "+datasetID);
+            if(input_transformation){
+                for(let i=0;i<input_functions.length;i++)
+                    console.info("🐧 INPUT FUNCTION "+input_functions[i].name);
+            }
 
             if(kernelid === 0) {
                 kernelid = 2;
@@ -163,11 +191,21 @@
                 retrainSVM();
             }
             else if(kernelid === 1) {
-                ssca = document.getElementById("ssca").checked;
                 svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
+                let n = countSV(svm);
+                if(n/data.length>0.5){
+                    document.getElementById("nSV").classList.add("red");
+                }
+                else if(n/data.length>0.25){
+                    document.getElementById("nSV").classList.add("yellow");
+                }
+                else {
+                    document.getElementById("nSV").classList.add("green");
+                }
+                document.getElementById("nSV").innerHTML = n+"/"+data.length;
+                document.getElementById("nDim").innerHTML = "∞";
             }
             else if(kernelid === 2){
-                ssca = document.getElementById("ssca").checked;
                 svm.train(data, labels, {
                         kernel: 'poly',
                         degree: Degree,
@@ -176,18 +214,27 @@
                         SSCA: ssca,
                         UB: ub,
                         memoize: memo,
-                        input_f: input_f
+                        input_functions: input_functions
                     }
                     );
                 if(Degree === 1) {
                     wb = svm.getWeights();
-                    let fLinear = svm.getFormulaLinear(wb);
-                    // console.info(fLinear);
-                    document.getElementById("formulaL").innerText = fLinear;
+                    let formula = svm.getFormulaLinear(wb);
+                    document.getElementById("formulaL").innerHTML = "<strong>f(input[x1,...,xn])</strong> = "+formula.html;
+                    document.getElementById("fakeInputFormula").value = "f(input[x1,...,xn])= "+formula.text;
                 }
-                // let formula = svm.getFormula();
-                // console.info(formula);
-                //document.getElementById("formulaP").innerText = formula;
+                let n = countSV(svm);
+                document.getElementById("nSV").innerHTML = n+"/"+data.length;
+                document.getElementById("nDim").innerHTML = ""+wb.w.length;
+                if(n/data.length>0.5){
+                    document.getElementById("nSV").classList.add("red");
+                }
+                else if(n/data.length>0.25){
+                    document.getElementById("nSV").classList.add("yellow");
+                }
+                else {
+                    document.getElementById("nSV").classList.add("green");
+                }
             }
             else if(kernelid === 3){
                 console.info("\tKNN: "+K);
@@ -228,6 +275,9 @@
             means = new Array(2);
             means[0] = kmeans1.means;
             means[1] = kmeans2.means;
+            return createNewData(means);
+        }
+        function createNewData(means) {
             let L1 = means[0].length;
             let L2 = means[1].length;
             let L = L1+L2;
@@ -270,51 +320,53 @@
         <script type="text/javascript">
 
             function inputFunctionUpdate(){
-                x2 = document.getElementById("x2").checked;
-                y2 = document.getElementById("y2").checked;
-                x2y2 = document.getElementById("x2y2").checked;
-                x2_y2 = document.getElementById("x2_y2").checked;
-                xy = document.getElementById("xy").checked;
-                sinx = document.getElementById("sinx").checked;
-                cosx = document.getElementById("cosx").checked;
-                siny = document.getElementById("siny").checked;
-                cosy = document.getElementById("cosy").checked;
-                sinxcosy = document.getElementById("sinxcosy").checked;
-                sinycosx = document.getElementById("sinycosx").checked;
+                let arrayF = [];
+                if(document.getElementById("x2").checked) arrayF.push(fx2);
+                if(document.getElementById("y2").checked) arrayF.push(fy2);
+                if(document.getElementById("x3").checked) arrayF.push(fx3);
+                if(document.getElementById("y3").checked) arrayF.push(fy3);
 
-                if(x2) input_f = fx2;
-                if(y2) input_f = fy2;
+                if(document.getElementById("x2y2").checked) arrayF.push(fx2y2);
+                if(document.getElementById("x2_y2").checked) arrayF.push(fx2_y2);
 
-                if(x2y2) input_f = fx2y2;
-                if(x2_y2) input_f = fx2_y2;
+                if(document.getElementById("xy").checked) arrayF.push(fxy);
 
-                if(xy) input_f = fxy;
+                if(document.getElementById("sinx").checked) arrayF.push(fsinx);
+                if(document.getElementById("cosx").checked) arrayF.push(fcosx);
 
-                if(sinx) input_f = fsinx;
-                if(cosx) input_f = fcosx;
+                if(document.getElementById("siny").checked) arrayF.push(fsiny);
+                if(document.getElementById("cosy").checked) arrayF.push(fcosy);
 
-                if(siny) input_f = fsiny;
-                if(cosy) input_f = fcosy;
+                if(document.getElementById("sinxcosy").checked) arrayF.push(fsinxcosy);
+                if(document.getElementById("sinycosx").checked) arrayF.push(fsinycosx);
 
-                if(sinxcosy) input_f = fsinxcosy;
-                if(sinycosx) input_f = fsinycosx;
+                if(document.getElementById("sinxcosydot").checked) arrayF.push(fsinxcosydot);
+                if(document.getElementById("sinycosxdot").checked) arrayF.push(fsinycosxdot);
+
+                if(arrayF.length>0)
+                    input_functions = arrayF;
 
             }
 
             function update(){
                 console.info("UPDATE");
                 //check values on checkbox
-                useTest = document.getElementById("test").checked;
-                input_transformation = document.getElementById("input_transformations").checked;
+                //useTest = document.getElementById("test").checked;
+
                 if(input_transformation) {
                     inputFunctionUpdate();
                 }
-                else input_f = null;
+                else input_functions = [];
 
-                drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
+                ssca = document.getElementById("ssca").checked;
                 let value = document.getElementById("kmdata").checked;
-                //eseguo il calcolo dei centri kmeans
-                let res = KMEANS(data);
+
+                let res;
+                if(KMdataUser)
+                    res = createNewData(means);
+                else //eseguo il calcolo dei centri kmeans
+                    res = KMEANS(data);
+
                 //se è stato modificato il dataset
                 if(dataset_modified){
                     dataset_modified = false;
@@ -364,18 +416,51 @@
             }
 
             function test() {
-                console.info("🧪 TEST");
-                if(!useTest) {
-                    document.getElementById("test").checked = true;
-                    useTest = true;
-                }
+                console.info("🧪 TEST "+!useTest);
+                useTest = !useTest;
                 hideUiThings();
                 showUiThings();
-                let app = ctx;
-                ctx = ctxTest; //substitute
-                ctx.lineWidth = 1;
-                drawTest(ctxTest);
-                ctx = app; //return to normal
+                if(useTest) {
+                    // let app = ctx;
+                    // ctx = ctxTest; //substitute
+                    // ctx.lineWidth = 1;
+                    drawTest(ctxTest);
+                    // ctx = app; //return to normal
+                }
+                else{
+                    draw();
+                }
+            }
+            function shouldUseInput(value) {
+                input_transformation = value;
+                hideUiThings();
+                showUiThings();
+            }
+            function shouldDrawKmeans(value) {
+                drawKmeansPoints = value;
+                hideUiThings();
+                showUiThings();
+            }
+
+            function myFunction() {
+                if(kernelid!==2){
+                    document.getElementById("myTooltip").innerHTML = "No formula to copy";
+                    return;
+                }
+                let copyText = document.getElementById("fakeInputFormula");
+                let fake = $("#fakeInputFormula");
+                fake.show();
+                copyText.select();
+                document.execCommand("copy");
+                fake.hide();
+
+                let tooltip = document.getElementById("myTooltip");
+                tooltip.innerHTML = "Copied: " + copyText.value;
+            }
+
+            function outFunc() {
+                let tooltip = document.getElementById("myTooltip");
+                tooltip.innerHTML = "Copy to clipboard";
             }
 
         </script>
@@ -395,88 +480,225 @@
 
     <body onLoad="NPGinit(10,canvasData), drawTestInit(10,canvasResult),execute()"> <!-- 24 FPS -->
         <div id="info">
-            <br /><h1>Support Vector Machine in Javascript</h1>
+            <br>
+            <h1>Support Vector Machine in Javascript</h1>
             <p>
                 Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
                 This version is based on the work of Andrej Karpathy. Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
             </p>
+
+                <!--            <h3>Execute</h3>-->
+                <div>
+                    <button type="button" class="btn" id="gobtn" onclick="execute()">Execute</button>
+                    <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
+                    <button type="button" class="btn" id="cleanbtn" onclick="clean()">Clean</button>
+                </div>
+                <!--<h3>Test</h3>
+
+                <div id="checkboxTest">
+                    <label for="test">Test data</label><input type="checkbox" id="test"/>
+                </div> -->
+
         </div>
-        <div id="options">
-            <h3>Instructions</h3>
-            <div>
-                <strong>Mouse click</strong>: add red data point<br />
-                <strong>Shift + mouse click</strong>: add green data point<br />
+        <div id="draw">
+            <canvas class="card card-1 nopadding" id="canvasData" width="500px" height="500px">Browser not supported for Canvas. Get a real browser.
+            </canvas>
+            <canvas class="card card-1 nopadding" id="canvasResult" width="500px" height="500px">Browser not supported for Canvas. Get a real browser.
+            </canvas>
+        </div>
+
+        <div class="card card-1" id="statistics">
+            <div class="card card-1" id="statisticsTraining">
+                <h3>Statistics Training</h3>
+                <table class="card card-1" id="CMtable">
+                    <thead>
+                    <tr>
+                        <th colspan="2">Confusion Matrix</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td id="tp">-</td>
+                        <td id="fp">-</td>
+                    </tr>
+                    <tr>
+                        <td id="fn">-</td>
+                        <td id="tn">-</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="card card-1 stats">
+                    <div>
+                        Precision:
+                        <span class="value" id="precision">-</span>
+                        %
+                    </div>
+                    <div>
+                        Recall:
+                        <span class="value" id="recall">-</span>
+                        %
+                    </div>
+                    <div>
+                        Accurancy:
+                        <span class="value" id="accurancy">-</span>
+                        %
+                    </div>
+                    <div>
+                        Specificity:
+                        <span class="value" id="specificity">-</span>
+                        %
+                    </div>
+                    <div>
+                        F-Measure:
+                        <span class="value" id="fmeasure">-</span>
+                        %
+                    </div>
+                </div>
             </div>
-            <h3>Execute</h3>
-            <div>
-                <button type="button" class="btn" id="gobtn" onclick="execute()">Execute</button>
-                <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
+            <div class="card card-1" id="statisticsTest">
+                <h3>Statistics Test</h3>
+                <table class="card card-1" id="CMtableTest">
+                    <thead>
+                    <tr>
+                        <th colspan="2">Confusion Matrix Test</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td id="tp2">-</td>
+                        <td id="fp2">-</td>
+                    </tr>
+                    <tr>
+                        <td id="fn2">-</td>
+                        <td id="tn2">-</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="card card-1 stats">
+                    <div>
+                        Precision:
+                        <span class="value" id="precision2">-</span>
+                        %
+                    </div>
+                    <div>
+                        Recall:
+                        <span class="value" id="recall2">-</span>
+                        %
+                    </div>
+                    <div>
+                        Accurancy:
+                        <span class="value" id="accurancy2">-</span>
+                        %
+                    </div>
+                    <div>
+                        Specificity:
+                        <span class="value" id="specificity2">-</span>
+                        %
+                    </div>
+                    <div>
+                        F-Measure:
+                        <span class="value" id="fmeasure2">-</span>
+                        %
+                    </div>
+                </div>
             </div>
-            <h3>Test</h3>
-            <div id="checkboxTest" class="opts">
-                <label for="test">Test data</label><input type="checkbox" id="test"/>
+            <div class="card card-1" id="statistics_svm">
+                <h3>Formula Linear</h3>
+                <input type="text" id ="fakeInputFormula">
+                <p class="card card-1" id="formulaL">---</p>
+                <div class="tooltip">
+                    <button class="btn" onclick="myFunction()" onmouseout="outFunc()">
+                        <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                        Copy text
+                    </button>
+                </div>
+                <h4>Dimensions</h4>
+                <h2 id ="nDim">---</h2>
+                <h4>Support Vector</h4>
+                <h2 id ="nSV">---</h2>
             </div>
-            <h3>Options</h3>
-            <div id="kernels" class="opts">
-                <h4>Kernels</h4>
+        </div>
+
+        <div class="card card-1" id="options">
+
+            <h2>Options</h2>
+<!--            <div class="card card-1"></div>-->
+            <div class="card card-1" id="kernels">
+                <h3>Kernels</h3>
                 <button id="rbfk" class="btn" onclick="changeKernel(1)">RBF</button>
                 <button id="poly" class="btn" onclick="changeKernel(2)">Polynomial</button>
             </div>
-            <div id="optimization" class="opts">
+            <div class="card card-1" id="evalutation">
+                <h3>Evaluation functions</h3>
+                <button id="knn" class="btn" onclick="changeKernel(3)">KNN</button>
+                <button id="rbf" class="btn" onclick="changeKernel(4)">RBF</button>
+            </div>
+
+            <br>
+            <br>
+
+            <div id="optimization">
                 <h4>Optimization </h4>
                 <label for="ssca">SSCA</label><input type="checkbox" id="ssca"/>
-                <h4>Input </h4>
-                <label for="input_transformations">Transformations</label><input type="checkbox" id="input_transformations"/>
-                <div id="input">
+            </div>
+
+            <div class="card card-1" id="input">
+                <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
+                <div id="input_choice">
                     <label for="x2">X^2</label><input type="checkbox" id="x2"/>
                     <label for="y2">Y^2</label><input type="checkbox" id="y2"/>
+                    <label for="x3">X^3</label><input type="checkbox" id="x3"/>
+                    <label for="y3">Y^3</label><input type="checkbox" id="y3"/>
+                    <br/>
                     <label for="x2y2">X^2+Y^2</label><input type="checkbox" id="x2y2"/>
                     <label for="x2_y2">X^2-Y^2</label><input type="checkbox" id="x2_y2"/>
                     <label for="x2y2">X*Y</label><input type="checkbox" id="xy"/>
+                    <br/>
                     <label for="sinx">SIN(X)</label><input type="checkbox" id="sinx"/>
                     <label for="cosx">COS(X)</label><input type="checkbox" id="cosx"/>
                     <label for="siny">SIN(Y)</label><input type="checkbox" id="siny"/>
                     <label for="cosy">COS(Y)</label><input type="checkbox" id="cosy"/>
-                    <label for="sinxcosy">SIN(X)*COS(Y)</label><input type="checkbox" id="sinxcosy"/>
-                    <label for="sinycosx">SIN(Y)*COS(X)</label><input type="checkbox" id="sinycosx"/>
+                    <br/>
+                    <label for="sinxcosy">SIN(X)+COS(Y)</label><input type="checkbox" id="sinxcosy"/>
+                    <label for="sinycosx">SIN(Y)+COS(X)</label><input type="checkbox" id="sinycosx"/>
+                    <br />
+                    <label for="sinxcosydot">SIN(X)*COS(Y)</label><input type="checkbox" id="sinxcosydot"/>
+                    <label for="sinycosxdot">SIN(Y)*COS(X)</label><input type="checkbox" id="sinycosxdot"/>
                 </div>
             </div>
-            <div id="evalutation" class="opts">
-                <h4>Evaluation functions</h4>
-                <button id="knn" class="btn" onclick="changeKernel(3)">KNN</button>
-                <button id="rbf" class="btn" onclick="changeKernel(4)">RBF</button>
-            </div>
-            <div id="distances" class="opts">
-                <h4>Distances</h4>
+
+            <div class="card card-1" id="distances">
+                <h3>Distances</h3>
                 <button id="min" class="btn" onclick="changeDistance(0)">Minkowski</button>
                 <button id="che" class="btn" onclick="changeDistance(1)">Chebyshev</button>
                 <button id="maha" class="btn" onclick="changeDistance(2)">Mahalanobis</button>
             </div>
-            <div id="kmeans" class="opts">
-                <label for="draw_kmeans_points">Draw Kmeans Centers</label><input type="checkbox" id="draw_kmeans_points"/>
+            <div class="card card-1" id="kmeans" >
+<!--                <label for="draw_kmeans_points">Draw Kmeans Centers</label><input type="checkbox" id="draw_kmeans_points"/>-->
+                <button type="button" class="btn" id="draw_kmeans_points" onclick="shouldDrawKmeans(!drawKmeansPoints)">Draw Kmeans</button>
                 <label for="kmdata">Use Kmeans as Data</label><input type="checkbox" id="kmdata"/>
             </div>
-            <h3>Datasets</h3>
 
-            <div id="s0" class="slider_container">
-                <span id="nport">N = 100</span>
-                <div id="slider0"></div>
+            <div class="card card-1" id="datasets">
+                <h3>Datasets</h3>
+                <div id="s0" class="slider_container">
+                    <span id="nport">N = 100</span>
+                    <div id="slider0"></div>
+                </div>
+                <div id="s11" class="slider_container">
+                    <span id="ntestport">N test = 100</span>
+                    <div id="slider11"></div>
+                </div>
+                <button class="btn orange" id="databtn1" onclick="setDataSet(1),execute()">Random</button>
+                <button class="btn blue" id="databtn2" onclick="setDataSet(2),execute()">Circle</button>
+                <button class="btn yellow" id="databtn3" onclick="setDataSet(3),execute()">ExclusiveOr</button>
+                <button class="btn purple" id="databtn4" onclick="setDataSet(4),execute()">Gaussian</button>
+                <button class="btn orange" id="databtn5" onclick="setDataSet(5),execute()">Spiral</button>
+                <button class="btn blue" id="databtn6" onclick="setDataSet(6),execute()">Multi Circle</button>
+                <button class="btn yellow" id="databtn7" onclick="setDataSet(7),execute()">V-Stripes</button>
+                <button class="btn purple" id="databtn8" onclick="setDataSet(8),execute()">H-Stripes</button>
             </div>
-            <div id="s11" class="slider_container">
-                <span id="ntestport">N test = 100</span>
-                <div id="slider11"></div>
-            </div>
-
-            <div class="datasets">
-                <button class="keys btn orange" id="databtn1" onclick="setDataSet(1),execute()">Random</button>
-                <button class="keys btn blue" id="databtn2" onclick="setDataSet(2),execute()">Circle</button>
-                <button class="keys btn yellow" id="databtn3" onclick="setDataSet(3),execute()">ExclusiveOr</button>
-                <button class="keys btn purple" id="databtn4" onclick="setDataSet(4),execute()">Gaussian</button>
-                <button class="keys btn orange" id="databtn5" onclick="setDataSet(5),execute()">Spiral</button>
-                <button class="keys btn blue" id="databtn6" onclick="setDataSet(6),execute()">Multi Circle</button>
-            </div>
-
-            <div id="values">
+            <div class="card card-1" id="values">
                 <h3>Values</h3>
                 <div id="s1" class="slider_container">
                     <span id="creport">C = 1.0</span>
@@ -519,115 +741,9 @@
                     <div id="slider10"></div>
                 </div>
             </div>
+
         </div>
-        <div id="draw">
-            <canvas id="canvasData" width="400px" height="400px">Browser not supported for Canvas. Get a real browser.
-            </canvas>
-            <canvas id="canvasResult" width="400px" height="400px">Browser not supported for Canvas. Get a real browser.
-            </canvas>
-            <p id ="formulaL">
-                FORMULA LINEAR
-            </p>
-            <p id ="formulaP">
-                FORMULA POLY
-            </p>
-        </div>
-        <div id="statistics">
-            <div id="statisticsTraining">
-                <h3>Statistics Training</h3>
-                <table id="CMtable">
-                    <thead>
-                    <tr>
-                        <th colspan="2">Confusion Matrix</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td id="tp">-</td>
-                        <td id="fp">-</td>
-                    </tr>
-                    <tr>
-                        <td id="fn">-</td>
-                        <td id="tn">-</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="stats">
-                    <div>
-                        Precision:
-                        <span class="value" id="precision">-</span>
-                        %
-                    </div>
-                    <div>
-                        Recall:
-                        <span class="value" id="recall">-</span>
-                        %
-                    </div>
-                    <div>
-                        Accurancy:
-                        <span class="value" id="accurancy">-</span>
-                        %
-                    </div>
-                    <div>
-                        Specificity:
-                        <span class="value" id="specificity">-</span>
-                        %
-                    </div>
-                    <div>
-                        F-Measure:
-                        <span class="value" id="fmeasure">-</span>
-                        %
-                    </div>
-                </div>
-            </div>
-            <div id="statisticsTest">
-                <h3>Statistics Test</h3>
-                <table id="CMtableTest">
-                    <thead>
-                    <tr>
-                        <th colspan="2">Confusion Matrix Test</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td id="tp2">-</td>
-                        <td id="fp2">-</td>
-                    </tr>
-                    <tr>
-                        <td id="fn2">-</td>
-                        <td id="tn2">-</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="stats">
-                    <div>
-                        Precision:
-                        <span class="value" id="precision2">-</span>
-                        %
-                    </div>
-                    <div>
-                        Recall:
-                        <span class="value" id="recall2">-</span>
-                        %
-                    </div>
-                    <div>
-                        Accurancy:
-                        <span class="value" id="accurancy2">-</span>
-                        %
-                    </div>
-                    <div>
-                        Specificity:
-                        <span class="value" id="specificity2">-</span>
-                        %
-                    </div>
-                    <div>
-                        F-Measure:
-                        <span class="value" id="fmeasure2">-</span>
-                        %
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
     </body>
 </html>
