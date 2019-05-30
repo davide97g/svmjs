@@ -82,6 +82,7 @@ function showUiThings() {
             $("#s3").show();
             $("#s4").show();
             $("#input").show();
+            $("#btnLink").show();
             if (input_transformation) {
                 $("#input_choice").show();
             }
@@ -102,6 +103,7 @@ function showUiThings() {
 function hideUiThings() {
     $("#fakeInputFormula").hide();
     $("#optimization").hide();
+    $("#btnLink").hide();
     $("#input").hide();
     $("#input_choice").hide();
     $("#distances").hide();

@@ -70,6 +70,7 @@
         let useTest = false; //show the tests
         let density = 2; //drawing canvas points
         let dataset_modified = true;
+        let link = "";
 
         let canvasResult = "canvasResult";
         let canvasData = "canvasData";
@@ -220,8 +221,8 @@
                 if(Degree === 1) {
                     wb = svm.getWeights();
                     let formula = svm.getFormulaLinear(wb);
-                    document.getElementById("formulaL").innerHTML = "<strong>f(input[x1,...,xn])</strong> = "+formula.html;
-                    document.getElementById("fakeInputFormula").value = "f(input[x1,...,xn])= "+formula.text;
+                    document.getElementById("formulaL").innerHTML = formula.html;
+                    document.getElementById("fakeInputFormula").value = formula.equation;
                 }
                 let n = countSV(svm);
                 document.getElementById("nSV").innerHTML = n+"/"+data.length;
@@ -361,6 +362,7 @@
                 ssca = document.getElementById("ssca").checked;
                 let value = document.getElementById("kmdata").checked;
 
+                drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
                 let res;
                 if(KMdataUser)
                     res = createNewData(means);
@@ -442,7 +444,7 @@
                 showUiThings();
             }
 
-            function myFunction() {
+            function copyFunction() {
                 if(kernelid!==2){
                     document.getElementById("myTooltip").innerHTML = "No formula to copy";
                     return;
@@ -456,11 +458,58 @@
 
                 let tooltip = document.getElementById("myTooltip");
                 tooltip.innerHTML = "Copied: " + copyText.value;
+
+                let eq = copyText.value;
+
+                while(eq.indexOf("+")!== -1 )
+                    eq = eq.replace("+","%2B");
+
+                link = "https://www.wolframalpha.com/input/?i="+eq;
+
             }
 
             function outFunc() {
                 let tooltip = document.getElementById("myTooltip");
                 tooltip.innerHTML = "Copy to clipboard";
+            }
+
+            function openLink(){
+                copyFunction();
+                window.open(link);
+            }
+
+        </script>
+
+        <script type="text/javascript">
+
+
+
+
+            function download(blob,name) {
+                let url = URL.createObjectURL(blob),
+                    div = document.createElement("div"),
+                    anch = document.createElement("a");
+
+                document.body.appendChild(div);
+                div.appendChild(anch);
+
+                anch.innerHTML = "&nbsp;";
+                div.style.width = "0";
+                div.style.height = "0";
+                anch.href = url;
+                anch.download = name;
+
+                let ev = new MouseEvent("click",{});
+                anch.dispatchEvent(ev);
+                document.body.removeChild(div);
+            }
+
+            function launchDownload() {
+                // create the text file as a Blob:
+                let content = document.getElementById("fakeInputFormula").value;
+                let blob = new Blob([content],{type: "text/plain"});
+                // download the file:
+                download(blob,"equation.txt");
             }
 
         </script>
@@ -605,17 +654,19 @@
             <div class="card card-1" id="statistics_svm">
                 <h3>Formula Linear</h3>
                 <input type="text" id ="fakeInputFormula">
-                <p class="card card-1" id="formulaL">---</p>
+                <div class="card card-1" id="formulaL">---</div>
                 <div class="tooltip">
-                    <button class="btn" onclick="myFunction()" onmouseout="outFunc()">
+                    <button class="btn" onclick="copyFunction()" onmouseout="outFunc()">
                         <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-                        Copy text
+                        Copy equation
                     </button>
                 </div>
+                <button class="btn" id="btnLink" onclick="openLink()">Open in Wolframalpha</button>
                 <h4>Dimensions</h4>
                 <h2 id ="nDim">---</h2>
                 <h4>Support Vector</h4>
                 <h2 id ="nSV">---</h2>
+                <button id="download" class="btn orange" onclick="launchDownload()">Download</button>
             </div>
         </div>
 
@@ -645,25 +696,85 @@
             <div class="card card-1" id="input">
                 <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
                 <div id="input_choice">
-                    <label for="x2">X^2</label><input type="checkbox" id="x2"/>
-                    <label for="y2">Y^2</label><input type="checkbox" id="y2"/>
-                    <label for="x3">X^3</label><input type="checkbox" id="x3"/>
-                    <label for="y3">Y^3</label><input type="checkbox" id="y3"/>
-                    <br/>
-                    <label for="x2y2">X^2+Y^2</label><input type="checkbox" id="x2y2"/>
-                    <label for="x2_y2">X^2-Y^2</label><input type="checkbox" id="x2_y2"/>
-                    <label for="x2y2">X*Y</label><input type="checkbox" id="xy"/>
-                    <br/>
-                    <label for="sinx">SIN(X)</label><input type="checkbox" id="sinx"/>
-                    <label for="cosx">COS(X)</label><input type="checkbox" id="cosx"/>
-                    <label for="siny">SIN(Y)</label><input type="checkbox" id="siny"/>
-                    <label for="cosy">COS(Y)</label><input type="checkbox" id="cosy"/>
-                    <br/>
-                    <label for="sinxcosy">SIN(X)+COS(Y)</label><input type="checkbox" id="sinxcosy"/>
-                    <label for="sinycosx">SIN(Y)+COS(X)</label><input type="checkbox" id="sinycosx"/>
-                    <br />
-                    <label for="sinxcosydot">SIN(X)*COS(Y)</label><input type="checkbox" id="sinxcosydot"/>
-                    <label for="sinycosxdot">SIN(Y)*COS(X)</label><input type="checkbox" id="sinycosxdot"/>
+                    <label class="container small">x^2
+                        <input type="checkbox" id="x2">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container small">y^2
+                        <input type="checkbox" id="y2">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container small">x^3
+                        <input type="checkbox" id="x3">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container small">y^3
+                        <input type="checkbox" id="y3">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container medium">x^2+y^2
+                        <input type="checkbox" id="x2y2">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container medium">x^2-y^2
+                        <input type="checkbox" id="x2_y2">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container medium">x*y
+                        <input type="checkbox" id="xy">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container small">sin(x)
+                        <input type="checkbox" id="sinx">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container small">cos(x)
+                        <input type="checkbox" id="cosx">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container small">sin(y)
+                        <input type="checkbox" id="siny">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container small">cos(y)
+                        <input type="checkbox" id="cosy">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container big">sin(x)+cos(y)
+                        <input type="checkbox" id="sinxcosy">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container big">sin(y)+cos(x)
+                        <input type="checkbox" id="sinycosx">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container big">sin(x)*cos(y)
+                        <input type="checkbox" id="sinxcosydot">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container big">sin(y)*cos(x)
+                        <input type="checkbox" id="sinycosxdot">
+                        <span class="checkmark"></span>
+                    </label>
+<!--                    <label for="x2">X^2</label><input type="checkbox" id="x2"/>-->
+<!--                    <label for="y2">Y^2</label><input type="checkbox" id="y2"/>-->
+<!--                    <label for="x3">X^3</label><input type="checkbox" id="x3"/>-->
+<!--                    <label for="y3">Y^3</label><input type="checkbox" id="y3"/>-->
+<!--                    <br/>-->
+<!--                    <label for="x2y2">X^2+Y^2</label><input type="checkbox" id="x2y2"/>-->
+<!--                    <label for="x2_y2">X^2-Y^2</label><input type="checkbox" id="x2_y2"/>-->
+<!--                    <label for="x2y2">X*Y</label><input type="checkbox" id="xy"/>-->
+<!--                    <br/>-->
+<!--                    <label for="sinx">SIN(X)</label><input type="checkbox" id="sinx"/>-->
+<!--                    <label for="cosx">COS(X)</label><input type="checkbox" id="cosx"/>-->
+<!--                    <label for="siny">SIN(Y)</label><input type="checkbox" id="siny"/>-->
+<!--                    <label for="cosy">COS(Y)</label><input type="checkbox" id="cosy"/>-->
+<!--                    <br/>-->
+<!--                    <label for="sinxcosy">SIN(X)+COS(Y)</label><input type="checkbox" id="sinxcosy"/>-->
+<!--                    <label for="sinycosx">SIN(Y)+COS(X)</label><input type="checkbox" id="sinycosx"/>-->
+<!--                    <br />-->
+<!--                    <label for="sinxcosydot">SIN(X)*COS(Y)</label><input type="checkbox" id="sinxcosydot"/>-->
+<!--                    <label for="sinycosxdot">SIN(Y)*COS(X)</label><input type="checkbox" id="sinycosxdot"/>-->
                 </div>
             </div>
 
@@ -674,9 +785,15 @@
                 <button id="maha" class="btn" onclick="changeDistance(2)">Mahalanobis</button>
             </div>
             <div class="card card-1" id="kmeans" >
-<!--                <label for="draw_kmeans_points">Draw Kmeans Centers</label><input type="checkbox" id="draw_kmeans_points"/>-->
-                <button type="button" class="btn" id="draw_kmeans_points" onclick="shouldDrawKmeans(!drawKmeansPoints)">Draw Kmeans</button>
-                <label for="kmdata">Use Kmeans as Data</label><input type="checkbox" id="kmdata"/>
+<!--                <button type="button" class="btn" id="draw_kmeans_points" onclick="shouldDrawKmeans(!drawKmeansPoints)">Draw Kmeans</button>-->
+                <label class="container big">Draw Kmeans
+                    <input type="checkbox" id="draw_kmeans_points">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container big">Use Kmeans as Data
+                    <input type="checkbox" id="kmdata">
+                    <span class="checkmark"></span>
+                </label>
             </div>
 
             <div class="card card-1" id="datasets">
