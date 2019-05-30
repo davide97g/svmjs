@@ -5,6 +5,8 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700&display=swap" rel="stylesheet">
         <link type="text/css" href="./jqueryui/css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />
         <link type="text/css" rel="stylesheet" href="style/style.css"/>
+        <link type="text/css" rel="stylesheet" href="style/radio_button.css"/>
+        <link type="text/css" rel="stylesheet" href="style/progress_bar.css"/>
         <script type="text/javascript" src="./jqueryui/js/jquery-1.7.2.min.js"></script>
         <script type="text/javascript" src="./jqueryui/js/jquery-ui-1.8.21.custom.min.js"></script>
         <script src="./npg_include/npgmain.js"></script>
@@ -33,6 +35,11 @@
 
         let N = 100; //number of data points
         let Ntest = 100;
+        let training_placeholder = "training";
+        let test_placeholder = "test";
+        let equation_placeholder = "formula";
+        let textType = "text/plain";
+        let jsonType = "application/json";
         let data = new Array(N);
         let labels = new Array(N);
         let datatest = new Array(N);
@@ -175,11 +182,13 @@
             return n;
         }
 
-        function retrainSVM() {
+        function resetStatsSVM() {
             document.getElementById("formulaL").innerHTML = "---";
             document.getElementById("nSV").innerHTML = "---";
             document.getElementById("nDim").innerHTML = "---";
+        }
 
+        function retrainSVM() {
             console.info("🐵 DATASET "+datasetID);
             if(input_transformation){
                 for(let i=0;i<input_functions.length;i++)
@@ -412,9 +421,17 @@
                 console.clear();
                 console.info("🔨 EXECUTE");
                 update();
-                //setDataSet(datasetID);
-                retrainSVM();
-                draw();
+                resetStatsSVM();
+                moveProgressBar(0,100);
+                setTimeout(function(){
+                    moveProgressBar(25,400);
+                    setTimeout(function(){
+                        retrainSVM();
+                        draw();
+                        moveProgressBar(100,1000);
+                    }, 400);
+                },100);
+
             }
 
             function test() {
@@ -482,10 +499,39 @@
 
         <script type="text/javascript">
 
+            function formatData(data) {
+                let formatted_data="";
+                let n = data.length;
+                let m = data[0].length;
+                let withIndex = false;
+                for(let i=0;i<n;i++){
+                    if(withIndex)
+                        formatted_data+=i+":";
+                    formatted_data+="[";
+                    for(let j=0;j<m;j++){
+                        formatted_data += data[i][j];
+                        if(j<m-1)
+                            formatted_data+=",";
+                    }
+                    formatted_data+="]\n";
+                }
+                return formatted_data;
+            }
+
+            function getFormula() {
+                return document.getElementById("fakeInputFormula").value;
+            }
 
 
+            function download(data,name,type) {
+                // create the text file as a Blob:
+                if(name!==equation_placeholder){
+                    data = formatData(data);
+                }
+                let blob = new Blob([data],{type: type});
+                // download the file:
+                // download(blob,""+name+".txt");
 
-            function download(blob,name) {
                 let url = URL.createObjectURL(blob),
                     div = document.createElement("div"),
                     anch = document.createElement("a");
@@ -504,12 +550,40 @@
                 document.body.removeChild(div);
             }
 
-            function launchDownload() {
-                // create the text file as a Blob:
-                let content = document.getElementById("fakeInputFormula").value;
-                let blob = new Blob([content],{type: "text/plain"});
-                // download the file:
-                download(blob,"equation.txt");
+            // // on page load...
+            // moveProgressBar();
+            // // on browser resize...
+            // $(window).resize(function() {
+            //     moveProgressBar();
+            // });
+
+            // function resetProgressBar(){
+            //     // $('.progress-wrap')['data-progress-percent'] = 10;
+            //     let p_wrap = document.getElementById("progress-wrap");
+            //     let p_bar = document.getElementById("progress-bar");
+            //     p_bar.style.left = "0px";
+            //     p_wrap.style.left = "0px";
+            //     // let getPercent = 0.10;
+            //     // let getProgressWrapWidth = $('.progress-wrap').width();
+            //     // let progressTotal = getPercent * getProgressWrapWidth;
+            //     // let animationLength = 500;
+            //     // $('.progress-bar').stop().animate({
+            //     //     left: progressTotal
+            //     // }, animationLength);
+            // }
+
+            // SIGNATURE PROGRESS
+            function moveProgressBar(percentage,duration) {
+                // console.log("moveProgressBar");
+                let getPercent = percentage / 100;
+                let getProgressWrapWidth = $('.progress-wrap').width();
+                let progressTotal = getPercent * getProgressWrapWidth;
+
+                // on page load, animate percentage bar to data percentage length
+                // .stop() used to prevent animation queueing
+                $('.progress-bar').stop().animate({
+                    left: progressTotal
+                }, duration);
             }
 
         </script>
@@ -529,27 +603,27 @@
 
     <body onLoad="NPGinit(10,canvasData), drawTestInit(10,canvasResult),execute()"> <!-- 24 FPS -->
         <div id="info">
+
             <br>
             <h1>Support Vector Machine in Javascript</h1>
             <p>
                 Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
                 This version is based on the work of Andrej Karpathy. Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
             </p>
-
-                <!--            <h3>Execute</h3>-->
-                <div>
-                    <button type="button" class="btn" id="gobtn" onclick="execute()">Execute</button>
-                    <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
-                    <button type="button" class="btn" id="cleanbtn" onclick="clean()">Clean</button>
-                </div>
-                <!--<h3>Test</h3>
-
-                <div id="checkboxTest">
-                    <label for="test">Test data</label><input type="checkbox" id="test"/>
-                </div> -->
+            <div>
+                <button type="button" class="btn" id="gobtn" onclick="execute()">Execute</button>
+                <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
+                <button type="button" class="btn" id="cleanbtn" onclick="clean()">Clean</button>
+                <br/>
+                <button id="downloadData" class="btn action" onclick="download(data,training_placeholder,jsonType)">Download Data</button>
+                <button id="downloadTest" class="btn action" onclick="download(datatest,test_placeholder,textType)">Download Test</button>
+            </div>
 
         </div>
         <div id="draw">
+            <div id="progress-wrap" class="progress-wrap progress">
+                <div id="progress-bar" class="progress-bar progress"></div>
+            </div>
             <canvas class="card card-1 nopadding" id="canvasData" width="500px" height="500px">Browser not supported for Canvas. Get a real browser.
             </canvas>
             <canvas class="card card-1 nopadding" id="canvasResult" width="500px" height="500px">Browser not supported for Canvas. Get a real browser.
@@ -654,19 +728,21 @@
             <div class="card card-1" id="statistics_svm">
                 <h3>Formula Linear</h3>
                 <input type="text" id ="fakeInputFormula">
-                <div class="card card-1" id="formulaL">---</div>
-                <div class="tooltip">
-                    <button class="btn" onclick="copyFunction()" onmouseout="outFunc()">
-                        <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-                        Copy equation
-                    </button>
+                <div class="card card-1 blue" id="formulaL">---</div>
+                <div id="actions">
+                    <div class="tooltip">
+                        <button class="btn" onclick="copyFunction()" onmouseout="outFunc()">
+                            <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                            Copy equation
+                        </button>
+                    </div>
+                    <button class="btn" id="btnLink" onclick="openLink()">Open in Wolframalpha</button>
+                    <button id="download" class="btn action" onclick="download(getFormula(),equation_placeholder,textType)">Download</button>
                 </div>
-                <button class="btn" id="btnLink" onclick="openLink()">Open in Wolframalpha</button>
                 <h4>Dimensions</h4>
                 <h2 id ="nDim">---</h2>
                 <h4>Support Vector</h4>
                 <h2 id ="nSV">---</h2>
-                <button id="download" class="btn orange" onclick="launchDownload()">Download</button>
             </div>
         </div>
 
@@ -756,25 +832,6 @@
                         <input type="checkbox" id="sinycosxdot">
                         <span class="checkmark"></span>
                     </label>
-<!--                    <label for="x2">X^2</label><input type="checkbox" id="x2"/>-->
-<!--                    <label for="y2">Y^2</label><input type="checkbox" id="y2"/>-->
-<!--                    <label for="x3">X^3</label><input type="checkbox" id="x3"/>-->
-<!--                    <label for="y3">Y^3</label><input type="checkbox" id="y3"/>-->
-<!--                    <br/>-->
-<!--                    <label for="x2y2">X^2+Y^2</label><input type="checkbox" id="x2y2"/>-->
-<!--                    <label for="x2_y2">X^2-Y^2</label><input type="checkbox" id="x2_y2"/>-->
-<!--                    <label for="x2y2">X*Y</label><input type="checkbox" id="xy"/>-->
-<!--                    <br/>-->
-<!--                    <label for="sinx">SIN(X)</label><input type="checkbox" id="sinx"/>-->
-<!--                    <label for="cosx">COS(X)</label><input type="checkbox" id="cosx"/>-->
-<!--                    <label for="siny">SIN(Y)</label><input type="checkbox" id="siny"/>-->
-<!--                    <label for="cosy">COS(Y)</label><input type="checkbox" id="cosy"/>-->
-<!--                    <br/>-->
-<!--                    <label for="sinxcosy">SIN(X)+COS(Y)</label><input type="checkbox" id="sinxcosy"/>-->
-<!--                    <label for="sinycosx">SIN(Y)+COS(X)</label><input type="checkbox" id="sinycosx"/>-->
-<!--                    <br />-->
-<!--                    <label for="sinxcosydot">SIN(X)*COS(Y)</label><input type="checkbox" id="sinxcosydot"/>-->
-<!--                    <label for="sinycosxdot">SIN(Y)*COS(X)</label><input type="checkbox" id="sinycosxdot"/>-->
                 </div>
             </div>
 
@@ -785,12 +842,16 @@
                 <button id="maha" class="btn" onclick="changeDistance(2)">Mahalanobis</button>
             </div>
             <div class="card card-1" id="kmeans" >
-<!--                <button type="button" class="btn" id="draw_kmeans_points" onclick="shouldDrawKmeans(!drawKmeansPoints)">Draw Kmeans</button>-->
-                <label class="container big">Draw Kmeans
+                <h3>K-Means</h3>
+                <label class="container medium">Calculate
+                    <input type="checkbox" id="calculate_kmeans_points">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container medium">Draw
                     <input type="checkbox" id="draw_kmeans_points">
                     <span class="checkmark"></span>
                 </label>
-                <label class="container big">Use Kmeans as Data
+                <label class="container medium">As Data
                     <input type="checkbox" id="kmdata">
                     <span class="checkmark"></span>
                 </label>
@@ -799,11 +860,11 @@
             <div class="card card-1" id="datasets">
                 <h3>Datasets</h3>
                 <div id="s0" class="slider_container">
-                    <span id="nport">N = 100</span>
+                    <h3 id="nport">N = 100</h3>
                     <div id="slider0"></div>
                 </div>
                 <div id="s11" class="slider_container">
-                    <span id="ntestport">N test = 100</span>
+                    <h3 id="ntestport">N Test = 100</h3>
                     <div id="slider11"></div>
                 </div>
                 <button class="btn orange" id="databtn1" onclick="setDataSet(1),execute()">Random</button>
@@ -815,46 +876,73 @@
                 <button class="btn yellow" id="databtn7" onclick="setDataSet(7),execute()">V-Stripes</button>
                 <button class="btn purple" id="databtn8" onclick="setDataSet(8),execute()">H-Stripes</button>
             </div>
+            <!--
+            <div class="card card-1 card-dataset" id="datasets2">
+                <h2>Radio Buttons</h2>
+
+                <ul>
+                    <li>
+                        <input type="radio" name="name" id="one" checked />
+                        <label for="one">Option #1</label>
+
+                        <div class="check"></div>
+                    </li>
+
+                    <li>
+                        <input type="radio" name="name" id="two" />
+                        <label for="two">Option #2</label>
+
+                        <div class="check"></div>
+                    </li>
+
+                    <li>
+                        <input type="radio" name="name" id="three" />
+                        <label for="three">Option #3</label>
+
+                        <div class="check"></div>
+                    </li>
+                </ul>
+            </div> -->
             <div class="card card-1" id="values">
                 <h3>Values</h3>
                 <div id="s1" class="slider_container">
-                    <span id="creport">C = 1.0</span>
+                    <h3 id="creport">C = 1.0</h3>
                     <div id="slider1"></div>
                 </div>
                 <div id="s2" class="slider_container">
-                    <span id="sigreport">RBF Kernel sigma = 1.0 </span>
+                    <h3 id="sigreport">RBF Kernel sigma = 1.0 </h3>
                     <div id="slider2"></div>
                 </div>
                 <div id="s3" class="slider_container">
-                    <span id="degport">Polynomial Kernel degree = 2</span>
+                    <h3 id="degport">Polynomial Kernel degree = 2</h3>
                     <div id="slider3"></div>
                 </div>
                 <div id="s4" class="slider_container">
-                    <span id="infport">Polynomial Kernel influence = 0</span>
+                    <h3 id="infport">Polynomial Kernel influence = 0</h3>
                     <div id="slider4"></div>
                 </div>
                 <div id="s5" class="slider_container">
-                    <span id="ubport">Upper bound = 0.5</span>
+                    <h3 id="ubport">Upper bound = 0.5</h3>
                     <div id="slider5"></div>
                 </div>
                 <div id="s6" class="slider_container">
-                    <span id="kport">K: 1</span>
+                    <h3 id="kport">K: 1</h3>
                     <div id="slider6"></div>
                 </div>
                 <div id="s7" class="slider_container">
-                    <span id="pport">Minkowski with P: 2</span>
+                    <h3 id="pport">Minkowski with P: 2</h3>
                     <div id="slider7"></div>
                 </div>
                 <div id="s8" class="slider_container">
-                    <span id="epsilonport">Epsilon : 0.1</span>
+                    <h3 id="epsilonport">Epsilon : 0.1</h3>
                     <div id="slider8"></div>
                 </div>
                 <div id="s9" class="slider_container">
-                    <span id="kmeans1port">K1 (Means) : 3</span>
+                    <h3 id="kmeans1port">K1 (Means) : 3</h3>
                     <div id="slider9"></div>
                 </div>
                 <div id="s10" class="slider_container">
-                    <span id="kmeans2port">K2 (Means) : 3</span>
+                    <h3 id="kmeans2port">K2 (Means) : 3</h3>
                     <div id="slider10"></div>
                 </div>
             </div>

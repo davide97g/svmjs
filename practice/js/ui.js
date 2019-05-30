@@ -69,8 +69,10 @@ function showUiThings() {
     $("#s9").show(); //slider for Km1
     $("#s10").show(); //slider for Km2
     $("#kmeans").show();
-    if(useTest)
+    if(useTest) {
         $("#statisticsTest").show();
+        $("#downloadTest").show();
+    }
     if(kernelid<3){
         $("#s1").show();
         // $("#optimization").show();
@@ -82,7 +84,7 @@ function showUiThings() {
             $("#s3").show();
             $("#s4").show();
             $("#input").show();
-            $("#btnLink").show();
+            $("#actions").show();
             if (input_transformation) {
                 $("#input_choice").show();
             }
@@ -103,7 +105,8 @@ function showUiThings() {
 function hideUiThings() {
     $("#fakeInputFormula").hide();
     $("#optimization").hide();
-    $("#btnLink").hide();
+    $("#downloadTest").hide();
+    $("#actions").hide();
     $("#input").hide();
     $("#input_choice").hide();
     $("#distances").hide();
