@@ -329,6 +329,46 @@
         <!-- main functions -->
         <script type="text/javascript">
 
+
+            function best() {
+                let best = "";
+                let max = 0;
+                let functions = document.getElementsByClassName("inputF");
+                let app = [];
+                for(let i=0;i<functions.length;i++){
+                    let f = document.getElementById(functions[i].id);
+                    if(f.checked)
+                        app.push(functions[i]);
+                }
+                if(app.length>0) //almeno 1
+                    functions = app;
+
+                let measures = [];
+
+                for(let i=0;i<functions.length;i++){
+                    let f = document.getElementById(functions[i].id);
+                    f.checked = true;
+                    inputFunctionUpdate();
+                    retrainSVM();
+                    let values = [];
+                    for(let i=0;i<N;i++) {
+                        values.push(getValue(data[i]));
+                    }
+                    let stats = statisticEval(labels,values);
+                    measures.push(stats.fMeasure);
+                    if(stats.fMeasure>max){
+                        max = stats.fMeasure;
+                        best = f.id;
+                    }
+                    f.checked = false;
+                }
+
+                document.getElementById(best).checked = true;
+                execute();
+                console.info("BEST: "+best);
+                console.table(measures);
+            }
+
             function inputFunctionUpdate(){
                 let arrayF = [];
                 if(document.getElementById("x2").checked) arrayF.push(fx2);
@@ -431,7 +471,7 @@
                         moveProgressBar(100,1000);
                     }, 400);
                 },100);
-
+                return 0;
             }
 
             function test() {
@@ -772,64 +812,65 @@
             <div class="card card-1" id="input">
                 <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
                 <div id="input_choice">
-                    <label class="container small">x^2
-                        <input type="checkbox" id="x2">
+                    <button type="button" class="btn" id="bestbtn" onclick="best()">Best?</button>
+                    <label class="container small ">x^2
+                        <input type="checkbox" class="inputF" id="x2">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container small">y^2
-                        <input type="checkbox" id="y2">
+                    <label class="container small ">y^2
+                        <input type="checkbox" class="inputF" id="y2">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container small">x^3
-                        <input type="checkbox" id="x3">
+                    <label class="container small ">x^3
+                        <input type="checkbox" class="inputF" id="x3">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container small">y^3
-                        <input type="checkbox" id="y3">
+                    <label class="container small ">y^3
+                        <input type="checkbox" class="inputF" id="y3">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container medium">x^2+y^2
-                        <input type="checkbox" id="x2y2">
+                    <label class="container medium ">x^2+y^2
+                        <input type="checkbox" class="inputF" id="x2y2">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container medium">x^2-y^2
-                        <input type="checkbox" id="x2_y2">
+                    <label class="container medium ">x^2-y^2
+                        <input type="checkbox" class="inputF" id="x2_y2">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container medium">x*y
-                        <input type="checkbox" id="xy">
+                    <label class="container medium ">x*y
+                        <input type="checkbox" class="inputF" id="xy">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container small">sin(x)
-                        <input type="checkbox" id="sinx">
+                    <label class="container small ">sin(x)
+                        <input type="checkbox" class="inputF" id="sinx">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container small">cos(x)
-                        <input type="checkbox" id="cosx">
+                    <label class="container small ">cos(x)
+                        <input type="checkbox" class="inputF" id="cosx">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container small">sin(y)
-                        <input type="checkbox" id="siny">
+                    <label class="container small ">sin(y)
+                        <input type="checkbox" class="inputF" id="siny">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container small">cos(y)
-                        <input type="checkbox" id="cosy">
+                    <label class="container small ">cos(y)
+                        <input type="checkbox" class="inputF" id="cosy">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container big">sin(x)+cos(y)
-                        <input type="checkbox" id="sinxcosy">
+                    <label class="container big ">sin(x)+cos(y)
+                        <input type="checkbox" class="inputF" id="sinxcosy">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container big">sin(y)+cos(x)
-                        <input type="checkbox" id="sinycosx">
+                    <label class="container big ">sin(y)+cos(x)
+                        <input type="checkbox" class="inputF" id="sinycosx">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container big">sin(x)*cos(y)
-                        <input type="checkbox" id="sinxcosydot">
+                    <label class="container big ">sin(x)*cos(y)
+                        <input type="checkbox" class="inputF" id="sinxcosydot">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container big">sin(y)*cos(x)
-                        <input type="checkbox" id="sinycosxdot">
+                    <label class="container big ">sin(y)*cos(x)
+                        <input type="checkbox" class="inputF" id="sinycosxdot">
                         <span class="checkmark"></span>
                     </label>
                 </div>
