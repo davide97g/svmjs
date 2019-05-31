@@ -136,7 +136,13 @@ a{
     margin: 2%;
     padding: 2%;
 }
+#kmeans-mode,#kmeans-options{
+    width: 94%;
+}
 
+#bestbtn{
+    width: 50%;
+}
 
 .slider_container{
     text-align: center;
@@ -176,19 +182,25 @@ a{
     padding: 2%;
     width: 60%;
 }
-table{
+#CMtable,#CMtableTest{
     float: left;
-    width: 25%;
     text-align: center;
-    border-color: darkslategray;
-    border-width: 1px;
-    border-style: solid;
+    padding: 2%;
+    width: 43%;
+    height: 150px;
+    font-size: 18px;
+    display: inline-table !important;
+}
+th{
+    height: 30px;
 }
 .stats{
     float: left;
-    width: 58%;
+    width: 43%;
+    height: 120px;
     text-align: left;
     padding-left: 2%;
+    font-size: 14px;
 }
 #tp,#tp2{
     background-color: rgba(32, 255, 59, 0.75);

@@ -212,9 +212,9 @@ function drawTest(ctx) {
 
 function drawKmeans(ctx) {
     // draw means
-    ctx.strokeStyle = 'rgb(0,0,0)';
+    ctx.strokeStyle = 'rgb(255,255,255)';
     let radius = 10;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 5;
     console.info(" ✏ DRAW MEANS 1: "+means[0].length);
     for(let i=0;i<means[0].length;i++) {
         ctx.fillStyle = 'rgb(100,200,100)'; //green

@@ -1,19 +1,18 @@
 function mouseClick(x, y, shiftPressed, ctrlPressed){
-    if(ctrlPressed){
-        if(!KMdataUser && (drawKmeansPoints || KMdata)) {
-            delete means[0];
-            delete means[1];
-            means[0] = [];
-            means[1] = [];
+    if(ctrlPressed){ //voglio inserire un centro
+        if(!KMdataUser) { //se esistono già i centri calcolati
+            resetKmeans();
         }
+        //abilito le flag a true per la modalità disegno e quella dei dati inseriti dall'utente
+        document.getElementById("user_kmeans_points").checked = true;
         KMdataUser = true;
-        drawKmeansPoints = true;
-        if(shiftPressed)
+        document.getElementById("draw_kmeans_points").checked = true;
+        if(shiftPressed) //verde
             means[0].push([(x-WIDTH/2)/ss, (y-HEIGHT/2)/ss]);
-        else means[1].push([(x-WIDTH/2)/ss, (y-HEIGHT/2)/ss]);
+        else means[1].push([(x-WIDTH/2)/ss, (y-HEIGHT/2)/ss]); //rosso
         // draw();
     }
-    else {
+    else { //voglio inserire un punto normale
         // add datapoint at location of click
         N = data.length;
         data[N] = [(x - WIDTH / 2) / ss, (y - HEIGHT / 2) / ss];

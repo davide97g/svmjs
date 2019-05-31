@@ -78,6 +78,7 @@
         let density = 2; //drawing canvas points
         let dataset_modified = true;
         let link = "";
+        let time = 0;
 
         let canvasResult = "canvasResult";
         let canvasData = "canvasData";
@@ -186,6 +187,7 @@
             document.getElementById("formulaL").innerHTML = "---";
             document.getElementById("nSV").innerHTML = "---";
             document.getElementById("nDim").innerHTML = "---";
+            document.getElementById("time").innerHTML = "---";
         }
 
         function retrainSVM() {
@@ -201,7 +203,7 @@
                 retrainSVM();
             }
             else if(kernelid === 1) {
-                svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
+                time = svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
                 let n = countSV(svm);
                 if(n/data.length>0.5){
                     document.getElementById("nSV").classList.add("red");
@@ -214,9 +216,10 @@
                 }
                 document.getElementById("nSV").innerHTML = n+"/"+data.length;
                 document.getElementById("nDim").innerHTML = "∞";
+                document.getElementById("time").innerHTML = time.toPrecision(4)+" ms";
             }
             else if(kernelid === 2){
-                svm.train(data, labels, {
+                time = svm.train(data, labels, {
                         kernel: 'poly',
                         degree: Degree,
                         influence: Influence,
@@ -236,6 +239,7 @@
                 let n = countSV(svm);
                 document.getElementById("nSV").innerHTML = n+"/"+data.length;
                 document.getElementById("nDim").innerHTML = ""+wb.w.length;
+                document.getElementById("time").innerHTML = time.toPrecision(4)+" ms";
                 if(n/data.length>0.5){
                     document.getElementById("nSV").classList.add("red");
                 }
@@ -268,6 +272,8 @@
 
         function KMEANS(data) {
             console.info("\tKMEANS");
+            KMdataUser = false;
+            drawKmeansPoints = true;
             let separated = separateData(data);
             let kmeans1 = new KMeans({
                 canvas: document.getElementById('canvasData'),
@@ -287,9 +293,23 @@
             means[1] = kmeans2.means;
             return createNewData(means);
         }
+
+        function resetKmeans() {
+            means = new Array(2);
+            means[0] = [];
+            means[1] = [];
+        }
+
+        function cleanKmeans() {
+            resetKmeans();
+            execute();
+        }
+
         function createNewData(means) {
-            let L1 = means[0].length;
-            let L2 = means[1].length;
+            let L1,L2;
+            L1 = means[0].length;
+            L2 = means[1].length;
+
             let L = L1+L2;
             let newData = new Array(L);
             let newLabels = new Array(L);
@@ -329,10 +349,23 @@
         <!-- main functions -->
         <script type="text/javascript">
 
+            function orderByProperty(prop) {
+                let args = Array.prototype.slice.call(arguments, 1);
+                return function (a, b) {
+                    let equality = b[prop] - a[prop];
+                    if (equality === 0 && arguments.length > 1) {
+                        return orderByProperty.apply(null, args)(a, b);
+                    }
+                    return equality;
+                };
+            }
 
             function best() {
+                resetStatsSVM();
+
                 let best = "";
                 let max = 0;
+                let best_time = 0;
                 let functions = document.getElementsByClassName("inputF");
                 let app = [];
                 for(let i=0;i<functions.length;i++){
@@ -343,30 +376,107 @@
                 if(app.length>0) //almeno 1
                     functions = app;
 
-                let measures = [];
+                moveProgressBar(0,100);
 
-                for(let i=0;i<functions.length;i++){
-                    let f = document.getElementById(functions[i].id);
-                    f.checked = true;
-                    inputFunctionUpdate();
-                    retrainSVM();
-                    let values = [];
-                    for(let i=0;i<N;i++) {
-                        values.push(getValue(data[i]));
-                    }
-                    let stats = statisticEval(labels,values);
-                    measures.push(stats.fMeasure);
-                    if(stats.fMeasure>max){
-                        max = stats.fMeasure;
-                        best = f.id;
-                    }
-                    f.checked = false;
-                }
+                setTimeout(function(){
 
-                document.getElementById(best).checked = true;
-                execute();
-                console.info("BEST: "+best);
-                console.table(measures);
+                    let measures =[];
+                    let percentage = 0;
+
+                    let i=0;
+                    let id = setInterval(()=>{
+                        if (i === functions.length) {
+                            clearInterval(id);
+                            document.getElementById(best).checked = true;
+                            execute();
+                            console.info("⭐⭐⭐ BEST: "+best+" ⭐⭐⭐");
+                            measures = measures.sort(orderByProperty('value', 'time'));
+                            for(let i=0;i<measures.length;i++){
+                                measures[i].time = 1/measures[i].time;
+                            }
+                            console.table(measures);
+                        } else {
+                            percentage = (i+1)/functions.length*100;
+                            moveProgressBar(percentage,100);
+                            let f = document.getElementById(functions[i].id);
+                            f.checked = true;
+                            inputFunctionUpdate();
+                            retrainSVM();
+                            let values = [];
+                            for(let i=0;i<N;i++) {
+                                values.push(getValue(data[i]));
+                            }
+                            let stats = statisticEval(labels,values);
+
+                            let app = {
+                                value: stats.fMeasure,
+                                id: f.id,
+                                time: 1/time
+                            };
+
+                            measures.push(app);
+
+                            if(stats.fMeasure>max){
+                                max = stats.fMeasure;
+                                best = f.id;
+                                best_time = time;
+                            }
+                            else if(stats.fMeasure === max){
+                                if(time<best_time){
+                                    best = f.id;
+                                    best_time = time;
+                                }
+                            }
+                            f.checked = false;
+                            i++;
+                        }
+                    }, 100);
+
+                    // for(let i=0;i<functions.length;i++){
+                    //     percentage = (i+1)/functions.length;
+                    //     moveProgressBar(percentage,0);
+                    //     let f = document.getElementById(functions[i].id);
+                    //     f.checked = true;
+                    //     inputFunctionUpdate();
+                    //     retrainSVM();
+                    //     let values = [];
+                    //     for(let i=0;i<N;i++) {
+                    //         values.push(getValue(data[i]));
+                    //     }
+                    //     let stats = statisticEval(labels,values);
+                    //
+                    //     let app = {
+                    //         value: stats.fMeasure,
+                    //         id: f.id,
+                    //         time: 1/time
+                    //     };
+                    //
+                    //     measures.push(app);
+                    //
+                    //     if(stats.fMeasure>max){
+                    //         max = stats.fMeasure;
+                    //         best = f.id;
+                    //         best_time = time;
+                    //     }
+                    //     else if(stats.fMeasure === max){
+                    //         if(time<best_time){
+                    //             best = f.id;
+                    //             best_time = time;
+                    //         }
+                    //     }
+                    //     f.checked = false;
+                    // }
+
+                    // document.getElementById(best).checked = true;
+                    // execute();
+                    // console.info("⭐⭐⭐ BEST: "+best+" ⭐⭐⭐");
+                    // measures = measures.sort(orderByProperty('value', 'time'));
+                    // for(let i=0;i<measures.length;i++){
+                    //     measures[i].time = 1/measures[i].time;
+                    // }
+                    // console.table(measures);
+
+                },100);
             }
 
             function inputFunctionUpdate(){
@@ -411,12 +521,40 @@
                 ssca = document.getElementById("ssca").checked;
                 let value = document.getElementById("kmdata").checked;
 
-                drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
                 let res;
-                if(KMdataUser)
-                    res = createNewData(means);
-                else //eseguo il calcolo dei centri kmeans
+                let algorithm = document.getElementById("calculate_kmeans_points").checked;
+                let user = document.getElementById("user_kmeans_points").checked;
+
+                if(algorithm){ //se è selezionata l'opzione dell'algoritmo
+                    resetKmeans();
+                    KMdataUser = false;
                     res = KMEANS(data);
+                    drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
+                }
+                else if(user){
+                    if(!KMdataUser || (means[0] === undefined && means[1] === undefined)) {
+                        resetKmeans();
+                    }
+                    if(means[0].length+means[1].length > 0) {
+                        KMdataUser = true;
+                        res = createNewData(means);
+                        drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
+                    }
+                    else{
+                        KMdata = false;
+                        value = false;
+                        document.getElementById("kmdata").checked = false;
+                        drawKmeansPoints = false;
+                        document.getElementById("draw_kmeans_points").checked = false;
+                    }
+
+                }
+                else{ //se non è stato scelto un metodo per i K-means non li disegno e non li uso come dati di training
+                    drawKmeansPoints = false;
+                    document.getElementById("draw_kmeans_points").checked = false;
+                    KMdata = false;
+                    document.getElementById("kmdata").checked = false;
+                }
 
                 //se è stato modificato il dataset
                 if(dataset_modified){
@@ -428,7 +566,7 @@
                     KMdata = false;
                     console.info("RESET "+N);
                     setDataSet(datasetID);
-
+                    resetKmeans();
                 }
                 else {
                     if (value !== KMdata) {
@@ -671,6 +809,7 @@
         </div>
 
         <div class="card card-1" id="statistics">
+
             <div class="card card-1" id="statisticsTraining">
                 <h3>Statistics Training</h3>
                 <table class="card card-1" id="CMtable">
@@ -718,6 +857,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="card card-1" id="statisticsTest">
                 <h3>Statistics Test</h3>
                 <table class="card card-1" id="CMtableTest">
@@ -783,6 +923,8 @@
                 <h2 id ="nDim">---</h2>
                 <h4>Support Vector</h4>
                 <h2 id ="nSV">---</h2>
+                <h4>Training Time</h4>
+                <h2 id ="time">---</h2>
             </div>
         </div>
 
@@ -812,7 +954,6 @@
             <div class="card card-1" id="input">
                 <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
                 <div id="input_choice">
-                    <button type="button" class="btn" id="bestbtn" onclick="best()">Best?</button>
                     <label class="container small ">x^2
                         <input type="checkbox" class="inputF" id="x2">
                         <span class="checkmark"></span>
@@ -873,6 +1014,7 @@
                         <input type="checkbox" class="inputF" id="sinycosxdot">
                         <span class="checkmark"></span>
                     </label>
+                    <button type="button" class="btn" id="bestbtn" onclick="best()"><strong>Sort out the Best-Single-Input?</strong></button>
                 </div>
             </div>
 
@@ -884,18 +1026,29 @@
             </div>
             <div class="card card-1" id="kmeans" >
                 <h3>K-Means</h3>
-                <label class="container medium">Calculate
-                    <input type="checkbox" id="calculate_kmeans_points">
-                    <span class="checkmark"></span>
-                </label>
-                <label class="container medium">Draw
-                    <input type="checkbox" id="draw_kmeans_points">
-                    <span class="checkmark"></span>
-                </label>
-                <label class="container medium">As Data
-                    <input type="checkbox" id="kmdata">
-                    <span class="checkmark"></span>
-                </label>
+                <div class="card card-1" id="kmeans-mode">
+                    <h3>Mode</h3>
+                    <label class="container big">Algorithm
+                        <input type="radio" name="kmeans" id="calculate_kmeans_points" value="algorithm">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container big">User
+                        <input type="radio" name="kmeans" id="user_kmeans_points" value="user">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+                <div class="card card-1" id="kmeans-options">
+                    <h3>Options</h3>
+                    <label class="container medium">Draw
+                        <input type="checkbox" id="draw_kmeans_points">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container medium">As Data
+                        <input type="checkbox" id="kmdata">
+                        <span class="checkmark"></span>
+                    </label>
+                    <button id="resetKmeans" class="btn" onclick="cleanKmeans()">Clean</button>
+                </div>
             </div>
 
             <div class="card card-1" id="datasets">
@@ -908,14 +1061,14 @@
                     <h3 id="ntestport">N Test = 100</h3>
                     <div id="slider11"></div>
                 </div>
-                <button class="btn orange" id="databtn1" onclick="setDataSet(1),execute()">Random</button>
-                <button class="btn blue" id="databtn2" onclick="setDataSet(2),execute()">Circle</button>
-                <button class="btn yellow" id="databtn3" onclick="setDataSet(3),execute()">ExclusiveOr</button>
-                <button class="btn purple" id="databtn4" onclick="setDataSet(4),execute()">Gaussian</button>
-                <button class="btn orange" id="databtn5" onclick="setDataSet(5),execute()">Spiral</button>
-                <button class="btn blue" id="databtn6" onclick="setDataSet(6),execute()">Multi Circle</button>
-                <button class="btn yellow" id="databtn7" onclick="setDataSet(7),execute()">V-Stripes</button>
-                <button class="btn purple" id="databtn8" onclick="setDataSet(8),execute()">H-Stripes</button>
+                <button class="btn " id="databtn1" onclick="setDataSet(1),execute()">Random</button>
+                <button class="btn " id="databtn2" onclick="setDataSet(2),execute()">Circle</button>
+                <button class="btn " id="databtn3" onclick="setDataSet(3),execute()">ExclusiveOr</button>
+                <button class="btn " id="databtn4" onclick="setDataSet(4),execute()">Gaussian</button>
+                <button class="btn " id="databtn5" onclick="setDataSet(5),execute()">Spiral</button>
+                <button class="btn " id="databtn6" onclick="setDataSet(6),execute()">Multi Circle</button>
+                <button class="btn " id="databtn7" onclick="setDataSet(7),execute()">V-Stripes</button>
+                <button class="btn " id="databtn8" onclick="setDataSet(8),execute()">H-Stripes</button>
             </div>
             <!--
             <div class="card card-1 card-dataset" id="datasets2">
