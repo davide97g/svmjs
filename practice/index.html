@@ -192,6 +192,7 @@
             document.getElementById("formulaL").innerHTML = "---";
             document.getElementById("nDim").innerHTML = "---";
             document.getElementById("time").innerHTML = "---";
+            document.getElementById("scoreboard").innerHTML = "---";
 
         }
 
@@ -395,7 +396,23 @@
                             for(let i=0;i<measures.length;i++){
                                 measures[i].time = 1/measures[i].time;
                             }
-                            console.table(measures);
+                            // console.table(measures);
+                            let scoreboard = document.getElementById("scoreboard");
+                            let html_table_scoreboard = "<table class=\"card card-1\" id='scoreboard_table'> <thead> <tr> <th colspan=\"3\">Input Tested Score</th> </tr> <tr><th>Input Function</th> <th>F-Measure</th> <th>Training Time</th></tr> </thead> <tbody>";
+                            for(let i=0;i<measures.length;i++){
+
+                                if(measures[i].value<0.5)
+                                    html_table_scoreboard += "<tr style='color: var(--action-c-darker)'>";
+                                else html_table_scoreboard+="<tr>";
+
+                                if(i===0)
+                                    html_table_scoreboard += "<tr style='color: var(--primary-c-accent)'>";
+
+
+                                html_table_scoreboard +="<td><strong>"+measures[i].id+"</strong></td><td>"+(measures[i].value*100).toPrecision(5)+"%</td><td>"+measures[i].time.toPrecision(6)+" ms</td></tr>";
+                            }
+                            html_table_scoreboard += "</tbody></table>";
+                            scoreboard.innerHTML=html_table_scoreboard;
                         } else {
                             percentage = (i+1)/functions.length*100;
                             moveProgressBar(percentage,100);
@@ -403,6 +420,7 @@
                             f.checked = true;
                             inputFunctionUpdate();
                             retrainSVM();
+                            draw();
                             let values = [];
                             for(let i=0;i<N;i++) {
                                 values.push(getValue(data[i]));
@@ -431,7 +449,7 @@
                             f.checked = false;
                             i++;
                         }
-                    }, 100);
+                    }, 300);
 
                     // for(let i=0;i<functions.length;i++){
                     //     percentage = (i+1)/functions.length;
@@ -701,7 +719,6 @@
                 return document.getElementById("fakeInputFormula").value;
             }
 
-
             function download(data,name,type) {
                 // create the text file as a Blob:
                 if(name!==equation_placeholder){
@@ -796,6 +813,7 @@
                 <br/>
                 <button id="downloadData" class="btn action" onclick="download(data,training_placeholder,jsonType)">Download Data</button>
                 <button id="downloadTest" class="btn action" onclick="download(datatest,test_placeholder,textType)">Download Test</button>
+                <input type="file" id="uploadData" class="btn action" onchange="uploadData()">
             </div>
 
         </div>
@@ -811,8 +829,33 @@
 
         <div class="card card-1" id="statistics">
 
+            <div class="card card-1" id="statistics_score">
+                <h2>Scoreboard</h2>
+                <div id="scoreboard"></div>
+            </div>
+            <div class="card card-1" id="statistics_svm">
+                <h2>Formula Linear</h2>
+                <input type="text" id ="fakeInputFormula">
+                <div class="card card-1 blue" id="formulaL">---</div>
+                <div id="actions">
+                    <div class="tooltip">
+                        <button class="btn" onclick="copyFunction()" onmouseout="outFunc()">
+                            <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+                            Copy equation
+                        </button>
+                    </div>
+                    <button class="btn" id="btnLink" onclick="openLink()">Open in Wolframalpha</button>
+                    <button id="download" class="btn action" onclick="download(getFormula(),equation_placeholder,textType)">Download</button>
+                </div>
+                <h4>Dimensions</h4>
+                <h2 id ="nDim">---</h2>
+                <h4>Support Vector</h4>
+                <h2 id ="nSV">---</h2>
+                <h4>Training Time</h4>
+                <h2 id ="time">---</h2>
+            </div>
             <div class="card card-1" id="statisticsTraining">
-                <h3>Statistics Training</h3>
+                <h2>Statistics Training</h2>
                 <table class="card card-1" id="CMtable">
                     <thead>
                     <tr>
@@ -858,9 +901,8 @@
                     </div>
                 </div>
             </div>
-
             <div class="card card-1" id="statisticsTest">
-                <h3>Statistics Test</h3>
+                <h2>Statistics Test</h2>
                 <table class="card card-1" id="CMtableTest">
                     <thead>
                     <tr>
@@ -905,27 +947,6 @@
                         %
                     </div>
                 </div>
-            </div>
-            <div class="card card-1" id="statistics_svm">
-                <h3>Formula Linear</h3>
-                <input type="text" id ="fakeInputFormula">
-                <div class="card card-1 blue" id="formulaL">---</div>
-                <div id="actions">
-                    <div class="tooltip">
-                        <button class="btn" onclick="copyFunction()" onmouseout="outFunc()">
-                            <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-                            Copy equation
-                        </button>
-                    </div>
-                    <button class="btn" id="btnLink" onclick="openLink()">Open in Wolframalpha</button>
-                    <button id="download" class="btn action" onclick="download(getFormula(),equation_placeholder,textType)">Download</button>
-                </div>
-                <h4>Dimensions</h4>
-                <h2 id ="nDim">---</h2>
-                <h4>Support Vector</h4>
-                <h2 id ="nSV">---</h2>
-                <h4>Training Time</h4>
-                <h2 id ="time">---</h2>
             </div>
         </div>
 

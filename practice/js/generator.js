@@ -24,7 +24,7 @@ function circleMultipleData(N) {
             labels[i] = 1;
         }
         else if(i<N*2/3){
-            radius = randf(2,3);
+            radius = randf(2.5,3);
             let angle = Math.random()*Math.PI*2;
             let x = Math.cos(angle)*radius;
             let y = Math.sin(angle)*radius;
@@ -32,7 +32,7 @@ function circleMultipleData(N) {
             labels[i] = -1;
         }
         else{
-            radius = randf(2.75,4);
+            radius = randf(3,4);
             let angle = Math.random()*Math.PI*2;
             let x = Math.cos(angle)*radius;
             let y = Math.sin(angle)*radius;
@@ -47,20 +47,22 @@ function circleData(N) {
     let data = new Array(N);
     let labels = new Array(N);
     let radius;
+    let offsetX = 0;
+    let offsetY = 0;
     for(let i=0;i<N;i++){
         if(i<N/2) {
             radius = randf(0.1,2.5);
             let angle = Math.random()*Math.PI*2;
-            let x = Math.cos(angle)*radius;
-            let y = Math.sin(angle)*radius;
+            let x = Math.cos(angle)*radius+offsetX;
+            let y = Math.sin(angle)*radius+offsetY;
             data[i] = [x,y];
             labels[i] = 1;
         }
         else{
             radius = randf(2.25,4);
             let angle = Math.random()*Math.PI*2;
-            let x = Math.cos(angle)*radius;
-            let y = Math.sin(angle)*radius;
+            let x = Math.cos(angle)*radius+offsetX;
+            let y = Math.sin(angle)*radius+offsetY;
             data[i] = [x,y];
             labels[i] = -1;
         }
@@ -73,21 +75,23 @@ function exclusiveOrData(N) {
     let data = new Array(N);
     let labels = new Array(N);
     let l = 3;
+    let offsetX = 0;
+    let offsetY = 0;
     for(let i=0;i<N;i++){
         if(i<N*0.25) {
-            data[i] = [randf(0,l),randf(0,l)];
+            data[i] = [randf(0,l)+offsetX,randf(0,l)+offsetY];
             labels[i] = 1;
         }
         else if(i<N*0.5){
-            data[i] = [randf(0,l),randf(-l,0)];
+            data[i] = [randf(0,l)+offsetX,randf(-l,0)+offsetY];
             labels[i] = -1;
         }
         else if(i<N*0.75){
-            data[i] = [randf(-l,0),randf(-l,0)];
+            data[i] = [randf(-l,0)+offsetX,randf(-l,0)+offsetY];
             labels[i] = 1;
         }
         else{
-            data[i] = [randf(-l,0),randf(0,l)];
+            data[i] = [randf(-l,0)+offsetX,randf(0,l)+offsetY];
             labels[i] = -1;
         }
     }
@@ -99,20 +103,22 @@ function gaussianData(N) {
     let labels = new Array(N);
     let radius;
     let l = 3;
+    let offsetX = 0;
+    let offsetY = 0;
     for(let i=0;i<N;i++){
         if(i<N*0.5){
             radius = randf(0,l-1);
             let angle = Math.random()*Math.PI*2;
-            let x = Math.cos(angle)*radius;
-            let y = Math.sin(angle)*radius;
+            let x = Math.cos(angle)*radius+offsetX;
+            let y = Math.sin(angle)*radius+offsetY;
             data[i] = [x+l/4,y+l/4];
             labels[i] = 1;
         }
         else{
             radius = randf(0,l-1);
             let angle = Math.random()*Math.PI*2;
-            let x = Math.cos(angle)*radius;
-            let y = Math.sin(angle)*radius;
+            let x = Math.cos(angle)*radius+offsetX;
+            let y = Math.sin(angle)*radius+offsetY;
             data[i] = [x-l/4,y-l/4];
             labels[i] = -1;
         }
