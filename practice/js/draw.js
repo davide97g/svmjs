@@ -225,6 +225,7 @@ function drawKmeans(ctx) {
         ctx.fillStyle = 'rgb(200,100,100)'; //red
         drawCircleTest(means[1][i][0]*ss+WIDTH/2, means[1][i][1]*ss+HEIGHT/2, radius);
     }
+    ctx.strokeStyle = 'rgb(0,0,0)';
 }
 
 function drawDataKmeans(ctx) {

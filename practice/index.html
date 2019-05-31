@@ -184,10 +184,41 @@
         }
 
         function resetStatsSVM() {
+            let nSV = document.getElementById("nSV");
+            nSV.classList.remove("red");
+            nSV.classList.remove("yellow");
+            nSV.classList.remove("green");
+            nSV.innerHTML = "---";
             document.getElementById("formulaL").innerHTML = "---";
-            document.getElementById("nSV").innerHTML = "---";
             document.getElementById("nDim").innerHTML = "---";
             document.getElementById("time").innerHTML = "---";
+
+        }
+
+        function updateStatsSVM() {
+            //support vector
+            let n = countSV(svm);
+            let nSV = document.getElementById("nSV");
+            nSV.innerHTML = n+"/"+data.length;
+            if((n/data.length)>0.5) nSV.classList.add("red");
+            else if((n/data.length)>0.25) nSV.classList.add("yellow");
+            else nSV.classList.add("green");
+
+            if( kernelid===2 && Degree === 1) { //solo per il poly con grado 1
+                wb = svm.getWeights();
+                //formula linear
+                let formula = svm.getFormulaLinear(wb);
+                document.getElementById("formulaL").innerHTML = formula.html;
+                document.getElementById("fakeInputFormula").value = formula.equation;
+                document.getElementById("nDim").innerHTML = ""+wb.w.length;
+            }
+            else document.getElementById("nDim").innerHTML = "∞";
+
+            //time
+            if(time>1000) document.getElementById("time").innerHTML = (time/1000).toPrecision(3)+" s";
+            else document.getElementById("time").innerHTML = time.toPrecision(3)+" ms";
+
+
         }
 
         function retrainSVM() {
@@ -204,19 +235,7 @@
             }
             else if(kernelid === 1) {
                 time = svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
-                let n = countSV(svm);
-                if(n/data.length>0.5){
-                    document.getElementById("nSV").classList.add("red");
-                }
-                else if(n/data.length>0.25){
-                    document.getElementById("nSV").classList.add("yellow");
-                }
-                else {
-                    document.getElementById("nSV").classList.add("green");
-                }
-                document.getElementById("nSV").innerHTML = n+"/"+data.length;
-                document.getElementById("nDim").innerHTML = "∞";
-                document.getElementById("time").innerHTML = time.toPrecision(4)+" ms";
+                updateStatsSVM();
             }
             else if(kernelid === 2){
                 time = svm.train(data, labels, {
@@ -230,25 +249,7 @@
                         input_functions: input_functions
                     }
                     );
-                if(Degree === 1) {
-                    wb = svm.getWeights();
-                    let formula = svm.getFormulaLinear(wb);
-                    document.getElementById("formulaL").innerHTML = formula.html;
-                    document.getElementById("fakeInputFormula").value = formula.equation;
-                }
-                let n = countSV(svm);
-                document.getElementById("nSV").innerHTML = n+"/"+data.length;
-                document.getElementById("nDim").innerHTML = ""+wb.w.length;
-                document.getElementById("time").innerHTML = time.toPrecision(4)+" ms";
-                if(n/data.length>0.5){
-                    document.getElementById("nSV").classList.add("red");
-                }
-                else if(n/data.length>0.25){
-                    document.getElementById("nSV").classList.add("yellow");
-                }
-                else {
-                    document.getElementById("nSV").classList.add("green");
-                }
+                updateStatsSVM();
             }
             else if(kernelid === 3){
                 console.info("\tKNN: "+K);
