@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <title>Learning Vector Quantization</title>
+
+        <link type="text/css" href="./jqueryui/css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />
+        <script type="text/javascript" src="./jqueryui/js/jquery-1.7.2.min.js"></script>
+        <script type="text/javascript" src="./jqueryui/js/jquery-ui-1.8.21.custom.min.js"></script>
+        <link type="text/css" rel="stylesheet" href="style/styleLVQ.css"/>
+
+        <script src="../lib/utils.js"></script>
+        <script src="./npg_include/drawLVQ.js"></script> <!-- js for canvas-->
+        <script src="./js/kmeans.js"></script> <!-- js for kmeans-->
+        <script type="text/javascript" src="./js/generator.js"></script> <!-- js for random dataset-->
+        <script src="./js/lvq/lvq.js"></script> <!-- js for LVQ algorithm-->
+    </head>
+
+    <body onLoad="drawLVQInit(10,canvasID)"> <!-- 24 FPS -->
+        <div id="info">
+            <br /><h1>Learning Vector Quantization 🐧✌️</h1>
+        </div>
+        <div id="options">
+            <div>
+                <button type="button" class="btn" id="gobtn" onclick="start(10)">START</button>
+            </div>
+        </div>
+        <div class="datasets">
+            <button class="btn orange" onclick="setDataSet(1),start(10)">Random</button>
+            <button class="btn blue" onclick="setDataSet(2),start(10)">Circle</button>
+            <button class="btn yellow" onclick="setDataSet(3),start(10)">ExclusiveOr</button>
+            <button class="btn purple" onclick="setDataSet(4),start(10)">Gaussian</button>
+            <button class="btn" onclick="setDataSet(5),start(10)">Spiral</button>
+            <button class="btn" onclick="setDataSet(6),start(10)">3-Circle</button>
+        </div>
+        <div id="draw">
+            <canvas id="canvasLVQ" width="400" height="400">Browser not supported for Canvas. Get a real browser.
+            </canvas>
+        </div>
+    </body>
+</html>
