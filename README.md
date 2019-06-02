@@ -3,7 +3,7 @@ Repository containing code about some tests with a js library implementing SVM w
 
 
 ## demo
-Live demo here: http://svmjs.altervista.org/practice/index.html
+Live demo here: https://davide97g.github.io/svmjs
 
 ## credits
 This work is based on the previous work of Andrej Karpathy.
