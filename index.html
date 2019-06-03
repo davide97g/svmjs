@@ -79,6 +79,7 @@
         let dataset_modified = true;
         let link = "";
         let time = 0;
+        let karpathy = false;
 
         let canvasResult = "canvasResult";
         let canvasData = "canvasData";
@@ -235,7 +236,7 @@
                 retrainSVM();
             }
             else if(kernelid === 1) {
-                time = svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo});
+                time = svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo, karpathy: karpathy});
                 updateStatsSVM();
             }
             else if(kernelid === 2){
@@ -247,7 +248,8 @@
                         SSCA: ssca,
                         UB: ub,
                         memoize: memo,
-                        input_functions: input_functions
+                        input_functions: input_functions,
+                        karpathy: karpathy
                     }
                     );
                 updateStatsSVM();
@@ -538,6 +540,7 @@
                 else input_functions = [];
 
                 ssca = document.getElementById("ssca").checked;
+                karpathy = document.getElementById("karpathy").checked;
                 let value = document.getElementById("kmdata").checked;
 
                 let res;
@@ -811,6 +814,10 @@
                 <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
                 <button type="button" class="btn" id="cleanbtn" onclick="clean()">Clean</button>
                 <br/>
+                <label class="container small ">Karpathy
+                    <input type="checkbox" id="karpathy">
+                    <span class="checkmark"></span>
+                </label>
                 <button id="downloadData" class="btn action" onclick="download(data,training_placeholder,jsonType)">Download Data</button>
                 <button id="downloadTest" class="btn action" onclick="download(datatest,test_placeholder,textType)">Download Test</button>
                 <input type="file" id="uploadData" class="btn action" onchange="uploadData()">
