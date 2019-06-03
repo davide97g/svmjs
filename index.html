@@ -859,6 +859,14 @@
                             reader.onload = (function(theFile) {
                                 return function(e) {
                                     console.info(theFile.name);
+                                    let scale = 1;
+                                    let offsetx = 0;
+                                    let offsety = 0;
+                                    if(theFile.name === "datasaurus.json") {
+                                        scale = 10;
+                                        offsetx = 6;
+                                        offsety = 5;
+                                    }
                                     let res = e.target.result;
                                     let i = res.search("\n");
                                     let line = res.substring(0,i);
@@ -871,7 +879,7 @@
                                         x = line.substring(1,comma);
                                         y = line.substring(comma+1,comma2);
                                         label = line.substring(comma2+1,i-1);
-                                        user_data.push([parseFloat(x),parseFloat(y)]);
+                                        user_data.push([parseFloat(x)/scale-offsetx,-1*(parseFloat(y)/scale-offsety)]);
                                         user_labels.push(parseFloat(label));
                                         i = res.indexOf("\n");
                                         if(i>0) {
