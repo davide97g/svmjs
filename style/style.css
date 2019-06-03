@@ -144,6 +144,11 @@ a{
     width: 50%;
 }
 
+#karpathy_container{
+    margin: auto;
+    float: none;
+}
+
 .slider_container{
     text-align: center;
     float: left;
@@ -357,7 +362,7 @@ th{
 
 /* When the checkbox is checked, add a blue background */
 .container input:checked ~ .checkmark {
-    background-color: #2ecc71;
+    background-color: var(--primary-c);
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */

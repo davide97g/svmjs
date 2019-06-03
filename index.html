@@ -84,12 +84,19 @@
         let canvasResult = "canvasResult";
         let canvasData = "canvasData";
 
+        let user_data = [];
+        let user_labels = [];
+
         function setDataSet(id) {
             if(datasetID !== id){
                 datasetID = id;
                 dataset_modified = true;
             }
-            if(id===1){
+            if(id===-1){
+                data = user_data;
+                labels = user_labels;
+            }
+            else if(id===1){
                 let res = randomData(N);
                 data = res.data;
                 labels = res.labels;
@@ -129,7 +136,8 @@
                 data = res.data;
                 labels = res.labels;
             }
-            setTrainingSet(datasetID);
+            if(id!==-1)
+                setTrainingSet(datasetID);
         }
         function setTrainingSet(id) {
             if(id===1){
@@ -699,19 +707,20 @@
 
         <script type="text/javascript">
 
-            function formatData(data) {
+            function formatData(data,labels) {
                 let formatted_data="";
                 let n = data.length;
-                let m = data[0].length;
+                let m = data[0].length+1;
                 let withIndex = false;
                 for(let i=0;i<n;i++){
                     if(withIndex)
                         formatted_data+=i+":";
                     formatted_data+="[";
                     for(let j=0;j<m;j++){
-                        formatted_data += data[i][j];
-                        if(j<m-1)
-                            formatted_data+=",";
+                        if(j===m-1) //se è l'ultimo valore ci metto il label
+                            formatted_data += labels[i];
+                        else
+                            formatted_data += data[i][j]+",";
                     }
                     formatted_data+="]\n";
                 }
@@ -722,14 +731,20 @@
                 return document.getElementById("fakeInputFormula").value;
             }
 
+            function uploadData() {
+                console.info("UploadData");
+
+            }
+
             function download(data,name,type) {
                 // create the text file as a Blob:
                 if(name!==equation_placeholder){
-                    data = formatData(data);
+                    if(name === training_placeholder)
+                        data = formatData(data,labels);
+                    else
+                        data = formatData(data,labelstest);
                 }
                 let blob = new Blob([data],{type: type});
-                // download the file:
-                // download(blob,""+name+".txt");
 
                 let url = URL.createObjectURL(blob),
                     div = document.createElement("div"),
@@ -814,13 +829,71 @@
                 <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
                 <button type="button" class="btn" id="cleanbtn" onclick="clean()">Clean</button>
                 <br/>
-                <label class="container small ">Karpathy
+                <label class="container small" id="karpathy_container">Karpathy
                     <input type="checkbox" id="karpathy">
                     <span class="checkmark"></span>
                 </label>
                 <button id="downloadData" class="btn action" onclick="download(data,training_placeholder,jsonType)">Download Data</button>
                 <button id="downloadTest" class="btn action" onclick="download(datatest,test_placeholder,textType)">Download Test</button>
-                <input type="file" id="uploadData" class="btn action" onchange="uploadData()">
+                <button class="btn action">
+                    <input type="file" id="uploadData" name="files[]" multiple>
+                </button>
+
+                <script>
+                    function handleFileSelect(evt) {
+                        let files = evt.target.files; // FileList object
+                        // let array = [];
+                        user_data = [];
+                        user_labels = [];
+                        let f;
+                        // Loop through the FileList and render image files as thumbnails.
+                        for (let i = 0; i<files.length; i++) {
+                            f = files[i];
+                            // Only process image files.
+                            // if (!f.type.match('image.*')) {
+                            //     continue;
+                            // }
+
+                            let reader = new FileReader();
+
+                            // Closure to capture the file information.
+                            reader.onload = (function(theFile) {
+                                return function(e) {
+                                    console.info(theFile.name);
+                                    let res = e.target.result;
+                                    let i = res.search("\n");
+                                    let line = res.substring(0,i);
+
+                                    let x,y,label;
+                                    let comma,comma2;
+                                    while(line.length>0){
+                                        comma = line.indexOf(",");
+                                        comma2 = line.indexOf(",",comma+1);
+                                        x = line.substring(1,comma);
+                                        y = line.substring(comma+1,comma2);
+                                        label = line.substring(comma2+1,i-1);
+                                        user_data.push([parseFloat(x),parseFloat(y)]);
+                                        user_labels.push(parseFloat(label));
+                                        i = res.indexOf("\n");
+                                        if(i>0) {
+                                            line = res.substring(0, i);
+                                            res = res.substring(i + 1, res.length);
+                                        }
+                                        else line = "";
+                                    }
+                                };
+                            })(f);
+
+                            // Read in the image file as text
+                            reader.readAsText(f);
+                        }
+                        // replace of data
+                        setDataSet(-1);
+                        execute();
+                    }
+                    document.getElementById('uploadData').addEventListener('change', handleFileSelect, false);
+                </script>
+
             </div>
 
         </div>
@@ -852,7 +925,7 @@
                         </button>
                     </div>
                     <button class="btn" id="btnLink" onclick="openLink()">Open in Wolframalpha</button>
-                    <button id="download" class="btn action" onclick="download(getFormula(),equation_placeholder,textType)">Download</button>
+                    <button id="download" class="btn action" onclick="download({data:getFormula(),labels:[]},equation_placeholder,textType)">Download</button>
                 </div>
                 <h4>Dimensions</h4>
                 <h2 id ="nDim">---</h2>
