@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1925c999-ce1a-4f0d-a4e0-f9a12ad3a861" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/draw.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/draw.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/svm.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/svm.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,13 +16,42 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="551" selection-start-line="551" selection-end-line="551" />
+            <state relative-caret-position="4224">
+              <caret line="816" column="99" selection-start-line="816" selection-start-column="99" selection-end-line="816" selection-end-column="99" />
               <folding>
+                <element signature="e#3517#4934#0" />
+                <element signature="e#4971#6324#0" />
+                <element signature="e#6356#6551#0" />
+                <element signature="e#6586#7077#0" />
+                <element signature="e#7113#8207#0" />
+                <element signature="e#8239#9862#0" />
+                <element signature="e#9889#9927#0" />
+                <element signature="e#9991#10707#0" />
+                <element signature="e#10740#10839#0" />
+                <element signature="e#10872#10933#0" />
+                <element signature="e#10973#11541#0" />
+                <element signature="e#11578#11876#0" />
+                <element signature="e#12285#12680#0" />
+                <element signature="e#12710#18878#0" />
                 <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
+                <element signature="e#18922#20286#0" />
+                <element signature="e#20317#23887#0" />
+                <element signature="e#23920#24438#0" />
+                <element signature="e#24468#24973#0" />
+                <element signature="e#25017#25142#0" />
+                <element signature="e#25188#25309#0" />
+                <element signature="e#25347#26140#0" />
+                <element signature="e#26173#26313#0" />
+                <element signature="e#26346#26428#0" />
+                <element signature="e#26904#27676#0" />
+                <element signature="e#27195#27284#0" />
+                <element signature="e#27489#27521#0" />
+                <element signature="e#27332#28247#0" />
                 <element signature="e#28261#28282#0" />
                 <element signature="e#28471#28502#0" />
+                <element signature="e#29319#29846#0" />
+                <element signature="n#div#0;n#body#0;n#html#0;n#!!top" />
                 <element signature="e#32027#33360#0" />
                 <element signature="n#div#1;n#body#0;n#html#0;n#!!top" />
                 <element signature="n#div#2;n#body#0;n#html#0;n#!!top" />
@@ -32,7 +61,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/draw.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="312">
@@ -45,16 +74,16 @@
         <entry file="file://$PROJECT_DIR$/style/style.css">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="252">
-              <caret line="146" column="19" selection-start-line="146" selection-start-column="19" selection-end-line="146" selection-end-column="19" />
+              <caret line="146" column="16" selection-start-line="146" selection-start-column="16" selection-end-line="146" selection-end-column="16" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/svm.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="123" column="33" selection-start-line="123" selection-start-column="33" selection-end-line="123" selection-end-column="33" />
+            <state relative-caret-position="1236">
+              <caret line="534" column="40" selection-start-line="534" selection-start-column="37" selection-end-line="534" selection-end-column="40" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#8574#9034#0" />
@@ -72,10 +101,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/lib/svm.js" />
         <option value="$PROJECT_DIR$/style/style.css" />
-        <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/draw.js" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/lib/svm.js" />
       </list>
     </option>
   </component>
@@ -160,12 +189,12 @@
       <option name="presentableId" value="Default" />
       <updated>1559544172255</updated>
       <workItem from="1559544173305" duration="234000" />
-      <workItem from="1559544428689" duration="10008000" />
+      <workItem from="1559544428689" duration="11052000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10242000" />
+    <option name="totallyTimeSpent" value="11286000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
@@ -199,34 +228,44 @@
         <state relative-caret-position="-2642" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/svm.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="123" column="33" selection-start-line="123" selection-start-column="33" selection-end-line="123" selection-end-column="33" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="e#8574#9034#0" />
-            <element signature="e#5250#5282#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/style/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="146" column="19" selection-start-line="146" selection-start-column="19" selection-end-line="146" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="551" selection-start-line="551" selection-end-line="551" />
+        <state relative-caret-position="4224">
+          <caret line="816" column="99" selection-start-line="816" selection-start-column="99" selection-end-line="816" selection-end-column="99" />
           <folding>
+            <element signature="e#3517#4934#0" />
+            <element signature="e#4971#6324#0" />
+            <element signature="e#6356#6551#0" />
+            <element signature="e#6586#7077#0" />
+            <element signature="e#7113#8207#0" />
+            <element signature="e#8239#9862#0" />
+            <element signature="e#9889#9927#0" />
+            <element signature="e#9991#10707#0" />
+            <element signature="e#10740#10839#0" />
+            <element signature="e#10872#10933#0" />
+            <element signature="e#10973#11541#0" />
+            <element signature="e#11578#11876#0" />
+            <element signature="e#12285#12680#0" />
+            <element signature="e#12710#18878#0" />
             <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
+            <element signature="e#18922#20286#0" />
+            <element signature="e#20317#23887#0" />
+            <element signature="e#23920#24438#0" />
+            <element signature="e#24468#24973#0" />
+            <element signature="e#25017#25142#0" />
+            <element signature="e#25188#25309#0" />
+            <element signature="e#25347#26140#0" />
+            <element signature="e#26173#26313#0" />
+            <element signature="e#26346#26428#0" />
+            <element signature="e#26904#27676#0" />
+            <element signature="e#27195#27284#0" />
+            <element signature="e#27489#27521#0" />
+            <element signature="e#27332#28247#0" />
             <element signature="e#28261#28282#0" />
             <element signature="e#28471#28502#0" />
+            <element signature="e#29319#29846#0" />
+            <element signature="n#div#0;n#body#0;n#html#0;n#!!top" />
             <element signature="e#32027#33360#0" />
             <element signature="n#div#1;n#body#0;n#html#0;n#!!top" />
             <element signature="n#div#2;n#body#0;n#html#0;n#!!top" />
@@ -239,6 +278,25 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
           <caret line="283" column="21" lean-forward="true" selection-start-line="283" selection-start-column="21" selection-end-line="283" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/style/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="146" column="16" selection-start-line="146" selection-start-column="16" selection-end-line="146" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/svm.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1236">
+          <caret line="534" column="40" selection-start-line="534" selection-start-column="37" selection-end-line="534" selection-end-column="40" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#8574#9034#0" />
+            <element signature="e#5250#5282#0" />
+          </folding>
         </state>
       </provider>
     </entry>
