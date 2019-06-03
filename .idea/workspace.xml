@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1925c999-ce1a-4f0d-a4e0-f9a12ad3a861" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/svm.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/svm.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,8 +15,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="867" column="50" selection-start-line="867" selection-start-column="50" selection-end-line="867" selection-end-column="50" />
+            <state relative-caret-position="420">
+              <caret line="838" column="99" lean-forward="true" selection-start-line="838" selection-start-column="99" selection-end-line="838" selection-end-column="99" />
               <folding>
                 <element signature="e#3517#4934#0" />
                 <element signature="e#4971#6324#0" />
@@ -63,7 +62,7 @@
         <entry file="file://$PROJECT_DIR$/js/draw.js">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="312">
-              <caret line="283" column="21" lean-forward="true" selection-start-line="283" selection-start-column="21" selection-end-line="283" selection-end-column="21" />
+              <caret line="283" column="21" selection-start-line="283" selection-start-column="21" selection-end-line="283" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -122,7 +121,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="10" />
     <option name="y" value="20" />
     <option name="width" value="1260" />
@@ -138,26 +137,26 @@
           <expand>
             <path>
               <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
             </path>
             <path>
               <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
               <item name=".idea" type="9f88c78c:ScopeViewTreeModel$FileNode" />
             </path>
             <path>
               <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
               <item name="js" type="9f88c78c:ScopeViewTreeModel$FileNode" />
             </path>
             <path>
               <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
               <item name="lib" type="9f88c78c:ScopeViewTreeModel$FileNode" />
             </path>
             <path>
               <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
               <item name="style" type="9f88c78c:ScopeViewTreeModel$FileNode" />
             </path>
           </expand>
@@ -195,18 +194,18 @@
       <option name="presentableId" value="Default" />
       <updated>1559544172255</updated>
       <workItem from="1559544173305" duration="234000" />
-      <workItem from="1559544428689" duration="13028000" />
+      <workItem from="1559544428689" duration="14143000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13262000" />
+    <option name="totallyTimeSpent" value="14377000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1844197" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.1844197" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -218,7 +217,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.32936978" />
+      <window_info anchor="bottom" id="Terminal" order="9" weight="0.32936978" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -237,7 +236,7 @@
     <entry file="file://$PROJECT_DIR$/js/draw.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
-          <caret line="283" column="21" lean-forward="true" selection-start-line="283" selection-start-column="21" selection-end-line="283" selection-end-column="21" />
+          <caret line="283" column="21" selection-start-line="283" selection-start-column="21" selection-end-line="283" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -265,8 +264,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="867" column="50" selection-start-line="867" selection-start-column="50" selection-end-line="867" selection-end-column="50" />
+        <state relative-caret-position="420">
+          <caret line="838" column="99" lean-forward="true" selection-start-line="838" selection-start-column="99" selection-end-line="838" selection-end-column="99" />
           <folding>
             <element signature="e#3517#4934#0" />
             <element signature="e#4971#6324#0" />

@@ -799,6 +799,63 @@
                 }, duration);
             }
 
+            function handleFileSelect(evt) {
+                let files = evt.target.files; // FileList object
+                //reset user data variables
+                user_data = [];
+                user_labels = [];
+                //pick the first file
+                let f = files[0];
+                if (!f.type.match('application/json')) {
+                    console.info("not");
+                    return;
+                }
+
+                let reader = new FileReader();
+
+                // Closure to capture the file information.
+                reader.onload = (function(theFile) {
+                    return function(e) {
+                        let scale = 1;
+                        let offsetx = 0;
+                        let offsety = 0;
+                        // if(theFile.name === "datasaurus.json") {
+                        //     scale = 10;
+                        //     offsetx = 6;
+                        //     offsety = 5;
+                        // }
+                        let res = e.target.result;
+                        let i = res.search("\n");
+                        let line = res.substring(0,i);
+
+                        let x,y,label;
+                        let comma,comma2;
+                        while(line.length>0){
+                            comma = line.indexOf(",");
+                            comma2 = line.indexOf(",",comma+1);
+                            x = line.substring(1,comma);
+                            y = line.substring(comma+1,comma2);
+                            label = line.substring(comma2+1,i-1);
+                            user_data.push([parseFloat(x)/scale-offsetx,parseFloat(y)/scale-offsety]);
+                            user_labels.push(parseFloat(label));
+                            i = res.indexOf("\n");
+                            if(i>0) {
+                                line = res.substring(0, i);
+                                res = res.substring(i + 1, res.length);
+                            }
+                            else line = "";
+                        }
+                    };
+                })(f);
+
+                // Read in the image file as text
+                reader.readAsText(f);
+
+                // replace of data
+                setDataSet(-1);
+                execute();
+            }
+
         </script>
 
         <script src="./js/draw.js"></script>
@@ -835,69 +892,10 @@
                 <button id="downloadData" class="btn action" onclick="download(data,training_placeholder,jsonType)">Download Data</button>
                 <button id="downloadTest" class="btn action" onclick="download(datatest,test_placeholder,textType)">Download Test</button>
                 <button class="btn action">
-                    <input type="file" id="uploadData" name="files[]" multiple>
+                    <input type="file" id="uploadData" name="files[]">
                 </button>
 
                 <script>
-                    function handleFileSelect(evt) {
-                        let files = evt.target.files; // FileList object
-                        // let array = [];
-                        user_data = [];
-                        user_labels = [];
-                        let f;
-                        // Loop through the FileList and render image files as thumbnails.
-                        for (let i = 0; i<files.length; i++) {
-                            f = files[i];
-                            // Only process image files.
-                            // if (!f.type.match('image.*')) {
-                            //     continue;
-                            // }
-
-                            let reader = new FileReader();
-
-                            // Closure to capture the file information.
-                            reader.onload = (function(theFile) {
-                                return function(e) {
-                                    console.info(theFile.name);
-                                    let scale = 1;
-                                    let offsetx = 0;
-                                    let offsety = 0;
-                                    if(theFile.name === "datasaurus.json") {
-                                        scale = 10;
-                                        offsetx = 6;
-                                        offsety = 5;
-                                    }
-                                    let res = e.target.result;
-                                    let i = res.search("\n");
-                                    let line = res.substring(0,i);
-
-                                    let x,y,label;
-                                    let comma,comma2;
-                                    while(line.length>0){
-                                        comma = line.indexOf(",");
-                                        comma2 = line.indexOf(",",comma+1);
-                                        x = line.substring(1,comma);
-                                        y = line.substring(comma+1,comma2);
-                                        label = line.substring(comma2+1,i-1);
-                                        user_data.push([parseFloat(x)/scale-offsetx,-1*(parseFloat(y)/scale-offsety)]);
-                                        user_labels.push(parseFloat(label));
-                                        i = res.indexOf("\n");
-                                        if(i>0) {
-                                            line = res.substring(0, i);
-                                            res = res.substring(i + 1, res.length);
-                                        }
-                                        else line = "";
-                                    }
-                                };
-                            })(f);
-
-                            // Read in the image file as text
-                            reader.readAsText(f);
-                        }
-                        // replace of data
-                        setDataSet(-1);
-                        execute();
-                    }
                     document.getElementById('uploadData').addEventListener('change', handleFileSelect, false);
                 </script>
 
