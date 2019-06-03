@@ -79,7 +79,7 @@
         let dataset_modified = true;
         let link = "";
         let time = 0;
-        let karpathy = false;
+        let karpathy = true;
 
         let canvasResult = "canvasResult";
         let canvasData = "canvasData";
@@ -830,7 +830,7 @@
                 <button type="button" class="btn" id="cleanbtn" onclick="clean()">Clean</button>
                 <br/>
                 <label class="container small" id="karpathy_container">Karpathy
-                    <input type="checkbox" id="karpathy">
+                    <input type="checkbox" id="karpathy" checked>
                     <span class="checkmark"></span>
                 </label>
                 <button id="downloadData" class="btn action" onclick="download(data,training_placeholder,jsonType)">Download Data</button>

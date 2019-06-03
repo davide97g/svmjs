@@ -280,7 +280,8 @@ function drawGrid(ctx) {
 function drawDataLinearKernel(ctx) {
     let xs= [-5, 5];
     let ys= [0, 0];
-    wb.b = -wb.b;
+    if(!karpathy)
+        wb.b = -wb.b;
     ys[0]= (-wb.b - wb.w[0]*xs[0])/wb.w[1];
     ys[1]= (-wb.b - wb.w[0]*xs[1])/wb.w[1];
     ctx.fillStyle = 'rgb(0,0,0)';
