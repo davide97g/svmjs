@@ -450,3 +450,79 @@ KMeans.prototype.clusterColor = function(n) {
 function fillArray(length, val) {
     return Array.apply(null, Array(length)).map(function() { return val; });
 }
+
+
+/**
+ *
+ * Utility functions
+ * */
+
+function KMEANS(data) {
+    console.info("\tKMEANS");
+    KMdataUser = false;
+    drawKmeansPoints = true;
+    let separated = separateData(data);
+    let kmeans1 = new KMeans({
+        canvas: document.getElementById('canvasData'),
+        data: separated[0],
+        k: Km1,
+        p: 1
+    });
+    let kmeans2 = new KMeans({
+        canvas: document.getElementById('canvasData'),
+        data: separated[1],
+        k: Km2,
+        p: 1
+    });
+
+    means = new Array(2);
+    means[0] = kmeans1.means;
+    means[1] = kmeans2.means;
+    return createNewData(means);
+}
+function resetKmeans() {
+    means = new Array(2);
+    means[0] = [];
+    means[1] = [];
+}
+function cleanKmeans() {
+    resetKmeans();
+    execute();
+}
+function createNewData(means) {
+    let L1,L2;
+    L1 = means[0].length;
+    L2 = means[1].length;
+
+    let L = L1+L2;
+    let newData = new Array(L);
+    let newLabels = new Array(L);
+    for(let i=0;i<L1;i++){
+        newData[i] = means[0][i];
+        newLabels[i] = 1;
+    }
+    for(let i=L1;i<L;i++) {
+        newData[i] = means[1][i-L1];
+        newLabels[i] = -1;
+    }
+    return {
+        data: newData,
+        labels: newLabels
+    };
+}
+function separateData(data) {
+    let res = new Array(2);
+    res[0] = [];
+    res[1] = [];
+    for(let i=0;i<data.length;i++){
+        if(labels[i]===1)
+            res[0].push(data[i]);
+        else res[1].push(data[i]);
+    }
+    return res;
+}
+function shouldDrawKmeans(value) {
+    drawKmeansPoints = value;
+    hideUiThings();
+    showUiThings();
+}

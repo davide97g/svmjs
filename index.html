@@ -22,6 +22,7 @@
         <script src="./lib/svmo.js"></script>
 
         <script type="text/javascript" src="./js/generator.js"></script>
+
         <!-- Declaration and initialization -->
         <script type="text/javascript">
 
@@ -87,6 +88,10 @@
         let user_data = [];
         let user_labels = [];
 
+        </script>
+
+        <!-- Dataset - Retrain - init -->
+        <script type="text/javascript">
         function setDataSet(id) {
             if(datasetID !== id){
                 datasetID = id;
@@ -182,16 +187,6 @@
             }
         }
 
-        function countSV(svm) {
-            let n=0;
-            for(let i=0;i<data.length;i++){
-                if(svm.alpha[i]>1e-7) {
-                    n++;
-                }
-            }
-            return n;
-        }
-
         function resetStatsSVM() {
             let nSV = document.getElementById("nSV");
             nSV.classList.remove("red");
@@ -204,10 +199,9 @@
             document.getElementById("scoreboard").innerHTML = "---";
 
         }
-
         function updateStatsSVM() {
             //support vector
-            let n = countSV(svm);
+            let n = countSV(svm,data);
             let nSV = document.getElementById("nSV");
             nSV.innerHTML = n+"/"+data.length;
             if((n/data.length)>0.5) nSV.classList.add("red");
@@ -244,22 +238,29 @@
                 retrainSVM();
             }
             else if(kernelid === 1) {
-                time = svm.train(data, labels, { kernel: 'rbf', rbfsigma: rbfKernelSigma, C: svmC, SSCA: ssca, UB: ub, memoize: memo, karpathy: karpathy});
+                time = svm.train(data, labels, {
+                    kernel: 'rbf',
+                    rbfsigma: rbfKernelSigma,
+                    C: svmC,
+                    SSCA: ssca,
+                    UB: ub,
+                    memoize: memo,
+                    karpathy: karpathy
+                    });
                 updateStatsSVM();
             }
             else if(kernelid === 2){
                 time = svm.train(data, labels, {
-                        kernel: 'poly',
-                        degree: Degree,
-                        influence: Influence,
-                        C: svmC,
-                        SSCA: ssca,
-                        UB: ub,
-                        memoize: memo,
-                        input_functions: input_functions,
-                        karpathy: karpathy
-                    }
-                    );
+                    kernel: 'poly',
+                    degree: Degree,
+                    influence: Influence,
+                    C: svmC,
+                    SSCA: ssca,
+                    UB: ub,
+                    memoize: memo,
+                    input_functions: input_functions,
+                    karpathy: karpathy
+                    });
                 updateStatsSVM();
             }
             else if(kernelid === 3){
@@ -281,7 +282,11 @@
             setDataSet(2);
         }
         function myinitTest(){}
+        </script>
 
+        <!-- K-Means -->
+        <!--
+        <script type="text/javascript">
         function KMEANS(data) {
             console.info("\tKMEANS");
             KMdataUser = false;
@@ -305,18 +310,15 @@
             means[1] = kmeans2.means;
             return createNewData(means);
         }
-
         function resetKmeans() {
             means = new Array(2);
             means[0] = [];
             means[1] = [];
         }
-
         function cleanKmeans() {
             resetKmeans();
             execute();
         }
-
         function createNewData(means) {
             let L1,L2;
             L1 = means[0].length;
@@ -349,8 +351,13 @@
             }
             return res;
         }
-
+        function shouldDrawKmeans(value) {
+            drawKmeansPoints = value;
+            hideUiThings();
+            showUiThings();
+        }
         </script>
+        -->
 
         <!-- distances functions (minkowski, chebyshev, mahalanobis) -->
         <script type="text/javascript" src="js/distances.js"></script>
@@ -360,6 +367,123 @@
 
         <!-- main functions -->
         <script type="text/javascript">
+            function execute() {
+                console.clear();
+                console.info("🔨 EXECUTE");
+                update();
+                resetStatsSVM();
+                moveProgressBar(0,100);
+                setTimeout(function(){
+                    moveProgressBar(25,400);
+                    setTimeout(function(){
+                        retrainSVM();
+                        draw();
+                        moveProgressBar(100,1000);
+                    }, 400);
+                },100);
+                return 0;
+            }
+            function test() {
+                console.info("🧪 TEST "+!useTest);
+                useTest = !useTest;
+                hideUiThings();
+                showUiThings();
+                if(useTest) {
+                    // let app = ctx;
+                    // ctx = ctxTest; //substitute
+                    // ctx.lineWidth = 1;
+                    drawTest(ctxTest);
+                    // ctx = app; //return to normal
+                }
+                else{
+                    draw();
+                }
+            }
+            function update(){
+                console.info("UPDATE");
+
+                if(input_transformation) {
+                    inputFunctionUpdate();
+                }
+                else input_functions = [];
+
+                ssca = document.getElementById("ssca").checked;
+                karpathy = document.getElementById("karpathy").checked;
+                let value = document.getElementById("kmdata").checked;
+
+                let res;
+                let algorithm = document.getElementById("calculate_kmeans_points").checked;
+                let user = document.getElementById("user_kmeans_points").checked;
+
+                if(algorithm){ //se è selezionata l'opzione dell'algoritmo
+                    resetKmeans();
+                    KMdataUser = false;
+                    res = KMEANS(data);
+                    drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
+                }
+                else if(user){
+                    if(!KMdataUser || (means[0] === undefined && means[1] === undefined)) {
+                        resetKmeans();
+                    }
+                    if(means[0].length+means[1].length > 0) {
+                        KMdataUser = true;
+                        res = createNewData(means);
+                        drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
+                    }
+                    else{
+                        KMdata = false;
+                        value = false;
+                        document.getElementById("kmdata").checked = false;
+                        drawKmeansPoints = false;
+                        document.getElementById("draw_kmeans_points").checked = false;
+                    }
+
+                }
+                else{ //se non è stato scelto un metodo per i K-means non li disegno e non li uso come dati di training
+                    drawKmeansPoints = false;
+                    document.getElementById("draw_kmeans_points").checked = false;
+                    KMdata = false;
+                    document.getElementById("kmdata").checked = false;
+                }
+
+                //se è stato modificato il dataset
+                if(dataset_modified){
+                    dataset_modified = false;
+                    document.getElementById("kmdata").checked = false;
+                    if(KMdata)
+                        N = dataOLD.length;
+                    else N = data.length;
+                    KMdata = false;
+                    console.info("RESET "+N);
+                    setDataSet(datasetID);
+                    resetKmeans();
+                }
+                else {
+                    if (value !== KMdata) {
+                        if (value) {
+                            console.info("STORE data");
+                            dataOLD = data;
+                            labelsOLD = labels;
+                        } else {
+                            console.info("RESTORE data");
+                            data = dataOLD;
+                            labels = labelsOLD;
+                        }
+                    }
+                    KMdata = value;
+                    if (KMdata) {
+                        console.info("OVERWRITE data");
+                        data = res.data;
+                        labels = res.labels;
+                    }
+
+                    //update limits
+                    N = data.length;
+                }
+                //hide and show buttons/options
+                hideUiThings();
+                showUiThings();
+            }
 
             function orderByProperty(prop) {
                 let args = Array.prototype.slice.call(arguments, 1);
@@ -371,7 +495,6 @@
                     return equality;
                 };
             }
-
             function best() {
                 resetStatsSVM();
 
@@ -460,51 +583,6 @@
                             i++;
                         }
                     }, 300);
-
-                    // for(let i=0;i<functions.length;i++){
-                    //     percentage = (i+1)/functions.length;
-                    //     moveProgressBar(percentage,0);
-                    //     let f = document.getElementById(functions[i].id);
-                    //     f.checked = true;
-                    //     inputFunctionUpdate();
-                    //     retrainSVM();
-                    //     let values = [];
-                    //     for(let i=0;i<N;i++) {
-                    //         values.push(getValue(data[i]));
-                    //     }
-                    //     let stats = statisticEval(labels,values);
-                    //
-                    //     let app = {
-                    //         value: stats.fMeasure,
-                    //         id: f.id,
-                    //         time: 1/time
-                    //     };
-                    //
-                    //     measures.push(app);
-                    //
-                    //     if(stats.fMeasure>max){
-                    //         max = stats.fMeasure;
-                    //         best = f.id;
-                    //         best_time = time;
-                    //     }
-                    //     else if(stats.fMeasure === max){
-                    //         if(time<best_time){
-                    //             best = f.id;
-                    //             best_time = time;
-                    //         }
-                    //     }
-                    //     f.checked = false;
-                    // }
-
-                    // document.getElementById(best).checked = true;
-                    // execute();
-                    // console.info("⭐⭐⭐ BEST: "+best+" ⭐⭐⭐");
-                    // measures = measures.sort(orderByProperty('value', 'time'));
-                    // for(let i=0;i<measures.length;i++){
-                    //     measures[i].time = 1/measures[i].time;
-                    // }
-                    // console.table(measures);
-
                 },100);
             }
 
@@ -536,135 +614,8 @@
                     input_functions = arrayF;
 
             }
-
-            function update(){
-                console.info("UPDATE");
-                //check values on checkbox
-                //useTest = document.getElementById("test").checked;
-
-                if(input_transformation) {
-                    inputFunctionUpdate();
-                }
-                else input_functions = [];
-
-                ssca = document.getElementById("ssca").checked;
-                karpathy = document.getElementById("karpathy").checked;
-                let value = document.getElementById("kmdata").checked;
-
-                let res;
-                let algorithm = document.getElementById("calculate_kmeans_points").checked;
-                let user = document.getElementById("user_kmeans_points").checked;
-
-                if(algorithm){ //se è selezionata l'opzione dell'algoritmo
-                    resetKmeans();
-                    KMdataUser = false;
-                    res = KMEANS(data);
-                    drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
-                }
-                else if(user){
-                    if(!KMdataUser || (means[0] === undefined && means[1] === undefined)) {
-                        resetKmeans();
-                    }
-                    if(means[0].length+means[1].length > 0) {
-                        KMdataUser = true;
-                        res = createNewData(means);
-                        drawKmeansPoints = document.getElementById("draw_kmeans_points").checked;
-                    }
-                    else{
-                        KMdata = false;
-                        value = false;
-                        document.getElementById("kmdata").checked = false;
-                        drawKmeansPoints = false;
-                        document.getElementById("draw_kmeans_points").checked = false;
-                    }
-
-                }
-                else{ //se non è stato scelto un metodo per i K-means non li disegno e non li uso come dati di training
-                    drawKmeansPoints = false;
-                    document.getElementById("draw_kmeans_points").checked = false;
-                    KMdata = false;
-                    document.getElementById("kmdata").checked = false;
-                }
-
-                //se è stato modificato il dataset
-                if(dataset_modified){
-                    dataset_modified = false;
-                    document.getElementById("kmdata").checked = false;
-                    if(KMdata)
-                        N = dataOLD.length;
-                    else N = data.length;
-                    KMdata = false;
-                    console.info("RESET "+N);
-                    setDataSet(datasetID);
-                    resetKmeans();
-                }
-                else {
-                    if (value !== KMdata) {
-                        if (value) {
-                            console.info("STORE data");
-                            dataOLD = data;
-                            labelsOLD = labels;
-                        } else {
-                            console.info("RESTORE data");
-                            data = dataOLD;
-                            labels = labelsOLD;
-                        }
-                    }
-                    KMdata = value;
-                    if (KMdata) {
-                        console.info("OVERWRITE data");
-                        data = res.data;
-                        labels = res.labels;
-                    }
-
-                    //update limits
-                    N = data.length;
-                }
-                //hide and show buttons/options
-                hideUiThings();
-                showUiThings();
-            }
-
-            function execute() {
-                console.clear();
-                console.info("🔨 EXECUTE");
-                update();
-                resetStatsSVM();
-                moveProgressBar(0,100);
-                setTimeout(function(){
-                    moveProgressBar(25,400);
-                    setTimeout(function(){
-                        retrainSVM();
-                        draw();
-                        moveProgressBar(100,1000);
-                    }, 400);
-                },100);
-                return 0;
-            }
-
-            function test() {
-                console.info("🧪 TEST "+!useTest);
-                useTest = !useTest;
-                hideUiThings();
-                showUiThings();
-                if(useTest) {
-                    // let app = ctx;
-                    // ctx = ctxTest; //substitute
-                    // ctx.lineWidth = 1;
-                    drawTest(ctxTest);
-                    // ctx = app; //return to normal
-                }
-                else{
-                    draw();
-                }
-            }
             function shouldUseInput(value) {
                 input_transformation = value;
-                hideUiThings();
-                showUiThings();
-            }
-            function shouldDrawKmeans(value) {
-                drawKmeansPoints = value;
                 hideUiThings();
                 showUiThings();
             }
@@ -692,12 +643,10 @@
                 link = "https://www.wolframalpha.com/input/?i="+eq;
 
             }
-
             function outFunc() {
                 let tooltip = document.getElementById("myTooltip");
                 tooltip.innerHTML = "Copy to clipboard";
             }
-
             function openLink(){
                 copyFunction();
                 window.open(link);
@@ -706,7 +655,9 @@
         </script>
 
         <script type="text/javascript">
-
+            function getFormula() {
+                return document.getElementById("fakeInputFormula").value;
+            }
             function formatData(data,labels) {
                 let formatted_data="";
                 let n = data.length;
@@ -726,16 +677,6 @@
                 }
                 return formatted_data;
             }
-
-            function getFormula() {
-                return document.getElementById("fakeInputFormula").value;
-            }
-
-            function uploadData() {
-                console.info("UploadData");
-
-            }
-
             function download(data,name,type) {
                 // create the text file as a Blob:
                 if(name!==equation_placeholder){
@@ -763,43 +704,7 @@
                 anch.dispatchEvent(ev);
                 document.body.removeChild(div);
             }
-
-            // // on page load...
-            // moveProgressBar();
-            // // on browser resize...
-            // $(window).resize(function() {
-            //     moveProgressBar();
-            // });
-
-            // function resetProgressBar(){
-            //     // $('.progress-wrap')['data-progress-percent'] = 10;
-            //     let p_wrap = document.getElementById("progress-wrap");
-            //     let p_bar = document.getElementById("progress-bar");
-            //     p_bar.style.left = "0px";
-            //     p_wrap.style.left = "0px";
-            //     // let getPercent = 0.10;
-            //     // let getProgressWrapWidth = $('.progress-wrap').width();
-            //     // let progressTotal = getPercent * getProgressWrapWidth;
-            //     // let animationLength = 500;
-            //     // $('.progress-bar').stop().animate({
-            //     //     left: progressTotal
-            //     // }, animationLength);
-            // }
-
-            function moveProgressBar(percentage,duration) {
-                // console.log("moveProgressBar");
-                let getPercent = percentage / 100;
-                let getProgressWrapWidth = $('.progress-wrap').width();
-                let progressTotal = getPercent * getProgressWrapWidth;
-
-                // on page load, animate percentage bar to data percentage length
-                // .stop() used to prevent animation queueing
-                $('.progress-bar').stop().animate({
-                    left: progressTotal
-                }, duration);
-            }
-
-            function handleFileSelect(evt) {
+            function uploadData(evt) {
                 let files = evt.target.files; // FileList object
                 //reset user data variables
                 user_data = [];
@@ -855,25 +760,19 @@
                 setDataSet(-1);
                 execute();
             }
-
         </script>
-
+        <!-- draw functions -->
         <script src="./js/draw.js"></script>
-
         <!-- MouseClick -->
         <script src="./js/events.js"></script>
-
         <!-- ui functions -->
         <script type="text/javascript" src="js/ui.js"></script>
-
         <!-- jquery/set functions -->
         <script type="text/javascript" src="js/functions.js"></script>
-
     </head>
 
     <body onLoad="NPGinit(10,canvasData), drawTestInit(10,canvasResult),execute()"> <!-- 24 FPS -->
         <div id="info">
-
             <br>
             <h1>Support Vector Machine in Javascript</h1>
             <p>
@@ -894,13 +793,10 @@
                 <button class="btn action">
                     <input type="file" id="uploadData" name="files[]">
                 </button>
-
                 <script>
-                    document.getElementById('uploadData').addEventListener('change', handleFileSelect, false);
+                    document.getElementById('uploadData').addEventListener('change', uploadData, false);
                 </script>
-
             </div>
-
         </div>
         <div id="draw">
             <div id="progress-wrap" class="progress-wrap progress">
@@ -912,7 +808,6 @@
             </canvas>
         </div>
         <div class="card card-1" id="statistics">
-
             <div class="card card-1" id="statistics_score">
                 <h2>Scoreboard</h2>
                 <div id="scoreboard"></div>
@@ -1034,9 +929,7 @@
             </div>
         </div>
         <div class="card card-1" id="options">
-
             <h2>Options</h2>
-<!--            <div class="card card-1"></div>-->
             <div class="card card-1" id="kernels">
                 <h3>Kernels</h3>
                 <button id="rbfk" class="btn" onclick="changeKernel(1)">RBF</button>
@@ -1047,15 +940,12 @@
                 <button id="knn" class="btn" onclick="changeKernel(3)">KNN</button>
                 <button id="rbf" class="btn" onclick="changeKernel(4)">RBF</button>
             </div>
-
             <br>
             <br>
-
             <div id="optimization">
                 <h4>Optimization </h4>
                 <label for="ssca">SSCA</label><input type="checkbox" id="ssca"/>
             </div>
-
             <div class="card card-1" id="input">
                 <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
                 <div id="input_choice">
@@ -1122,7 +1012,6 @@
                     <button type="button" class="btn" id="bestbtn" onclick="best()"><strong>Sort out the Best-Single-Input?</strong></button>
                 </div>
             </div>
-
             <div class="card card-1" id="distances">
                 <h3>Distances</h3>
                 <button id="min" class="btn" onclick="changeDistance(0)">Minkowski</button>
@@ -1155,7 +1044,6 @@
                     <button id="resetKmeans" class="btn" onclick="cleanKmeans()">Clean</button>
                 </div>
             </div>
-
             <div class="card card-1" id="datasets">
                 <h3>Datasets</h3>
                 <div id="s0" class="slider_container">
@@ -1175,33 +1063,6 @@
                 <button class="btn " id="databtn7" onclick="setDataSet(7),execute()">V-Stripes</button>
                 <button class="btn " id="databtn8" onclick="setDataSet(8),execute()">H-Stripes</button>
             </div>
-            <!--
-            <div class="card card-1 card-dataset" id="datasets2">
-                <h2>Radio Buttons</h2>
-
-                <ul>
-                    <li>
-                        <input type="radio" name="name" id="one" checked />
-                        <label for="one">Option #1</label>
-
-                        <div class="check"></div>
-                    </li>
-
-                    <li>
-                        <input type="radio" name="name" id="two" />
-                        <label for="two">Option #2</label>
-
-                        <div class="check"></div>
-                    </li>
-
-                    <li>
-                        <input type="radio" name="name" id="three" />
-                        <label for="three">Option #3</label>
-
-                        <div class="check"></div>
-                    </li>
-                </ul>
-            </div> -->
             <div class="card card-1" id="values">
                 <h3>Values</h3>
                 <div id="s1" class="slider_container">
@@ -1245,9 +1106,6 @@
                     <div id="slider10"></div>
                 </div>
             </div>
-
         </div>
-
-
     </body>
 </html>

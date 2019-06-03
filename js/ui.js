@@ -116,3 +116,16 @@ function hideUiThings() {
     $("#kmeans").hide();
     $(".slider_container").hide(); // per nascondere gli slider che non servono
 }
+
+function moveProgressBar(percentage,duration) {
+    // console.log("moveProgressBar");
+    let getPercent = percentage / 100;
+    let getProgressWrapWidth = $('.progress-wrap').width();
+    let progressTotal = getPercent * getProgressWrapWidth;
+
+    // on page load, animate percentage bar to data percentage length
+    // .stop() used to prevent animation queueing
+    $('.progress-bar').stop().animate({
+        left: progressTotal
+    }, duration);
+}
