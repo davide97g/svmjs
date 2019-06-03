@@ -278,6 +278,7 @@ function drawGrid(ctx) {
 }
 
 function drawDataLinearKernel(ctx) {
+    wb = svm.getWeights();
     let xs= [-5, 5];
     let ys= [0, 0];
     if(!karpathy)

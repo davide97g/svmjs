@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1925c999-ce1a-4f0d-a4e0-f9a12ad3a861" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/kmeans.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/kmeans.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/stats.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/stats.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/js/draw.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/draw.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/svm.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/svm.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -15,20 +14,18 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="705" column="13" selection-start-line="705" selection-start-column="13" selection-end-line="705" selection-end-column="13" />
+            <state relative-caret-position="-395">
+              <caret line="262" column="31" selection-start-line="262" selection-start-column="31" selection-end-line="262" selection-end-column="31" />
               <folding>
                 <element signature="n#script#12;n#head#0;n#html#0;n#!!top" />
                 <element signature="e#3517#4934#0" />
                 <element signature="e#4971#6324#0" />
                 <element signature="e#6586#7077#0" />
                 <element signature="e#7113#8207#0" />
-                <element signature="e#8239#9862#0" />
                 <element signature="e#8708#8835#0" />
-                <element signature="e#8944#9334#0" />
                 <element signature="e#9889#9927#0" />
                 <element signature="e#10291#12425#0" />
                 <element signature="e#12644#13162#0" />
@@ -129,8 +126,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/draw.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="283" column="21" selection-start-line="283" selection-start-column="21" selection-end-line="283" selection-end-column="21" />
+            <state relative-caret-position="95">
+              <caret line="280" column="26" selection-start-line="280" selection-start-column="26" selection-end-line="280" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -144,11 +141,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/svm.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="143" column="32" selection-start-line="143" selection-start-column="32" selection-end-line="143" selection-end-column="32" />
+            <state relative-caret-position="143">
+              <caret line="129" column="20" selection-start-line="129" selection-start-column="23" selection-end-line="137" selection-end-column="24" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="e#8574#9034#0" />
@@ -175,12 +172,12 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/style/style.css" />
-        <option value="$PROJECT_DIR$/js/draw.js" />
-        <option value="$PROJECT_DIR$/lib/svm.js" />
         <option value="$PROJECT_DIR$/lib/stats.js" />
         <option value="$PROJECT_DIR$/js/kmeans.js" />
         <option value="$PROJECT_DIR$/js/ui.js" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/js/draw.js" />
+        <option value="$PROJECT_DIR$/lib/svm.js" />
       </list>
     </option>
   </component>
@@ -265,18 +262,17 @@
       <option name="presentableId" value="Default" />
       <updated>1559544172255</updated>
       <workItem from="1559544173305" duration="234000" />
-      <workItem from="1559544428689" duration="17212000" />
+      <workItem from="1559544428689" duration="18401000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17446000" />
+    <option name="totallyTimeSpent" value="18635000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1836248" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1836248" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -288,7 +284,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" weight="0.32936978" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" visible="true" weight="0.32936978" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -304,13 +300,6 @@
         <state relative-caret-position="-2642" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/draw.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="283" column="21" selection-start-line="283" selection-start-column="21" selection-end-line="283" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/style/style.css">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
@@ -320,18 +309,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.idea/svmjs.iml">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/svm.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="143" column="32" selection-start-line="143" selection-start-column="32" selection-end-line="143" selection-end-column="32" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="e#8574#9034#0" />
-            <element signature="e#5250#5282#0" />
-          </folding>
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/stats.js">
       <provider selected="true" editor-type-id="text-editor">
@@ -397,17 +374,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="705" column="13" selection-start-line="705" selection-start-column="13" selection-end-line="705" selection-end-column="13" />
+        <state relative-caret-position="-395">
+          <caret line="262" column="31" selection-start-line="262" selection-start-column="31" selection-end-line="262" selection-end-column="31" />
           <folding>
             <element signature="n#script#12;n#head#0;n#html#0;n#!!top" />
             <element signature="e#3517#4934#0" />
             <element signature="e#4971#6324#0" />
             <element signature="e#6586#7077#0" />
             <element signature="e#7113#8207#0" />
-            <element signature="e#8239#9862#0" />
             <element signature="e#8708#8835#0" />
-            <element signature="e#8944#9334#0" />
             <element signature="e#9889#9927#0" />
             <element signature="e#10291#12425#0" />
             <element signature="e#12644#13162#0" />
@@ -430,6 +405,25 @@
             <element signature="n#div#1;n#body#0;n#html#0;n#!!top" />
             <element signature="n#div#2;n#body#0;n#html#0;n#!!top" />
             <element signature="n#div#3;n#body#0;n#html#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/draw.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="280" column="26" selection-start-line="280" selection-start-column="26" selection-end-line="280" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/svm.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="129" column="20" selection-start-line="129" selection-start-column="23" selection-end-line="137" selection-end-column="24" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="e#8574#9034#0" />
+            <element signature="e#5250#5282#0" />
           </folding>
         </state>
       </provider>
