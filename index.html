@@ -298,9 +298,7 @@
             }
         }
 
-        function myinit(){
-            setDataSet(4);
-        }
+        function myinit(){}
         function myinitTest(){}
         </script>
 
@@ -387,6 +385,36 @@
 
         <!-- main functions -->
         <script type="text/javascript">
+            function onLoad() {
+                NPGinit(10,canvasData);
+                drawTestInit(10,canvasResult);
+                dataset_modified = false;
+                clean();
+                hideUiThings();
+                showUiThings();
+            }
+            function loadConfig(json) {
+                console.info("loadConfig()");
+                N = json.N;
+                Ntest = json.Ntest;
+                datasetID = json.datasetID;
+                data = json.data;
+                labels = json.labels;
+                datatest = json.datatest;
+                labelstest = json.labelstest;
+                use_timer = json.use_timer;
+                input_transformation = json.input_transformation;
+
+                if(input_transformation){
+                    for(let i=0;i<json.inputs.length;i++) {
+                        document.getElementById(json.inputs[i]).checked = true;
+                    }
+                    inputFunctionUpdate();
+                }
+                kernelid = json.kernelid;
+                Degree = json.Degree;
+                execute();
+            }
             function execute() {
                 if(N===0) return;
                 // document.getElementById("getReady").play();
@@ -745,6 +773,75 @@
                 anch.dispatchEvent(ev);
                 document.body.removeChild(div);
             }
+            function downloadConfig() {
+                let config = {
+                    datasetID: datasetID,
+                    N:N,
+                    Ntest: Ntest,
+                    data: data,
+                    labels: labels,
+                    datatest: datatest,
+                    labelstest: labelstest,
+                    use_timer: use_timer,
+                    input_transformation: input_transformation,
+                    inputs: [],
+                    kernelid: kernelid,
+                    Degree: Degree,
+                };
+                let inputList = document.getElementsByClassName("inputF");
+                let id = 0;
+                for(let i=0;i<inputList.length;i++){
+                    id = inputList[i].id;
+                    if(document.getElementById(id).checked)
+                        config.inputs.push(id);
+                }
+
+                config = JSON.stringify(config);
+                let blob = new Blob([config],{type: jsonType});
+
+                let url = URL.createObjectURL(blob),
+                    div = document.createElement("div"),
+                    anch = document.createElement("a");
+
+                document.body.appendChild(div);
+                div.appendChild(anch);
+
+                anch.innerHTML = "&nbsp;";
+                div.style.width = "0";
+                div.style.height = "0";
+                anch.href = url;
+                anch.download = "config";
+
+                let ev = new MouseEvent("click",{});
+                anch.dispatchEvent(ev);
+                document.body.removeChild(div);
+            }
+            function uploadConfig(evt) {
+                let files = evt.target.files; // FileList object
+                //reset user data variables
+                user_data = [];
+                user_labels = [];
+                //pick the first file
+                let f = files[0];
+                if (!f.type.match('application/json')) {
+                    console.info("not");
+                    return;
+                }
+
+                let reader = new FileReader();
+
+                // Closure to capture the file information.
+                reader.onload = (function(theFile) {
+                    return function(e) {
+                        let res = e.target.result;
+                        let json = JSON.parse(res);
+                        loadConfig(json);
+                    };
+                })(f);
+
+                // Read in the image file as text
+                reader.readAsText(f);
+            }
             function uploadData(evt) {
                 let files = evt.target.files; // FileList object
                 //reset user data variables
@@ -766,6 +863,9 @@
                         let offsetx = 0;
                         let offsety = 0;
                         let res = e.target.result;
+                        //*************************************************************************
+                        // let json = JSON.parse(res);
+                        // console.info(json);
                         let i = res.search("\n");
                         let line = res.substring(0,i);
 
@@ -796,6 +896,12 @@
                 reader.readAsText(f);
 
             }
+            function setUploadDataset() {
+                document.getElementById('uploadData').click();
+            }
+            function setUploadConfig() {
+                document.getElementById('uploadConfig').click();
+            }
         </script>
         <!-- draw functions -->
         <script src="./js/draw.js"></script>
@@ -807,7 +913,7 @@
         <script type="text/javascript" src="js/functions.js"></script>
     </head>
 
-    <body onLoad="NPGinit(10,canvasData), drawTestInit(10,canvasResult),execute()"> <!-- 24 FPS -->
+    <body onLoad="onLoad()"> <!-- 24 FPS -->
         <div id="info">
             <br>
             <h1>Support Vector Machine in Javascript</h1>
@@ -828,14 +934,16 @@
                 <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
                 <button type="button" class="btn" id="cleanbtn" onclick="clean()">Clean</button>
                 <br/>
-
+                <button id="downloadConfig" class="btn action" onclick="downloadConfig()">Download Config</button>
                 <button id="downloadData" class="btn action" onclick="download(data,training_placeholder,jsonType)">Download Data</button>
                 <button id="downloadTest" class="btn action" onclick="download(datatest,test_placeholder,textType)">Download Test</button>
-                <button class="btn action">
-                    <input type="file" id="uploadData" name="files[]">
-                </button>
+                <button class="btn action" onclick="setUploadDataset()">Upload DataSet</button>
+                <button class="btn action" onclick="setUploadConfig()">Upload Configuration</button>
+                <input type="file" id="uploadData" name="files[]">
+                <input type="file" id="uploadConfig" name="files[]">
                 <script>
                     document.getElementById('uploadData').addEventListener('change', uploadData, false);
+                    document.getElementById('uploadConfig').addEventListener('change', uploadConfig, false);
                 </script>
             </div>
         </div>

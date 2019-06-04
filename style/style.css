@@ -358,6 +358,13 @@ th{
     height: 0;
     width: 0;
 }
+#uploadData,#uploadConfig{
+    z-index: -1;
+    position: absolute;
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
 
 /* Create a custom checkbox */
 .checkmark {
