@@ -66,6 +66,8 @@ function clean() {
     labels = [];
     N = 0;
     Ntest = 0;
+    hideUiThings();
+    showUiThings();
     draw();
 }
 
@@ -178,8 +180,9 @@ function drawData(ctx) {
 }
 
 function drawTest(ctx) {
-    ctx.strokeStyle = 'rgb(0,0,0)';
-    let radius = 5;
+    ctx.lineWidth = 0.75;
+    ctx.strokeStyle = 'rgb(255,255,255)';
+    let radius = 6;
     console.info(" ✏ DRAW DATA TEST: "+Ntest);
     let values = [];
     let value = 0;
@@ -208,6 +211,8 @@ function drawTest(ctx) {
     }
     let stats = statisticEval(labelstest,values);
     updateStatsTest(stats);
+    ctx.strokeStyle = 'rgb(0,0,0)';
+    ctx.lineWidth = 1;
 }
 
 function drawKmeans(ctx) {

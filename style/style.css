@@ -87,6 +87,7 @@ p {
 #info {
     background-color: #212e30;
     color: white;
+    overflow: hidden;
 }
 #nSV{
     font-weight: 800;
@@ -136,12 +137,23 @@ a{
     margin: 2%;
     padding: 2%;
 }
+#algoritm_options,#timer_options{
+    float:left;
+    width: 92%;
+    margin: 2%;
+    padding: 2%;
+}
 #kmeans-mode,#kmeans-options{
     width: 94%;
 }
 
 #bestbtn{
     width: 50%;
+}
+#use_timer_btn{
+    width: 30%;
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 

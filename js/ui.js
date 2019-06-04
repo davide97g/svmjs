@@ -70,6 +70,9 @@ function refreshStepsFrequency(event, ui) {
 }
 
 function showUiThings() {
+    if(N>0){
+        $("#execution").show();
+    }
     $("#s0").show();
     $("#s11").show();
     $("#statisticsTraining").show();
@@ -84,6 +87,10 @@ function showUiThings() {
     if(kernelid<3){
         $("#s1").show();
         // $("#optimization").show();
+        if(use_timer) {
+            $("#s12").show();
+            $("#s13").show();
+        }
         $("#statistics_svm").show();
         if(kernelid === 1){
             $("#s2").show();
@@ -91,10 +98,6 @@ function showUiThings() {
         if(kernelid === 2){
             $("#s3").show();
             $("#s4").show();
-            if(use_timer) {
-                $("#s12").show();
-                $("#s13").show();
-            }
             $("#input").show();
             $("#actions").show();
             if (input_transformation) {
@@ -115,6 +118,7 @@ function showUiThings() {
 }
 
 function hideUiThings() {
+    $("#execution").hide();
     $("#fakeInputFormula").hide();
     $("#optimization").hide();
     $("#downloadTest").hide();

@@ -19,7 +19,11 @@ function mouseClick(x, y, shiftPressed, ctrlPressed){
         labels[N] = shiftPressed ? 1 : -1;
         if (labels[N] === 1) console.info("Added 💚");
         else console.info("Added ❤️");
-        N += 1;
+        N++;
+        if(N>1){
+            hideUiThings();
+            showUiThings();
+        }
         drawTraining(ctx);
         document.getElementById("kmdata").checked = false;
     }

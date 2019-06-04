@@ -124,8 +124,8 @@ $(function() {
         orientation: "horizontal",
         slide: refreshUpdateFrequency,
         max: 5000,
-        min: 100,
-        step: 50,
+        min: 10,
+        step: 10,
         value: updateFrequency
     });
 

@@ -208,7 +208,7 @@
 
         }
         function updateStatsSVM() {
-            if(use_timer) return;
+            if(karpathy && use_timer) return;
             //support vector
             let n = countSV(svm,data);
             let nSV = document.getElementById("nSV");
@@ -423,7 +423,7 @@
 
                 ssca = document.getElementById("ssca").checked;
                 karpathy = document.getElementById("karpathy").checked;
-                use_timer = document.getElementById("use_timer").checked;
+                // use_timer = document.getElementById("use_timer").checked;
 
                 if(use_timer){
                     timer = {
@@ -646,6 +646,11 @@
                 hideUiThings();
                 showUiThings();
             }
+            function shouldUseTimer(value) {
+                use_timer = value;
+                hideUiThings();
+                showUiThings();
+            }
 
             function copyFunction() {
                 if(kernelid!==2){
@@ -806,7 +811,7 @@
                 Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
                 This version is based on the work of Andrej Karpathy. Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
             </p>
-            <div>
+            <div id="execution">
                 <audio id="hereWeGo">
                     <source src="./audio/here_we_go.mp3" type="audio/mpeg">
                     Your browser does not support the audio element.
@@ -965,22 +970,33 @@
 
             <div class="card card-1" id="execution_options">
                 <h3>Execution Options</h3>
-                <label class="container big" id="karpathy_container">Karpathy
-                    <input type="checkbox" id="karpathy" checked>
-                    <span class="checkmark"></span>
-                </label>
-                <label class="container big" id="use_timer_container">Use Timer
-                    <input type="checkbox" id="use_timer" checked>
-                    <span class="checkmark"></span>
-                </label>
-                <div id="s12" class="slider_container">
-                    <h3 id="updateFrequencyport">Update Frequency = 100 ms</h3>
-                    <div id="slider12"></div>
+                <div class="card card-1" id="algoritm_options">
+                    <h3>Training Algorithm</h3>
+                    <label class="container big" id="karpathy_container">Karpathy
+                        <input type="radio" name="algorithm" id="karpathy" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container big" id="platt_container">John Platt
+                        <input type="radio" name="algorithm" id="platt">
+                        <span class="checkmark"></span>
+                    </label>
                 </div>
-                <div id="s13" class="slider_container">
-                    <h3 id="stepsFrequencyport">Steps Frequency = 10 steps</h3>
-                    <div id="slider13"></div>
+                <div class="card card-1" id="timer_options">
+                    <button type="button" class="btn" id="use_timer_btn" onclick="shouldUseTimer(!use_timer)">Use Timer</button>
+                    <!--<label class="container big" id="use_timer_container">Use Timer
+                        <input type="checkbox" id="use_timer" checked>
+                        <span class="checkmark"></span>
+                    </label> -->
+                    <div id="s12" class="slider_container">
+                        <h3 id="updateFrequencyport">Update Frequency = 100 ms</h3>
+                        <div id="slider12"></div>
+                    </div>
+                    <div id="s13" class="slider_container">
+                        <h3 id="stepsFrequencyport">Steps Frequency = 10 steps</h3>
+                        <div id="slider13"></div>
+                    </div>
                 </div>
+
             </div>
 
             <div class="card card-1" id="kernels">
