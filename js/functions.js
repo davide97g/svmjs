@@ -1,12 +1,12 @@
 $(function() {
-    // for C parameter
+    // for N dataset
     $("#slider0").slider({
         orientation: "horizontal",
         slide: refreshN,
         max: 1000,
         min: 10,
         step: 10,
-        value: 100
+        value: N
     });
     
     // for C parameter
@@ -36,7 +36,7 @@ $(function() {
         max: 5.0,
         min: 1.0,
         step: 1.0,
-        value: 2.0
+        value: Degree
     });
     
     // for polynomial kernel influence

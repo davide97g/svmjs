@@ -63,6 +63,10 @@
     background-color: rgba(236, 240, 241, .3);
 }
 
+.visibility{
+    margin-left: 25%;
+    margin-right: 25%;
+}
 
 canvas {
     border: 1px solid #555;
@@ -131,13 +135,13 @@ a{
     float: left;
 }
 
-#values,#datasets,#datasets2,#kernels,#evalutation,#input,#kmeans,#distances,#execution_options{
+#values,#datasets,#datasets2,#kernels,#evalutation,#kmeans,#distances,#execution_options{
     float:left;
     width: 42%;
     margin: 2%;
     padding: 2%;
 }
-#algoritm_options,#timer_options{
+#algoritm_options,#timer_options,#input{
     float:left;
     width: 92%;
     margin: 2%;
@@ -150,7 +154,7 @@ a{
 #bestbtn{
     width: 50%;
 }
-#use_timer_btn{
+#use_timer_btn,#input_transformations{
     width: 30%;
     margin-left: 15%;
     margin-right: 15%;

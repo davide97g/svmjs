@@ -13,7 +13,7 @@ function refreshSig(event, ui) {
 
 function refreshDegree(event, ui) {
     Degree = ui.value;
-    $("#degport").text("Polynomial Kernel degree = " + Degree.toPrecision(2));
+    $("#degport").text("Polynomial Kernel degree = " + Degree);
 
 }
 
@@ -34,7 +34,7 @@ function refreshK(event, ui) {
 
 function refreshP(event, ui) {
     P =  ui.value;
-    $("#pport").text("Minkowski with P = " + P.toPrecision(2));
+    $("#pport").text("Minkowski with P = " + P);
 }
 
 function refreshN(event, ui) {
@@ -54,11 +54,11 @@ function refreshEpsilon(event, ui) {
 }
 function refreshKmeans1(event, ui) {
     Km1 =  ui.value;
-    $("#kmeans1port").text("K1 (Means) = " + Km1.toPrecision(2));
+    $("#kmeans1port").text("K1 (Means) = " + Km1);
 }
 function refreshKmeans2(event, ui) {
     Km2 =  ui.value;
-    $("#kmeans2port").text("K2 (Means) = " + Km2.toPrecision(2));
+    $("#kmeans2port").text("K2 (Means) = " + Km2);
 }
 function refreshUpdateFrequency(event, ui) {
     updateFrequency =  ui.value;
@@ -69,10 +69,34 @@ function refreshStepsFrequency(event, ui) {
     $("#stepsFrequencyport").text("Steps Frequency = " + stepsFrequency +" steps");
 }
 
-function showUiThings() {
-    if(N>0){
-        $("#execution").show();
+function setTabVisibility(id,value) {
+    console.info(id);
+    if(id.search("info")>=0){
+        info_tab = value;
     }
+    else if(id.search("draw")>=0){
+        draw_tab = value;
+    }
+    else if(id.search("statistics")>=0){
+        statistics_tab = value;
+    }
+    else if(id.search("options")>=0){
+        options_tab = value;
+    }
+    hideUiThings();
+    showUiThings();
+}
+
+function showUiThings() {
+    if(info_tab)
+        $("#info").show();
+    if(draw_tab)
+        $("#draw").show();
+    if(statistics_tab)
+        $("#statistics").show();
+    if(options_tab)
+        $("#options").show();
+
     $("#s0").show();
     $("#s11").show();
     $("#statisticsTraining").show();
@@ -98,9 +122,9 @@ function showUiThings() {
         if(kernelid === 2){
             $("#s3").show();
             $("#s4").show();
-            $("#input").show();
             $("#actions").show();
             if (input_transformation) {
+                $("#input").show();
                 $("#input_choice").show();
             }
         }
@@ -118,7 +142,10 @@ function showUiThings() {
 }
 
 function hideUiThings() {
-    $("#execution").hide();
+    $("#info").hide();
+    $("#draw").hide();
+    $("#statistics").hide();
+    $("#options").hide();
     $("#fakeInputFormula").hide();
     $("#optimization").hide();
     $("#downloadTest").hide();

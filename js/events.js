@@ -20,10 +20,6 @@ function mouseClick(x, y, shiftPressed, ctrlPressed){
         if (labels[N] === 1) console.info("Added 💚");
         else console.info("Added ❤️");
         N++;
-        if(N>1){
-            hideUiThings();
-            showUiThings();
-        }
         drawTraining(ctx);
         document.getElementById("kmdata").checked = false;
     }
