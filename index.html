@@ -380,6 +380,7 @@
         <!-- main functions -->
         <script type="text/javascript">
             function execute() {
+                // document.getElementById("getReady").play();
                 console.clear();
                 console.info("🔨 EXECUTE");
                 update();
@@ -391,6 +392,7 @@
                         retrainSVM();
                         draw();
                         moveProgressBar(100,1000);
+                        // document.getElementById("hereWeGo").play();
                     }, 400);
                 },100);
                 return 0;
@@ -805,6 +807,14 @@
                 This version is based on the work of Andrej Karpathy. Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
             </p>
             <div>
+                <audio id="hereWeGo">
+                    <source src="./audio/here_we_go.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <audio id="getReady">
+                    <source src="./audio/get_ready.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
                 <button type="button" class="btn" id="gobtn" onclick="execute()">Execute</button>
                 <button type="button" class="btn" id="testbtn" onclick="test()">Test</button>
                 <button type="button" class="btn" id="cleanbtn" onclick="clean()">Clean</button>
@@ -1066,7 +1076,7 @@
                 <div class="card card-1" id="kmeans-mode">
                     <h3>Mode</h3>
                     <label class="container big">Algorithm
-                        <input type="radio" name="kmeans" id="calculate_kmeans_points" value="algorithm">
+                        <input type="radio" name="kmeans" id="calculate_kmeans_points" value="algorithm" checked>
                         <span class="checkmark"></span>
                     </label>
                     <label class="container big">User

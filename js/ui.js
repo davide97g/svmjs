@@ -66,7 +66,7 @@ function refreshUpdateFrequency(event, ui) {
 }
 function refreshStepsFrequency(event, ui) {
     stepsFrequency =  ui.value;
-    $("#stepsFrequencyport").text("K2 (Means) = " + stepsFrequency +" steps");
+    $("#stepsFrequencyport").text("Steps Frequency = " + stepsFrequency +" steps");
 }
 
 function showUiThings() {
