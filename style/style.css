@@ -130,7 +130,7 @@ a{
     float: left;
 }
 
-#values,#datasets,#datasets2,#kernels,#evalutation,#input,#kmeans,#distances{
+#values,#datasets,#datasets2,#kernels,#evalutation,#input,#kmeans,#distances,#execution_options{
     float:left;
     width: 42%;
     margin: 2%;
@@ -144,10 +144,7 @@ a{
     width: 50%;
 }
 
-#karpathy_container{
-    margin: auto;
-    float: none;
-}
+
 
 .slider_container{
     text-align: center;

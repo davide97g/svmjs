@@ -277,9 +277,54 @@ function drawGrid(ctx) {
     }
 }
 
+function drawIntermidiate(ctx,wb) {
+    // ctx.clearRect(0,0,WIDTH,HEIGHT); //clear canvas
+    // draw();
+    let xs= [-7, 7];
+    let ys= [0, 0];
+    if(!karpathy)
+        wb.b = -wb.b;
+    ys[0]= (-wb.b - wb.w[0]*xs[0])/wb.w[1];
+    ys[1]= (-wb.b - wb.w[0]*xs[1])/wb.w[1];
+    ctx.fillStyle = 'rgb(0,0,0)';
+    ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    // wx+b=0 line
+    ctx.moveTo(xs[0]*ss+WIDTH/2, ys[0]*ss+HEIGHT/2);
+    ctx.lineTo(xs[1]*ss+WIDTH/2, ys[1]*ss+HEIGHT/2);
+    // // wx+b=1 line
+    // ctx.moveTo(xs[0]*ss+WIDTH/2, (ys[0]-1.0/wb.w[1])*ss+HEIGHT/2);
+    // ctx.lineTo(xs[1]*ss+WIDTH/2, (ys[1]-1.0/wb.w[1])*ss+HEIGHT/2);
+    // // wx+b=-1 line
+    // ctx.moveTo(xs[0]*ss+WIDTH/2, (ys[0]+1.0/wb.w[1])*ss+HEIGHT/2);
+    // ctx.lineTo(xs[1]*ss+WIDTH/2, (ys[1]+1.0/wb.w[1])*ss+HEIGHT/2);
+    ctx.stroke();
+
+    // // draw margin lines for support vectors. The sum of the lengths of these
+    // // lines, scaled by C is essentially the total hinge loss.
+    // for(let i=0;i<data.length;i++) {
+    //     if(alpha[i]<1e-2) continue;
+    //     if(labels[i]===1) {
+    //         ys[0]= (1 -wb.b - wb.w[0]*xs[0])/wb.w[1];
+    //         ys[1]= (1 -wb.b - wb.w[0]*xs[1])/wb.w[1];
+    //     } else {
+    //         ys[0]= (-1 -wb.b - wb.w[0]*xs[0])/wb.w[1];
+    //         ys[1]= (-1 -wb.b - wb.w[0]*xs[1])/wb.w[1];
+    //     }
+    //     let u= (data[i][0]-xs[0])*(xs[1]-xs[0])+(data[i][1]-ys[0])*(ys[1]-ys[0]);
+    //     u = u/((xs[0]-xs[1])*(xs[0]-xs[1])+(ys[0]-ys[1])*(ys[0]-ys[1]));
+    //     let xi= xs[0]+u*(xs[1]-xs[0]);
+    //     let yi= ys[0]+u*(ys[1]-ys[0]);
+    //     ctx.moveTo(data[i][0]*ss+WIDTH/2, data[i][1]*ss+HEIGHT/2);
+    //     ctx.lineTo(xi*ss+WIDTH/2, yi*ss+HEIGHT/2);
+    // }
+    // ctx.stroke();
+}
+
 function drawDataLinearKernel(ctx) {
     wb = svm.getWeights();
-    let xs= [-5, 5];
+    let xs= [-7, 7];
     let ys= [0, 0];
     if(!karpathy)
         wb.b = -wb.b;

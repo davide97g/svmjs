@@ -109,7 +109,7 @@ $(function() {
         value: 3
     });
     
-    // for K2 in Kmeans
+    // for Ntest
     $("#slider11").slider({
         orientation: "horizontal",
         slide: refreshNtest,
@@ -117,6 +117,26 @@ $(function() {
         min: 10,
         step: 1,
         value: 100
+    });
+
+    // for update frequency for span time smo
+    $("#slider12").slider({
+        orientation: "horizontal",
+        slide: refreshUpdateFrequency,
+        max: 5000,
+        min: 100,
+        step: 50,
+        value: updateFrequency
+    });
+
+    // for steps frequency for span time smo
+    $("#slider13").slider({
+        orientation: "horizontal",
+        slide: refreshStepsFrequency,
+        max: 1000,
+        min: 10,
+        step: 10,
+        value: stepsFrequency
     });
     
 });

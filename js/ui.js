@@ -60,6 +60,14 @@ function refreshKmeans2(event, ui) {
     Km2 =  ui.value;
     $("#kmeans2port").text("K2 (Means) = " + Km2.toPrecision(2));
 }
+function refreshUpdateFrequency(event, ui) {
+    updateFrequency =  ui.value;
+    $("#updateFrequencyport").text("Update Frequency = " + updateFrequency +" ms");
+}
+function refreshStepsFrequency(event, ui) {
+    stepsFrequency =  ui.value;
+    $("#stepsFrequencyport").text("K2 (Means) = " + stepsFrequency +" steps");
+}
 
 function showUiThings() {
     $("#s0").show();
@@ -83,6 +91,10 @@ function showUiThings() {
         if(kernelid === 2){
             $("#s3").show();
             $("#s4").show();
+            if(use_timer) {
+                $("#s12").show();
+                $("#s13").show();
+            }
             $("#input").show();
             $("#actions").show();
             if (input_transformation) {
