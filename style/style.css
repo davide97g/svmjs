@@ -229,7 +229,7 @@ th{
     font-size: 14px;
 }
 #tp,#tp2{
-    background-color: rgba(43, 255, 142, 0.75);
+    background-color: var(--primary-c);
 }
 #fp,#fp2{
     background-color: rgba(37, 159, 255, 0.75);
@@ -238,7 +238,7 @@ th{
     background-color: rgba(255, 226, 52, 0.75);
 }
 #tn,#tn2{
-    background-color: rgba(255, 41, 58, 0.75);
+    background-color: var(--action-c);
 }
 
 #formulaL{
@@ -247,6 +247,8 @@ th{
     width: 90%;
     font-family: "Courier New",sans-serif;
     font-size: 20px;
+    background-color: var(--primary-c-darker);
+    color: white;
 }
 
 .card {

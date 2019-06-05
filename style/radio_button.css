@@ -1,15 +1,15 @@
 /* Variables
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 :root {
-    --primary-c: #26a2cc;
-    --primary-c-darker: #226b91;
+    --primary-c: #64c864;
+    --primary-c-darker: #489048;
     --primary-c-accent: #2bd0ff;
     --secondary-c: #B2D7F5;
-    --action-c: #ff2c44;
-    --action-c-darker: #b2252e;
+    --action-c: #c86464;
+    --action-c-darker: #8d4747;
     --white: #FDFBFB;
 
-    --text: #082943;
+    --text: #212121;
     --bg: var(--primary-c);
 }
 
