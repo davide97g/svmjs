@@ -69,6 +69,22 @@ function refreshStepsFrequency(event, ui) {
     $("#stepsFrequencyport").text("Steps Frequency = " + stepsFrequency +" steps");
 }
 
+function refreshTrees(event, ui) {
+    let numTrees = Math.floor(ui.value);
+    $("#treesreport").text("Number of Trees = " + numTrees);
+    options.numTrees= numTrees;
+}
+function refreshDepth(event, ui) {
+    let maxDepth = Math.floor(ui.value);
+    $("#depthreport").text("Max Depth = " + maxDepth);
+    options.maxDepth = maxDepth;
+}
+function refreshTries(event, ui) {
+    let tries = Math.floor(ui.value);
+    $("#triesreport").text("Hypotheses / node = " + tries);
+    options.numTries = tries;
+}
+
 function setTabVisibility(id,value) {
     console.info(id);
     if(id.search("info")>=0){
@@ -108,10 +124,15 @@ function showUiThings() {
         $("#statisticsTest").show();
         $("#downloadTest").show();
     }
-    if(kernelid<3){
+
+    if(methodID===0){ //SVM
+        $("#kernels").show();
+        $("#execution_options").show();
+        // $("#svm").show();
         $("#s1").show();
         // $("#optimization").show();
-        $("#input_transformations").show();
+        // if(ssca) $("#s5").show();
+        $("#statistics_svm").show();
         if(karpathy){
             $("#timer_options").show();
             if(use_timer) {
@@ -119,29 +140,42 @@ function showUiThings() {
                 $("#s13").show();
             }
         }
-        $("#statistics_svm").show();
-        if(kernelid === 1){
-            $("#s2").show();
-        }
-        if(kernelid === 2){
-            $("#s3").show();
-            $("#s4").show();
-            $("#actions").show();
+        if(kernelid === 0){ //linear
+            $("#input_transformations").show();
             if (input_transformation) {
                 $("#input").show();
                 $("#input_choice").show();
             }
         }
-        if(ssca) $("#s5").show();
+        else if(kernelid === 1){ //poly
+            $("#s3").show();
+            $("#s4").show();
+            $("#actions").show();
+        }
+        else if(kernelid === 2){ //rbf
+            $("#s2").show();
+        }
+        else if(kernelid === 3){//sigmoid
+            $("#s4").show();
+        }
     }
-    if(kernelid===3) {
+    else if(methodID===1) { //KNN
+        // $("#knn").show();
         $("#s6").show(); //slider for K in KNN
         $("#distances").show(); //distances buttons
         if(distanceid===0)  //minkowski
             $("#s7").show(); //slider for minkowski P
     }
-    if(kernelid===4){
+    else if(methodID===2){ //RBF
+        // $("#rbf").show();
         $("#s8").show(); //slider for epsilon
+    }
+    else if(methodID===3){ //Random Forest
+        $("#decisions").show();
+        $("#assignments").show();
+        $("#s14").show(); //slider for epsilon
+        $("#s15").show(); //slider for epsilon
+        $("#s16").show(); //slider for epsilon
     }
 }
 
@@ -163,6 +197,10 @@ function hideUiThings() {
     $("#statisticsTest").hide();
     $("#statistics_svm").hide();
     $("#kmeans").hide();
+    $("#kernels").hide();
+    $("#execution_options").hide();
+    $("#decisions").hide();
+    $("#assignments").hide();
     $(".slider_container").hide(); // per nascondere gli slider che non servono
 }
 

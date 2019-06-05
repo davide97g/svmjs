@@ -49,7 +49,7 @@ let drawerjs = (function (exports) {
             else drawDataKmeans(ctxTest);
 
             //draw linear kernel lines and support vector
-            if( kernelid===0 || (kernelid === 2 && Degree ===  1))
+            if( kernelid===0)
                 drawDataLinearKernel(ctxTest);
         },
     };
@@ -77,7 +77,11 @@ function draw(){
 
     ctxTest.clearRect(0,0,WIDTH,HEIGHT);
     if(N===0) return;
-    drawGrid(ctxTest);
+    if(methodID!==3)
+        drawGrid(ctxTest);
+    else
+        drawRandomForest(ctxTest);
+
     drawAxes(ctxTest);
 
     drawData(ctxTest);
@@ -93,8 +97,42 @@ function draw(){
     else drawDataKmeans(ctxTest);
 
     //draw linear kernel lines and support vector
-    if( !input_transformation && (kernelid===0 || (kernelid === 2 && Degree ===  1)))
+    if( methodID===0 && !input_transformation && kernelid===0)
         drawDataLinearKernel(ctxTest);
+}
+
+function drawRandomForest(ctx) {
+    ctx.clearRect(0,0,WIDTH,HEIGHT);
+    density = 2;
+    // draw decisions in the grid
+    for(let x=0.0; x<=WIDTH; x+= density) {
+        for(let y=0.0; y<=HEIGHT; y+= density) {
+
+            let dec= tree.predictOne([(x-WIDTH/2)/ss, (y-HEIGHT/2)/ss]);
+
+            if(!drawSoft) {
+                if(dec > 0.5) ctx.fillStyle = 'rgb(150,250,150)';
+                else ctx.fillStyle = 'rgb(250,150,150)';
+            } else {
+                let ri= 250*(1-dec) + 150*dec;
+                let gi= 250*dec + 150*(1-dec);
+                ctx.fillStyle = 'rgb('+Math.floor(ri)+','+Math.floor(gi)+',150)';
+            }
+
+            ctx.fillRect(x-density/2-1, y-density-1, density+2, density+2);
+        }
+    }
+
+    // draw axes
+    // drawAxes(ctx);
+
+    // // draw datapoints.
+    // ctx.strokeStyle = 'rgb(0,0,0)';
+    // for(let i=0;i<N;i++) {
+    //     if(labels[i]===1) ctx.fillStyle = 'rgb(100,200,100)';
+    //     else ctx.fillStyle = 'rgb(200,100,100)';
+    //     drawCircle(data[i][0]*ss+WIDTH/2, data[i][1]*ss+HEIGHT/2, 5);
+    // }
 }
 
 function drawTraining(ctx) {
@@ -143,7 +181,7 @@ function drawData(ctx) {
     console.info(" ✏ DRAW DATA: "+N);
     let values = [];
     for(let i=0;i<N;i++) {
-        if(kernelid<3) {
+        if(methodID===0) {
             if(svm.alpha[i]>1e-7) {
                 ctx.lineWidth = 3; // distinguish support vectors
                 radius = Math.floor(3+svm.alpha[i]*5.0/svmC);
@@ -298,33 +336,7 @@ function drawIntermidiate(ctx,wb) {
     // wx+b=0 line
     ctx.moveTo(xs[0]*ss+WIDTH/2, ys[0]*ss+HEIGHT/2);
     ctx.lineTo(xs[1]*ss+WIDTH/2, ys[1]*ss+HEIGHT/2);
-    // // wx+b=1 line
-    // ctx.moveTo(xs[0]*ss+WIDTH/2, (ys[0]-1.0/wb.w[1])*ss+HEIGHT/2);
-    // ctx.lineTo(xs[1]*ss+WIDTH/2, (ys[1]-1.0/wb.w[1])*ss+HEIGHT/2);
-    // // wx+b=-1 line
-    // ctx.moveTo(xs[0]*ss+WIDTH/2, (ys[0]+1.0/wb.w[1])*ss+HEIGHT/2);
-    // ctx.lineTo(xs[1]*ss+WIDTH/2, (ys[1]+1.0/wb.w[1])*ss+HEIGHT/2);
     ctx.stroke();
-
-    // // draw margin lines for support vectors. The sum of the lengths of these
-    // // lines, scaled by C is essentially the total hinge loss.
-    // for(let i=0;i<data.length;i++) {
-    //     if(alpha[i]<1e-2) continue;
-    //     if(labels[i]===1) {
-    //         ys[0]= (1 -wb.b - wb.w[0]*xs[0])/wb.w[1];
-    //         ys[1]= (1 -wb.b - wb.w[0]*xs[1])/wb.w[1];
-    //     } else {
-    //         ys[0]= (-1 -wb.b - wb.w[0]*xs[0])/wb.w[1];
-    //         ys[1]= (-1 -wb.b - wb.w[0]*xs[1])/wb.w[1];
-    //     }
-    //     let u= (data[i][0]-xs[0])*(xs[1]-xs[0])+(data[i][1]-ys[0])*(ys[1]-ys[0]);
-    //     u = u/((xs[0]-xs[1])*(xs[0]-xs[1])+(ys[0]-ys[1])*(ys[0]-ys[1]));
-    //     let xi= xs[0]+u*(xs[1]-xs[0]);
-    //     let yi= ys[0]+u*(ys[1]-ys[0]);
-    //     ctx.moveTo(data[i][0]*ss+WIDTH/2, data[i][1]*ss+HEIGHT/2);
-    //     ctx.lineTo(xi*ss+WIDTH/2, yi*ss+HEIGHT/2);
-    // }
-    // ctx.stroke();
 }
 
 function drawDataLinearKernel(ctx) {
@@ -375,8 +387,8 @@ function getValue(v) {
     let x = v[0];
     let y = v[1];
 
-    if(kernelid<3){
-        if(kernelid===2 && input_transformation){
+    if(methodID===0){
+        if(kernelid===0){
             let input_f = (function () {});
             for(let i=0;i<input_functions.length;i++){
                 input_f = input_functions[i];
@@ -385,11 +397,16 @@ function getValue(v) {
         }
         value = svm.marginOne(v);
     }
-    else if(kernelid===3) { //KNN
+    else if(methodID===1) { //KNN
         value = KNN(x,y,K);
     }
-    else if(kernelid===4){ //RBF
+    else if(methodID===2){ //RBF
         value = RBF(x,y);
+    }
+    else if(methodID===3){ //Random Forest
+        value = tree.predictOne([x,y]);
+        if(value>0.5) value = 1;
+        else value = -1;
     }
     return value;
 }
@@ -397,24 +414,28 @@ function getValue(v) {
 function getColor(v) {
     let color;
     let value = getValue(v);
-    if(kernelid<3){
+    if(methodID===0){
         // value= getValue(v);
         if(value>0) color = 'rgb(150,250,150)';
         else color = 'rgb(250,150,150)';
     }
-    else if(kernelid===3) { //KNN
+    else if(methodID===1) { //KNN
         // value = getValue(v);
         if(value === 1) color = 'rgb(150,250,150)'; //green
         else if(value === 0) color = 'rgb(244,220,66)'; //yellow gold
         else color = 'rgb(250,150,150)'; //red
     }
-    else if(kernelid===4){ //RBF
+    else if(methodID===2){ //RBF
         // value = getValue(v);
         if(value === 2) color = 'rgb(150,250,150)'; //green
         else if(value === 0) color = 'rgb(0,0,0)'; //pure black
         else if(value === 1) color = 'rgb(255,255,50)'; //yellow gold
         else if(value === -1) color = 'rgb(255,165,50)'; //orange
         else if(value === -2) color = 'rgb(250,150,150)'; //red
+    }
+    else if(methodID===3){ // Random Forest
+        if(value > 0) color = 'rgb(150,250,150)';
+        else color = 'rgb(250,150,150)';
     }
     return color;
 }

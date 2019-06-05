@@ -28,6 +28,10 @@ label {
     font-weight: 400;
 }
 
+.circle{
+    border-radius: 50%;
+}
+
 .check {
     width: 30px; height: 30px;
     position: absolute;

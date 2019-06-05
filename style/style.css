@@ -108,6 +108,14 @@ a{
 .green{
     color: #5dff91;
 }
+
+#svm{
+    margin: 2%;
+    padding: 2%;
+    text-align: center;
+    width: 92%;
+    float: left;
+}
 #instructions {
     float: left;
     text-align: center;
@@ -135,7 +143,15 @@ a{
     float: left;
 }
 
-#values,#kernels,#evalutation,#kmeans-mode,#kmeans-options{
+#knn,#rbf,#rforest,#logistic{
+    float:left;
+    width: 92%;
+    margin: 2%;
+    padding: 2%;
+}
+
+
+#values,#kernels,#evalutation,#kmeans-mode,#kmeans-options,#assignments,#decisions{
     float:left;
     width: 42%;
     margin: 2%;
@@ -147,9 +163,15 @@ a{
     margin: 2%;
     padding: 2%;
 }
-#algoritm_options,#timer_options{
+#execution_options{
     float:left;
     width: 42%;
+    margin: 2%;
+    padding: 2%;
+}
+#algoritm_options,#timer_options{
+    float:left;
+    width: 92%;
     margin: 2%;
     padding: 2%;
 }
@@ -168,7 +190,11 @@ a{
     margin-right: 15%;
 }
 
-
+.divider{
+    margin: auto;
+    border-bottom: rgba(0, 0, 0, 0.71) 3px dotted;
+    width: 65%;
+}
 
 .slider_container{
     text-align: center;
@@ -208,7 +234,7 @@ a{
     padding: 2%;
     width: 60%;
 }
-#scoreboard_table,#algorithms,#execution_options{
+#scoreboard_table,#algorithms{
     width: 96%;
 }
 table{

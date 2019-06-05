@@ -33,9 +33,9 @@ $(function() {
     $("#slider3").slider({
         orientation: "horizontal",
         slide: refreshDegree,
-        max: 5.0,
-        min: 1.0,
-        step: 1.0,
+        max: 5,
+        min: 2,
+        step: 1,
         value: Degree
     });
     
@@ -138,9 +138,34 @@ $(function() {
         step: 10,
         value: stepsFrequency
     });
-    
-});
 
+    $("#slider14").slider({
+        orientation: "horizontal",
+        slide: refreshTrees,
+        max: 200,
+        min: 1,
+        step: 1,
+        value: 100
+    });
+
+    $("#slider15").slider({
+        orientation: "horizontal",
+        slide: refreshDepth,
+        max: 12,
+        min: 2,
+        step: 1,
+        value: 4
+    });
+
+    $("#slider16").slider({
+        orientation: "horizontal",
+        slide: refreshTries,
+        max: 50,
+        min: 1,
+        step: 1,
+        value: 10
+    });
+});
 
 function changeKernel(id){
     if(kernelid !== id){
@@ -149,7 +174,13 @@ function changeKernel(id){
         showUiThings();
     }
 }
-
+function changeMethod(id) {
+    if(methodID !== id){
+        methodID = id;
+        hideUiThings();
+        showUiThings();
+    }
+}
 function changeAlgorithm() {
     if(karpathy !== document.getElementById("karpathy").checked){
         karpathy = !karpathy;
@@ -157,7 +188,6 @@ function changeAlgorithm() {
         showUiThings();
     }
 }
-
 function changeDistance(id) {
     if(distanceid === id) return;
     if(id===0)
@@ -172,7 +202,6 @@ function changeDistance(id) {
     showUiThings();
 }
 
-function setSSCA(value) {
-    ssca = value;
-    
-}
+// function setSSCA(value) {
+//     ssca = value;
+// }
