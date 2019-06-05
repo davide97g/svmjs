@@ -4,6 +4,7 @@
         <title>SVM Javascript</title>
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700&display=swap" rel="stylesheet">
         <link type="text/css" href="./jqueryui/css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />
+        <link type="text/css" rel="stylesheet" href="style/root.css"/>
         <link type="text/css" rel="stylesheet" href="style/style.css"/>
         <link type="text/css" rel="stylesheet" href="style/radio_button.css"/>
         <link type="text/css" rel="stylesheet" href="style/progress_bar.css"/>
@@ -949,11 +950,9 @@
                 </script>
             </div>
         </div>
-
         <div id="progress-wrap" class="progress-wrap progress">
             <div id="progress-bar" class="progress-bar progress"></div>
         </div>
-
         <button type="button" class="btn visibility" id="draw_tab_btn" onclick="setTabVisibility(id,!draw_tab)">Draw</button>
         <div id="draw">
             <canvas class="card card-1 nopadding" id="canvasData" width="500px" height="500px">Browser not supported for Canvas. Get a real browser.
@@ -961,7 +960,6 @@
             <canvas class="card card-1 nopadding" id="canvasResult" width="500px" height="500px">Browser not supported for Canvas. Get a real browser.
             </canvas>
         </div>
-
         <button type="button" class="btn visibility" id="statistics_tab_btn" onclick="setTabVisibility(id,!statistics_tab)">Statistics</button>
         <div class="card card-1" id="statistics">
             <div class="card card-1" id="statistics_score">
@@ -1084,7 +1082,6 @@
                 </div>
             </div>
         </div>
-
         <button type="button" class="btn visibility" id="options_tab_btn" onclick="setTabVisibility(id,!options_tab)">Options</button>
         <div class="card card-1" id="options">
             <div class="card card-1" id="execution_options">
