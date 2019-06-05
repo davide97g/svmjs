@@ -6,7 +6,7 @@ $(function() {
         max: 1000,
         min: 10,
         step: 10,
-        value: N
+        value: 100
     });
     
     // for C parameter
@@ -145,6 +145,14 @@ $(function() {
 function changeKernel(id){
     if(kernelid !== id){
         kernelid = id;
+        hideUiThings();
+        showUiThings();
+    }
+}
+
+function changeAlgorithm() {
+    if(karpathy !== document.getElementById("karpathy").checked){
+        karpathy = !karpathy;
         hideUiThings();
         showUiThings();
     }

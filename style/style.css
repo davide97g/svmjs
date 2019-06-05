@@ -135,13 +135,19 @@ a{
     float: left;
 }
 
-#values,#datasets,#datasets2,#kernels,#evalutation,#kmeans,#distances,#execution_options{
+#values,#datasets,#datasets2,#kernels,#evalutation,#kmeans{
     float:left;
     width: 42%;
     margin: 2%;
     padding: 2%;
 }
-#algoritm_options,#timer_options,#input{
+#algoritm_options,#timer_options{
+    float:left;
+    width: 42%;
+    margin: 2%;
+    padding: 2%;
+}
+#input,#distances{
     float:left;
     width: 92%;
     margin: 2%;
@@ -150,11 +156,10 @@ a{
 #kmeans-mode,#kmeans-options{
     width: 94%;
 }
-
-#bestbtn{
-    width: 50%;
+#input_choice{
+    text-align: center;
 }
-#use_timer_btn,#input_transformations{
+#use_timer_btn{
     width: 30%;
     margin-left: 15%;
     margin-right: 15%;
@@ -200,7 +205,7 @@ a{
     padding: 2%;
     width: 60%;
 }
-#scoreboard_table{
+#scoreboard_table,#algorithms,#execution_options{
     width: 96%;
 }
 table{
@@ -319,10 +324,6 @@ th{
     opacity: 1;
 }
 
-#draw_kmeans_points{
-    float: left;
-    margin-left: 5%;
-}
 /* The container */
 .container {
     float: left;
@@ -337,6 +338,12 @@ th{
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+#evalutation, #kernels{
+    text-align: left;
+}
+.full{
+    width: 51%;
 }
 .big{
     width: 46%;

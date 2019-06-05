@@ -93,7 +93,7 @@
         let user_data = [];
         let user_labels = [];
 
-        let use_timer = true;
+        let use_timer = false;
         let updateFrequency = 100;
         let stepsFrequency = 10;
         let timer = {
@@ -106,6 +106,8 @@
         <!-- Dataset - Retrain - init -->
         <script type="text/javascript">
         function setDataSet(id) {
+            let string =document.getElementById("nport").innerText;
+            N = parseInt(string.substring(4,string.length));
             if(datasetID !== id){
                 datasetID = id;
                 dataset_modified = true;
@@ -1090,11 +1092,11 @@
                 <div class="card card-1" id="algoritm_options">
                     <h3>Training Algorithm</h3>
                     <label class="container big" id="karpathy_container">Karpathy
-                        <input type="radio" name="algorithm" id="karpathy" checked>
+                        <input type="radio" name="algorithm" id="karpathy"  onclick="changeAlgorithm(0)" checked>
                         <span class="checkmark"></span>
                     </label>
                     <label class="container big" id="platt_container">John Platt
-                        <input type="radio" name="algorithm" id="platt">
+                        <input type="radio" name="algorithm" id="platt" onclick="changeAlgorithm(1)">
                         <span class="checkmark"></span>
                     </label>
                 </div>
@@ -1113,115 +1115,144 @@
                         <div id="slider13"></div>
                     </div>
                 </div>
-
             </div>
-            <div class="card card-1" id="kernels">
-                <h3>Kernels</h3>
-                <button id="rbfk" class="btn" onclick="changeKernel(1)">RBF</button>
-                <button id="poly" class="btn" onclick="changeKernel(2)">Polynomial</button>
-                <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
-                <div class="card card-1" id="input">
-                    <div id="input_choice">
-                        <label class="container small ">x^2
-                            <input type="checkbox" class="inputF" id="x2">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container small ">y^2
-                            <input type="checkbox" class="inputF" id="y2">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container small ">x^3
-                            <input type="checkbox" class="inputF" id="x3">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container small ">y^3
-                            <input type="checkbox" class="inputF" id="y3">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container medium ">x^2+y^2
-                            <input type="checkbox" class="inputF" id="x2y2">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container medium ">x^2-y^2
-                            <input type="checkbox" class="inputF" id="x2_y2">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container medium ">x*y
-                            <input type="checkbox" class="inputF" id="xy">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container small ">sin(x)
-                            <input type="checkbox" class="inputF" id="sinx">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container small ">cos(x)
-                            <input type="checkbox" class="inputF" id="cosx">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container small ">sin(y)
-                            <input type="checkbox" class="inputF" id="siny">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container small ">cos(y)
-                            <input type="checkbox" class="inputF" id="cosy">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container big ">sin(x)+cos(y)
-                            <input type="checkbox" class="inputF" id="sinxcosy">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container big ">sin(y)+cos(x)
-                            <input type="checkbox" class="inputF" id="sinycosx">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container big ">sin(x)*cos(y)
-                            <input type="checkbox" class="inputF" id="sinxcosydot">
-                            <span class="checkmark"></span>
-                        </label>
-                        <label class="container big ">sin(y)*cos(x)
-                            <input type="checkbox" class="inputF" id="sinycosxdot">
-                            <span class="checkmark"></span>
-                        </label>
-                        <button type="button" class="btn" id="bestbtn" onclick="best()"><strong>Sort out the Best-Single-Input?</strong></button>
+            <div class="card card-1" id="algorithms">
+                <h3>Algorithms</h3>
+                <div class="card card-1" id="kernels">
+                    <h3>Kernels</h3>
+<!--                    <button id="rbfk" class="btn" onclick="changeKernel(1)">RBF</button>-->
+<!--                    <button id="poly" class="btn" onclick="changeKernel(2)">Polynomial</button>-->
+                    <label class="container full">Polynomial
+                        <input type="radio" name="algorithms" id="radio_poly" onclick="changeKernel(2)" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="container full">RBF
+                        <input type="radio" name="algorithms" id="radio_rbfK" onclick="changeKernel(1)">
+                        <span class="checkmark"></span>
+                    </label>
+                    <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
+                    <div class="card card-1" id="input">
+                        <div id="input_choice">
+                            <label class="container small ">x^2
+                                <input type="checkbox" class="inputF" id="x2">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container small ">y^2
+                                <input type="checkbox" class="inputF" id="y2">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container small ">x^3
+                                <input type="checkbox" class="inputF" id="x3">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container small ">y^3
+                                <input type="checkbox" class="inputF" id="y3">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container medium ">x^2+y^2
+                                <input type="checkbox" class="inputF" id="x2y2">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container medium ">x^2-y^2
+                                <input type="checkbox" class="inputF" id="x2_y2">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container medium ">x*y
+                                <input type="checkbox" class="inputF" id="xy">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container small ">sin(x)
+                                <input type="checkbox" class="inputF" id="sinx">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container small ">cos(x)
+                                <input type="checkbox" class="inputF" id="cosx">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container small ">sin(y)
+                                <input type="checkbox" class="inputF" id="siny">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container small ">cos(y)
+                                <input type="checkbox" class="inputF" id="cosy">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container big ">sin(x)+cos(y)
+                                <input type="checkbox" class="inputF" id="sinxcosy">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container big ">sin(y)+cos(x)
+                                <input type="checkbox" class="inputF" id="sinycosx">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container big ">sin(x)*cos(y)
+                                <input type="checkbox" class="inputF" id="sinxcosydot">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="container big ">sin(y)*cos(x)
+                                <input type="checkbox" class="inputF" id="sinycosxdot">
+                                <span class="checkmark"></span>
+                            </label>
+                            <button type="button" class="btn" id="bestbtn" onclick="best()"><strong>Sort out the Best-Single-Input?</strong></button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="card card-1" id="evalutation">
-                <h3>Evaluation functions</h3>
-                <button id="knn" class="btn" onclick="changeKernel(3)">KNN</button>
-                <button id="rbf" class="btn" onclick="changeKernel(4)">RBF</button>
+                <div class="card card-1" id="evalutation">
+                    <h3>Evaluation functions</h3>
+<!--                    <button id="knn" class="btn" onclick="changeKernel(3)">KNN</button>-->
+<!--                    <button id="rbf" class="btn" onclick="changeKernel(4)">RBF</button>-->
+                    <label class="container full">KNN
+                        <input type="radio" name="algorithms" id="radio_knn" onclick="changeKernel(3)">
+                        <span class="checkmark"></span>
+                    </label>
+                    <div class="card card-1" id="distances">
+                        <h3>Distances</h3>
+<!--                        <button id="min" class="btn" onclick="changeDistance(0)">Minkowski</button>-->
+<!--                        <button id="che" class="btn" onclick="changeDistance(1)">Chebyshev</button>-->
+<!--                        <button id="maha" class="btn" onclick="changeDistance(2)">Mahalanobis</button>-->
+                        <label class="container full">Minkowski
+                            <input type="radio" name="distances" id="radio_min" onclick="changeDistance(0)" checked>
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container full">Chebyshev
+                            <input type="radio" name="distances" id="radio_che" onclick="changeDistance(1)">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container full">Mahalanobis
+                            <input type="radio" name="distances" id="radio_maha" onclick="changeDistance(2)">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <label class="container full">RBF
+                        <input type="radio" name="algorithms" id="radio_rbf" onclick="changeKernel(4)">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
             </div>
             <div id="optimization">
                 <h4>Optimization </h4>
                 <label for="ssca">SSCA</label><input type="checkbox" id="ssca"/>
             </div>
-
-            <div class="card card-1" id="distances">
-                <h3>Distances</h3>
-                <button id="min" class="btn" onclick="changeDistance(0)">Minkowski</button>
-                <button id="che" class="btn" onclick="changeDistance(1)">Chebyshev</button>
-                <button id="maha" class="btn" onclick="changeDistance(2)">Mahalanobis</button>
-            </div>
             <div class="card card-1" id="kmeans" >
                 <h3>K-Means</h3>
                 <div class="card card-1" id="kmeans-mode">
                     <h3>Mode</h3>
-                    <label class="container big">Algorithm
+                    <label class="container full">Algorithm
                         <input type="radio" name="kmeans" id="calculate_kmeans_points" value="algorithm" checked>
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container big">User
+                    <label class="container full">User
                         <input type="radio" name="kmeans" id="user_kmeans_points" value="user">
                         <span class="checkmark"></span>
                     </label>
                 </div>
                 <div class="card card-1" id="kmeans-options">
                     <h3>Options</h3>
-                    <label class="container medium">Draw
+                    <label class="container full">Draw
                         <input type="checkbox" id="draw_kmeans_points">
                         <span class="checkmark"></span>
                     </label>
-                    <label class="container medium">As Data
+                    <label class="container full">As Data
                         <input type="checkbox" id="kmdata">
                         <span class="checkmark"></span>
                     </label>
@@ -1238,14 +1269,46 @@
                     <h3 id="ntestport">N Test = 100</h3>
                     <div id="slider11"></div>
                 </div>
-                <button class="btn " id="databtn1" onclick="setDataSet(1),execute()">Random</button>
-                <button class="btn " id="databtn2" onclick="setDataSet(2),execute()">Circle</button>
-                <button class="btn " id="databtn3" onclick="setDataSet(3),execute()">ExclusiveOr</button>
-                <button class="btn " id="databtn4" onclick="setDataSet(4),execute()">Gaussian</button>
-                <button class="btn " id="databtn5" onclick="setDataSet(5),execute()">Spiral</button>
-                <button class="btn " id="databtn6" onclick="setDataSet(6),execute()">Multi Circle</button>
-                <button class="btn " id="databtn7" onclick="setDataSet(7),execute()">V-Stripes</button>
-                <button class="btn " id="databtn8" onclick="setDataSet(8),execute()">H-Stripes</button>
+<!--                <button class="btn " id="databtn1" onclick="setDataSet(1),execute()">Random</button>-->
+<!--                <button class="btn " id="databtn2" onclick="setDataSet(2),execute()">Circle</button>-->
+<!--                <button class="btn " id="databtn3" onclick="setDataSet(3),execute()">ExclusiveOr</button>-->
+<!--                <button class="btn " id="databtn4" onclick="setDataSet(4),execute()">Gaussian</button>-->
+<!--                <button class="btn " id="databtn5" onclick="setDataSet(5),execute()">Spiral</button>-->
+<!--                <button class="btn " id="databtn6" onclick="setDataSet(6),execute()">Multi Circle</button>-->
+<!--                <button class="btn " id="databtn7" onclick="setDataSet(7),execute()">V-Stripes</button>-->
+<!--                <button class="btn " id="databtn8" onclick="setDataSet(8),execute()">H-Stripes</button>-->
+                <label class="container medium">Random
+                    <input type="radio" name="dataset" id="radio_data1" onclick="setDataSet(1)">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container medium">Circle
+                    <input type="radio" name="dataset" id="radio_data2" onclick="setDataSet(2)">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container medium">ExclusiveOr
+                    <input type="radio" name="dataset" id="radio_data3" onclick="setDataSet(3)">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container medium">Gaussian
+                    <input type="radio" name="dataset" id="radio_data4" onclick="setDataSet(4)">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container medium">Spiral
+                    <input type="radio" name="dataset" id="radio_data5" onclick="setDataSet(5)">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container medium">Multi Circle
+                    <input type="radio" name="dataset" id="radio_data6" onclick="setDataSet(6)">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container medium">V-Stripes
+                    <input type="radio" name="dataset" id="radio_data7" onclick="setDataSet(7)">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container medium">H-Stripes
+                    <input type="radio" name="dataset" id="radio_data8" onclick="setDataSet(8)">
+                    <span class="checkmark"></span>
+                </label>
             </div>
             <div class="card card-1" id="values">
                 <h3>Values</h3>

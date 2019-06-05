@@ -111,9 +111,13 @@ function showUiThings() {
     if(kernelid<3){
         $("#s1").show();
         // $("#optimization").show();
-        if(use_timer) {
-            $("#s12").show();
-            $("#s13").show();
+        $("#input_transformations").show();
+        if(karpathy){
+            $("#timer_options").show();
+            if(use_timer) {
+                $("#s12").show();
+                $("#s13").show();
+            }
         }
         $("#statistics_svm").show();
         if(kernelid === 1){
@@ -152,6 +156,8 @@ function hideUiThings() {
     $("#actions").hide();
     $("#input").hide();
     $("#input_choice").hide();
+    $("#input_transformations").hide();
+    $("#timer_options").hide();
     $("#distances").hide();
     $("#statisticsTraining").hide();
     $("#statisticsTest").hide();
