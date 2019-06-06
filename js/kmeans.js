@@ -484,6 +484,8 @@ function resetKmeans() {
     means = new Array(2);
     means[0] = [];
     means[1] = [];
+    KMdata = false;
+    drawKmeansPoints = false;
 }
 function cleanKmeans() {
     resetKmeans();

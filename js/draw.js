@@ -64,8 +64,14 @@ function clean() {
     ctx.clearRect(0,0,WIDTH,HEIGHT);
     data = [];
     labels = [];
+    dataOLD = [];
+    labelsOLD = [];
+    datatest = [];
+    labelstest = [];
     N = 0;
     Ntest = 0;
+    KMdata = false;
+    cleanKmeans();
     hideUiThings();
     showUiThings();
     draw();
@@ -74,6 +80,10 @@ function clean() {
 function draw(){
 
     drawTraining(ctx);
+
+    //draw kmeans centers
+    if(drawKmeansPoints)
+        drawKmeans(ctx,drawCircle);
 
     ctxTest.clearRect(0,0,WIDTH,HEIGHT);
     if(N===0) return;
@@ -92,7 +102,7 @@ function draw(){
     //draw kmeans centers
     if(!KMdata) {
         if(drawKmeansPoints)
-            drawKmeans(ctxTest);
+            drawKmeans(ctxTest,drawCircleTest);
     }
     else drawDataKmeans(ctxTest);
 
@@ -253,7 +263,7 @@ function drawTest(ctx) {
     ctx.lineWidth = 1;
 }
 
-function drawKmeans(ctx) {
+function drawKmeans(ctx,drawF) {
     // draw means
     ctx.strokeStyle = 'rgb(255,255,255)';
     let radius = 10;
@@ -261,12 +271,12 @@ function drawKmeans(ctx) {
     console.info(" ✏ DRAW MEANS 1: "+means[0].length);
     for(let i=0;i<means[0].length;i++) {
         ctx.fillStyle = 'rgb(100,200,100)'; //green
-        drawCircleTest(means[0][i][0]*ss+WIDTH/2, means[0][i][1]*ss+HEIGHT/2, radius);
+        drawF(means[0][i][0]*ss+WIDTH/2, means[0][i][1]*ss+HEIGHT/2, radius);
     }
     console.info(" ✏ DRAW MEANS 2: "+means[1].length);
     for(let i=0;i<means[1].length;i++) {
         ctx.fillStyle = 'rgb(200,100,100)'; //red
-        drawCircleTest(means[1][i][0]*ss+WIDTH/2, means[1][i][1]*ss+HEIGHT/2, radius);
+        drawF(means[1][i][0]*ss+WIDTH/2, means[1][i][1]*ss+HEIGHT/2, radius);
     }
     ctx.strokeStyle = 'rgb(0,0,0)';
 }
@@ -404,9 +414,12 @@ function getValue(v) {
         value = RBF(x,y);
     }
     else if(methodID===3){ //Random Forest
-        value = tree.predictOne([x,y]);
+        value = tree.predictOne(v);
         if(value>0.5) value = 1;
         else value = -1;
+    }
+    else if(methodID===4){ //Logistic Regression
+        value = classifier.predict(v) >= classifier.threshold ? 1 : 0;
     }
     return value;
 }
@@ -435,6 +448,10 @@ function getColor(v) {
     }
     else if(methodID===3){ // Random Forest
         if(value > 0) color = 'rgb(150,250,150)';
+        else color = 'rgb(250,150,150)';
+    }
+    else if(methodID===4){ //Logistic Regression
+        if(value===1) color = 'rgb(150,250,150)';
         else color = 'rgb(250,150,150)';
     }
     return color;

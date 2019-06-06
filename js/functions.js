@@ -165,6 +165,30 @@ $(function() {
         step: 1,
         value: 10
     });
+    $("#slider17").slider({
+        orientation: "horizontal",
+        slide: refreshAlpha,
+        max: 50,
+        min: 1,
+        step: 1,
+        value: 10
+    });
+    $("#slider18").slider({
+        orientation: "horizontal",
+        slide: refreshLambda,
+        max: 50,
+        min: 1,
+        step: 1,
+        value: 10
+    });
+    $("#slider19").slider({
+        orientation: "horizontal",
+        slide: refreshIterations,
+        max: 50,
+        min: 1,
+        step: 1,
+        value: 10
+    });
 });
 
 function changeKernel(id){

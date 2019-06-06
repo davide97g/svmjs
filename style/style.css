@@ -192,8 +192,21 @@ a{
 
 .divider{
     margin: auto;
-    border-bottom: rgba(0, 0, 0, 0.71) 3px dotted;
-    width: 65%;
+    border-bottom: rgba(0, 0, 0, 0.75) 2px solid;
+    width: 35%;
+}
+
+#kmeans1port{
+    color: var(--primary-c);
+}
+#kmeans2port{
+    color: var(--action-c);
+}
+#slider10{
+    background-color: var(--action-c);
+}
+#slider10 > .ui-slider-handle{
+    background-color: var(--action-c-darker) !important;
 }
 
 .slider_container{
@@ -221,7 +234,7 @@ a{
     opacity: 1;
 }
 .ui-slider-handle{
-    background: var(--action-c-darker) !important;
+    background: var(--primary-c-darker) !important;
     border: none;
 }
 
@@ -276,7 +289,7 @@ th{
     width: 90%;
     font-family: "Courier New",sans-serif;
     font-size: 20px;
-    background-color: var(--primary-c-darker);
+    background-color: var(--primary-c);
     color: white;
 }
 

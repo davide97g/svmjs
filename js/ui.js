@@ -54,11 +54,11 @@ function refreshEpsilon(event, ui) {
 }
 function refreshKmeans1(event, ui) {
     Km1 =  ui.value;
-    $("#kmeans1port").text("K1 (Means) = " + Km1);
+    $("#kmeans1port").text("K1 =" + Km1);
 }
 function refreshKmeans2(event, ui) {
     Km2 =  ui.value;
-    $("#kmeans2port").text("K2 (Means) = " + Km2);
+    $("#kmeans2port").text("K2 = " + Km2);
 }
 function refreshUpdateFrequency(event, ui) {
     updateFrequency =  ui.value;
@@ -85,8 +85,20 @@ function refreshTries(event, ui) {
     options.numTries = tries;
 }
 
+function refreshAlpha(event, ui) {
+    alpha = Math.floor(ui.value);
+    $("#alphaport").text("Alpha = " + alpha);
+}
+function refreshLambda(event, ui) {
+    alpha = Math.floor(ui.value);
+    $("#lambdaport").text("Lambda = " + lambda);
+}
+function refreshIterations(event, ui) {
+    iterations = Math.floor(ui.value);
+    $("#iterationsport").text("Iterations = " + iterations);
+}
+
 function setTabVisibility(id,value) {
-    console.info(id);
     if(id.search("info")>=0){
         info_tab = value;
     }
@@ -98,6 +110,9 @@ function setTabVisibility(id,value) {
     }
     else if(id.search("options")>=0){
         options_tab = value;
+    }
+    else if(id.search("kmeans")>=0){
+        kmeans_tab = value;
     }
     hideUiThings();
     showUiThings();
@@ -112,14 +127,14 @@ function showUiThings() {
         $("#statistics").show();
     if(options_tab)
         $("#options").show();
-
+    if(kmeans_tab)
+        $("#kmeans").show();
     $("#s0").show();
     $("#s11").show();
     $("#statisticsTraining").show();
     $("#checkboxTest").show();
     $("#s9").show(); //slider for Km1
     $("#s10").show(); //slider for Km2
-    $("#kmeans").show();
     if(useTest) {
         $("#statisticsTest").show();
         $("#downloadTest").show();
@@ -143,6 +158,7 @@ function showUiThings() {
         if(kernelid === 0){ //linear
             $("#input_transformations").show();
             if (input_transformation) {
+                $("#statistics_score").show();
                 $("#input").show();
                 $("#input_choice").show();
             }
@@ -177,6 +193,11 @@ function showUiThings() {
         $("#s15").show(); //slider for epsilon
         $("#s16").show(); //slider for epsilon
     }
+    else if(methodID===4){
+        $("#s17").show(); //slider for epsilon
+        $("#s18").show(); //slider for epsilon
+        $("#s19").show(); //slider for epsilon
+    }
 }
 
 function hideUiThings() {
@@ -196,6 +217,7 @@ function hideUiThings() {
     $("#statisticsTraining").hide();
     $("#statisticsTest").hide();
     $("#statistics_svm").hide();
+    $("#statistics_score").hide();
     $("#kmeans").hide();
     $("#kernels").hide();
     $("#execution_options").hide();

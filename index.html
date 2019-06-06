@@ -22,6 +22,7 @@
         <script src="./lib/svm.js"></script>
         <script src="./lib/svmo.js"></script>
         <script src="./lib/randomforest.js"></script>
+        <script src="./lib/jsregression.js"></script>
 
         <script type="text/javascript" src="./js/generator.js"></script>
 
@@ -92,6 +93,7 @@
         let draw_tab = true;
         let statistics_tab = true;
         let options_tab = true;
+        let kmeans_tab = true;
 
         let user_data = [];
         let user_labels = [];
@@ -112,6 +114,18 @@
         let options = {};
         options.type = 1;
 
+        //*************
+        //logistic regression variables
+        let alpha = 0.0001;
+        let lambda = 0.0;
+        let iterations = 1000;
+        let classifier = new jsregression.LogisticRegression({
+            alpha: alpha,
+            iterations: iterations,
+            lambda: lambda
+        });
+        let logistic_result;
+
         </script>
 
         <!-- Dataset - Retrain - init -->
@@ -127,7 +141,6 @@
                 data = user_data;
                 labels = user_labels;
                 N = user_data.length;
-                console.info(N);
                 Ntest = 0;
             }
             else if(id===1){
@@ -455,6 +468,23 @@
                 else if(methodID===3){ //Random Forest
                     console.info("\tRandom Forest");
                     tree.train(data, labels, options);
+                }
+                else if(methodID===4){ //Logistic Regression
+                    console.info("\tLogistic Regression");
+                    let trainingData = [];
+                    let app = [];
+                    for(let i=0;i<data.length;i++){
+                        app = copyArray(data[i]);
+                        app.push(labels[i]);
+                        trainingData.push(app);
+                    }
+                    let config = {
+                        alpha: alpha,
+                        lambda: lambda,
+                        iterations: iterations
+                    };
+                    classifier.setOptions(config);
+                    logistic_result = classifier.fit(trainingData);
                 }
             }
             function execute() {
@@ -997,7 +1027,7 @@
             <div class="card card-1" id="statistics_score">
                     <h2>Scoreboard</h2>
                     <div id="scoreboard"></div>
-</div>
+            </div>
             <div class="card card-1" id="statistics_svm">
                 <h2>Formula Linear</h2>
                 <input type="text" id ="fakeInputFormula">
@@ -1149,7 +1179,7 @@
                             <div id="slider2"></div>
                         </div>
                         <div id="s3" class="slider_container">
-                            <h3 id="degport">Polynomial Degree = 1</h3>
+                            <h3 id="degport">Polynomial Degree = 2</h3>
                             <div id="slider3"></div>
                         </div>
                         <div id="s4" class="slider_container">
@@ -1302,6 +1332,18 @@
                     <input type="radio" name="methods" id="radio_logistic" onclick="changeMethod(4)">
                     <span class="checkmark circle"></span>
                 </label>
+                <div id="s17" class="slider_container">
+                    <h3 id="alphaport">Alpha = 0.0001</h3>
+                    <div id="slider17"></div>
+                </div>
+                <div id="s18" class="slider_container">
+                    <h3 id="lambdaport">Lambda = 0.0</h3>
+                    <div id="slider18"></div>
+                </div>
+                <div id="s19" class="slider_container">
+                    <h3 id="iterationsport">Iterations = 1000</h3>
+                    <div id="slider19"></div>
+                </div>
             </div>
             <div class="card card-1" id="rforest">
                 <label class="container full"><strong>Random Forest</strong>
@@ -1346,40 +1388,6 @@
             <div id="optimization">
                 <h4>Optimization </h4>
                 <label for="ssca">SSCA</label><input type="checkbox" id="ssca"/>
-            </div>
-            <div class="card card-1" id="kmeans" >
-                <h3>K-Means</h3>
-                <div class="card card-1" id="kmeans-mode">
-                    <h3>Mode</h3>
-                    <label class="container full">Algorithm
-                        <input type="radio" name="kmeans" id="calculate_kmeans_points" value="algorithm" checked>
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <label class="container full">User
-                        <input type="radio" name="kmeans" id="user_kmeans_points" value="user">
-                        <span class="checkmark circle"></span>
-                    </label>
-                </div>
-                <div class="card card-1" id="kmeans-options">
-                    <h3>Options</h3>
-                    <label class="container full">Draw
-                        <input type="checkbox" id="draw_kmeans_points">
-                        <span class="checkmark"></span>
-                    </label>
-                    <label class="container full">As Data
-                        <input type="checkbox" id="kmdata">
-                        <span class="checkmark"></span>
-                    </label>
-                    <button id="resetKmeans" class="btn" onclick="cleanKmeans()">Clean</button>
-                    <div id="s9" class="slider_container">
-                        <h3 id="kmeans1port">K1 (Means) : 3</h3>
-                        <div id="slider9"></div>
-                    </div>
-                    <div id="s10" class="slider_container">
-                        <h3 id="kmeans2port">K2 (Means) : 3</h3>
-                        <div id="slider10"></div>
-                    </div>
-                </div>
             </div>
             <div class="card card-1" id="datasets">
                 <h3>Datasets</h3>
@@ -1426,9 +1434,44 @@
                 </label>
                 <button class="btn action" style="float: left; margin-left: 2%" onclick="setUploadDataset()">Upload DataSet</button>
             </div>
-<!--            <div class="card card-1" id="values">-->
-<!--                <h3>Values</h3>-->
-<!--            </div>-->
         </div>
+        <button type="button" class="btn visibility" id="kmeans_tab_btn" onclick="setTabVisibility(id,!kmeans_tab)">K-Means</button>
+        <div class="card card-1" id="kmeans">
+            <h3>K-Means</h3>
+            <div class="divider"></div>
+            <div class="card card-1" id="kmeans-mode">
+                <h3>Mode</h3>
+                <label class="container full">Algorithm
+                    <input type="radio" name="kmeans" id="calculate_kmeans_points" value="algorithm" checked>
+                    <span class="checkmark circle"></span>
+                </label>
+                <label class="container full">User
+                    <input type="radio" name="kmeans" id="user_kmeans_points" value="user">
+                    <span class="checkmark circle"></span>
+                </label>
+            </div>
+            <div class="card card-1" id="kmeans-options">
+                <h3>Options</h3>
+                <label class="container full">Draw
+                    <input type="checkbox" id="draw_kmeans_points">
+                    <span class="checkmark"></span>
+                </label>
+                <label class="container full">As Data
+                    <input type="checkbox" id="kmdata">
+                    <span class="checkmark"></span>
+                </label>
+                <button id="resetKmeans" class="btn" onclick="cleanKmeans()">Clean</button>
+                <div id="s9" class="slider_container">
+                    <h3 id="kmeans1port">K1 = 3</h3>
+                    <div id="slider9"></div>
+                </div>
+                <div id="s10" class="slider_container">
+                    <h3 id="kmeans2port">K2 = 3</h3>
+                    <div id="slider10"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
     </body>
 </html>

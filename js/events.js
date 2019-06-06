@@ -7,10 +7,13 @@ function mouseClick(x, y, shiftPressed, ctrlPressed){
         document.getElementById("user_kmeans_points").checked = true;
         KMdataUser = true;
         document.getElementById("draw_kmeans_points").checked = true;
+        drawKmeansPoints = true;
         if(shiftPressed) //verde
             means[0].push([(x-WIDTH/2)/ss, (y-HEIGHT/2)/ss]);
         else means[1].push([(x-WIDTH/2)/ss, (y-HEIGHT/2)/ss]); //rosso
         // draw();
+        drawTraining(ctx);
+        drawKmeans(ctx,drawCircle);
     }
     else { //voglio inserire un punto normale
         // add datapoint at location of click
