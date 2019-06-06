@@ -986,9 +986,9 @@
     <body onLoad="onLoad()"> <!-- 24 FPS -->
         <div id="info">
             <br>
-            <h1>Support Vector Machine in Javascript</h1>
+            <h1>Machine Learning Methods in Javascript</h1>
             <p>
-                Uses SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
+                Support Vector Machine with SMO algorithm. Find this code on <a href="https://github.com/davide97g/svmjs">Github</a> <br />
                 This version is based on the work of Andrej Karpathy. Find his code on <a href="https://github.com/karpathy/svmjs">Github</a>.
             </p>
             <div id="execution">
@@ -1151,221 +1151,231 @@
         </div>
         <button type="button" class="btn visibility" id="options_tab_btn" onclick="setTabVisibility(id,!options_tab)">Options</button>
         <div class="card card-1" id="options">
-            <div class="card card-1" id="svm">
-                <label class="container full"><strong>Support Vector Machine</strong>
-                    <input type="radio" name="methods" id="radio_svm" onclick="changeMethod(0)" checked>
-                    <span class="checkmark circle"></span>
-                </label>
-                <div class="card card-1" id="kernels">
-                    <h3>Kernels</h3>
-                    <label class="container full">Linear
-                        <input type="radio" name="kernels" id="radio_linear" onclick="changeKernel(0)" checked>
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <label class="container full">Polynomial
-                        <input type="radio" name="kernels" id="radio_poly" onclick="changeKernel(1)">
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <label class="container full">RBF
-                        <input type="radio" name="kernels" id="radio_rbfK" onclick="changeKernel(2)">
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <label class="container full">Sigmoid
-                        <input type="radio" name="kernels" id="radio_sigmoid" onclick="changeKernel(3)">
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <div>
-                        <div id="s1" class="slider_container">
-                            <h3 id="creport">C = 1.0</h3>
-                            <div id="slider1"></div>
-                        </div>
-                        <div id="s2" class="slider_container">
-                            <h3 id="sigreport">RBF Kernel sigma = 1.0 </h3>
-                            <div id="slider2"></div>
-                        </div>
-                        <div id="s3" class="slider_container">
-                            <h3 id="degport">Polynomial Degree = 2</h3>
-                            <div id="slider3"></div>
-                        </div>
-                        <div id="s4" class="slider_container">
-                            <h3 id="infport">Polynomial Influence = 0</h3>
-                            <div id="slider4"></div>
-                        </div>
-                        <div id="s5" class="slider_container">
-                            <h3 id="ubport">Upper bound = 0.5</h3>
-                            <div id="slider5"></div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
-                    <div class="card card-1" id="input">
-                        <div id="input_choice">
-                            <label class="container small ">x^2
-                                <input type="checkbox" class="inputF" id="x2">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container small ">y^2
-                                <input type="checkbox" class="inputF" id="y2">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container small ">x^3
-                                <input type="checkbox" class="inputF" id="x3">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container small ">y^3
-                                <input type="checkbox" class="inputF" id="y3">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container medium ">x^2+y^2
-                                <input type="checkbox" class="inputF" id="x2y2">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container medium ">x^2-y^2
-                                <input type="checkbox" class="inputF" id="x2_y2">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container medium ">x*y
-                                <input type="checkbox" class="inputF" id="xy">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container small ">sin(x)
-                                <input type="checkbox" class="inputF" id="sinx">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container small ">cos(x)
-                                <input type="checkbox" class="inputF" id="cosx">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container small ">sin(y)
-                                <input type="checkbox" class="inputF" id="siny">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container small ">cos(y)
-                                <input type="checkbox" class="inputF" id="cosy">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container big ">sin(x)+cos(y)
-                                <input type="checkbox" class="inputF" id="sinxcosy">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container big ">sin(y)+cos(x)
-                                <input type="checkbox" class="inputF" id="sinycosx">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container big ">sin(x)*cos(y)
-                                <input type="checkbox" class="inputF" id="sinxcosydot">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label class="container big ">sin(y)*cos(x)
-                                <input type="checkbox" class="inputF" id="sinycosxdot">
-                                <span class="checkmark"></span>
-                            </label>
-                            <button type="button" class="btn" id="bestbtn" onclick="best()"><strong>Sort out the Best-Single-Input?</strong></button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card card-1" id="execution_options">
-                    <h3>Execution Options</h3>
-                    <div class="card card-1" id="algoritm_options">
-                        <h3>Training Algorithm</h3>
-                        <label class="container big" id="karpathy_container">Karpathy
-                            <input type="radio" name="algorithm" id="karpathy"  onclick="changeAlgorithm(0)" checked>
+            <!-- start choice-->
+            <h3>Methods</h3>
+            <label class="container card card-1 medium"><strong>Support Vector Machine</strong>
+                <input type="radio" name="methods" id="radio_svm" onclick="changeMethod(0)" checked>
+                <span class="checkmark circle"></span>
+            </label>
+            <label class="container card card-1 medium"><strong>K-Nearest-Neighbor</strong>
+                <input type="radio" name="methods" id="radio_knn" onclick="changeMethod(1)">
+                <span class="checkmark circle"></span>
+            </label>
+            <label class="container card card-1 medium"><strong>RBF function</strong>
+                <input type="radio" name="methods" id="radio_rbf" onclick="changeMethod(2)">
+                <span class="checkmark circle"></span>
+            </label>
+            <label class="container card card-1 medium"><strong>Logistic Regression</strong>
+                <input type="radio" name="methods" id="radio_logistic" onclick="changeMethod(4)">
+                <span class="checkmark circle"></span>
+            </label>
+            <label class="container card card-1 medium"><strong>Random Forest</strong>
+                <input type="radio" name="methods" id="radio_rforest" onclick="changeMethod(3)">
+                <span class="checkmark circle"></span>
+            </label>
+            <!-- end choice-->
+            <!-- start methods-->
+            <div class="card card-1" id="method_options">
+                <h3>Method Options</h3>
+                <div class="card card-1 method" id="svm">
+                    <div class="card card-1" id="kernels">
+                        <h3>Kernels</h3>
+                        <label class="container full">Linear
+                            <input type="radio" name="kernels" id="radio_linear" onclick="changeKernel(0)" checked>
                             <span class="checkmark circle"></span>
                         </label>
-                        <label class="container big" id="platt_container">John Platt
-                            <input type="radio" name="algorithm" id="platt" onclick="changeAlgorithm(1)">
+                        <label class="container full">Polynomial
+                            <input type="radio" name="kernels" id="radio_poly" onclick="changeKernel(1)">
+                            <span class="checkmark circle"></span>
+                        </label>
+                        <label class="container full">RBF
+                            <input type="radio" name="kernels" id="radio_rbfK" onclick="changeKernel(2)">
+                            <span class="checkmark circle"></span>
+                        </label>
+                        <label class="container full">Sigmoid
+                            <input type="radio" name="kernels" id="radio_sigmoid" onclick="changeKernel(3)">
+                            <span class="checkmark circle"></span>
+                        </label>
+                        <div>
+                            <div id="s1" class="slider_container">
+                                <h3 id="creport">C = 1.0</h3>
+                                <div id="slider1"></div>
+                            </div>
+                            <div id="s2" class="slider_container">
+                                <h3 id="sigreport">RBF Kernel sigma = 1.0 </h3>
+                                <div id="slider2"></div>
+                            </div>
+                            <div id="s3" class="slider_container">
+                                <h3 id="degport">Polynomial Degree = 2</h3>
+                                <div id="slider3"></div>
+                            </div>
+                            <div id="s4" class="slider_container">
+                                <h3 id="infport">Polynomial Influence = 0</h3>
+                                <div id="slider4"></div>
+                            </div>
+                            <div id="s5" class="slider_container">
+                                <h3 id="ubport">Upper bound = 0.5</h3>
+                                <div id="slider5"></div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn" id="input_transformations" onclick="shouldUseInput(!input_transformation)">Extra Input</button>
+                        <div class="card card-1" id="input">
+                            <div id="input_choice">
+                                <label class="container small ">x^2
+                                    <input type="checkbox" class="inputF" id="x2">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container small ">y^2
+                                    <input type="checkbox" class="inputF" id="y2">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container small ">x^3
+                                    <input type="checkbox" class="inputF" id="x3">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container small ">y^3
+                                    <input type="checkbox" class="inputF" id="y3">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container medium ">x^2+y^2
+                                    <input type="checkbox" class="inputF" id="x2y2">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container medium ">x^2-y^2
+                                    <input type="checkbox" class="inputF" id="x2_y2">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container medium ">x*y
+                                    <input type="checkbox" class="inputF" id="xy">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container small ">sin(x)
+                                    <input type="checkbox" class="inputF" id="sinx">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container small ">cos(x)
+                                    <input type="checkbox" class="inputF" id="cosx">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container small ">sin(y)
+                                    <input type="checkbox" class="inputF" id="siny">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container small ">cos(y)
+                                    <input type="checkbox" class="inputF" id="cosy">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container big ">sin(x)+cos(y)
+                                    <input type="checkbox" class="inputF" id="sinxcosy">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container big ">sin(y)+cos(x)
+                                    <input type="checkbox" class="inputF" id="sinycosx">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container big ">sin(x)*cos(y)
+                                    <input type="checkbox" class="inputF" id="sinxcosydot">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="container big ">sin(y)*cos(x)
+                                    <input type="checkbox" class="inputF" id="sinycosxdot">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <button type="button" class="btn" id="bestbtn" onclick="best()"><strong>Sort out the Best-Single-Input?</strong></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card card-1" id="execution_options">
+                        <h3>Execution Options</h3>
+                        <div class="card card-1" id="algoritm_options">
+                            <h3>Training Algorithm</h3>
+                            <label class="container big" id="karpathy_container">Karpathy
+                                <input type="radio" name="algorithm" id="karpathy"  onclick="changeAlgorithm(0)" checked>
+                                <span class="checkmark circle"></span>
+                            </label>
+                            <label class="container big" id="platt_container">John Platt
+                                <input type="radio" name="algorithm" id="platt" onclick="changeAlgorithm(1)">
+                                <span class="checkmark circle"></span>
+                            </label>
+                        </div>
+                        <div class="card card-1" id="timer_options">
+                            <button type="button" class="btn" id="use_timer_btn" onclick="shouldUseTimer(!use_timer)">Use Timer</button>
+                            <!--<label class="container big" id="use_timer_container">Use Timer
+                                <input type="checkbox" id="use_timer" checked>
+                                <span class="checkmark"></span>
+                            </label> -->
+                            <div id="s12" class="slider_container">
+                                <h3 id="updateFrequencyport">Update Frequency = 100 ms</h3>
+                                <div id="slider12"></div>
+                            </div>
+                            <div id="s13" class="slider_container">
+                                <h3 id="stepsFrequencyport">Steps Frequency = 10 steps</h3>
+                                <div id="slider13"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-1 method" id="knn">
+
+                    <div id="s6" class="slider_container">
+                        <h3 id="kport">K: 1</h3>
+                        <div id="slider6"></div>
+                    </div>
+                    <div class="card card-1" id="drawtypes">
+                        <h3>Drawing Type</h3>
+                        <label class="container full"><strong>Hard</strong>
+                            <input type="radio" name="drawtypes" onclick="drawSoftKNN = false;">
+                            <span class="checkmark circle"></span>
+                        </label>
+                        <label class="container full"><strong>Soft</strong>
+                            <input type="radio" name="drawtypes" onclick="drawSoftKNN = true;" checked>
                             <span class="checkmark circle"></span>
                         </label>
                     </div>
-                    <div class="card card-1" id="timer_options">
-                        <button type="button" class="btn" id="use_timer_btn" onclick="shouldUseTimer(!use_timer)">Use Timer</button>
-                        <!--<label class="container big" id="use_timer_container">Use Timer
-                            <input type="checkbox" id="use_timer" checked>
-                            <span class="checkmark"></span>
-                        </label> -->
-                        <div id="s12" class="slider_container">
-                            <h3 id="updateFrequencyport">Update Frequency = 100 ms</h3>
-                            <div id="slider12"></div>
+                    <div class="card card-1" id="distances">
+                        <h3>Distances</h3>
+                        <label class="container full">Minkowski
+                            <input type="radio" name="distances" id="radio_min" onclick="changeDistance(0)" checked>
+                            <span class="checkmark circle"></span>
+                        </label>
+                        <div id="s7" class="slider_container">
+                            <h3 id="pport">Minkowski with P: 2</h3>
+                            <div id="slider7"></div>
                         </div>
-                        <div id="s13" class="slider_container">
-                            <h3 id="stepsFrequencyport">Steps Frequency = 10 steps</h3>
-                            <div id="slider13"></div>
-                        </div>
+                        <label class="container full">Chebyshev
+                            <input type="radio" name="distances" id="radio_che" onclick="changeDistance(1)">
+                            <span class="checkmark circle"></span>
+                        </label>
+                        <label class="container full">Mahalanobis
+                            <input type="radio" name="distances" id="radio_maha" onclick="changeDistance(2)">
+                            <span class="checkmark circle"></span>
+                        </label>
                     </div>
                 </div>
-            </div>
-            <div class="card card-1" id="knn">
-                <label class="container full"><strong>K-Nearest-Neighbor</strong>
-                    <input type="radio" name="methods" id="radio_knn" onclick="changeMethod(1)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <div id="s6" class="slider_container">
-                    <h3 id="kport">K: 1</h3>
-                    <div id="slider6"></div>
-                </div>
-                <div class="card card-1" id="drawtypes">
-                    <h3>Drawing Type</h3>
-                    <label class="container full"><strong>Hard</strong>
-                        <input type="radio" name="drawtypes" onclick="drawSoftKNN = false;">
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <label class="container full"><strong>Soft</strong>
-                        <input type="radio" name="drawtypes" onclick="drawSoftKNN = true;" checked>
-                        <span class="checkmark circle"></span>
-                    </label>
-                </div>
-                <div class="card card-1" id="distances">
-                    <h3>Distances</h3>
-                    <label class="container full">Minkowski
-                        <input type="radio" name="distances" id="radio_min" onclick="changeDistance(0)" checked>
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <div id="s7" class="slider_container">
-                        <h3 id="pport">Minkowski with P: 2</h3>
-                        <div id="slider7"></div>
+                <div class="card card-1 method" id="rbf">
+
+                    <div id="s8" class="slider_container">
+                        <h3 id="epsilonport">Epsilon : 0.1</h3>
+                        <div id="slider8"></div>
                     </div>
-                    <label class="container full">Chebyshev
-                        <input type="radio" name="distances" id="radio_che" onclick="changeDistance(1)">
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <label class="container full">Mahalanobis
-                        <input type="radio" name="distances" id="radio_maha" onclick="changeDistance(2)">
-                        <span class="checkmark circle"></span>
-                    </label>
                 </div>
-            </div>
-            <div class="card card-1" id="rbf">
-                <label class="container full"><strong>RBF function</strong>
-                    <input type="radio" name="methods" id="radio_rbf" onclick="changeMethod(2)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <div id="s8" class="slider_container">
-                    <h3 id="epsilonport">Epsilon : 0.1</h3>
-                    <div id="slider8"></div>
+                <div class="card card-1 method" id="logistic">
+
+                    <div id="s17" class="slider_container">
+                        <h3 id="alphaport">Alpha = 0.0001</h3>
+                        <div id="slider17"></div>
+                    </div>
+                    <div id="s18" class="slider_container">
+                        <h3 id="lambdaport">Lambda = 0.0</h3>
+                        <div id="slider18"></div>
+                    </div>
+                    <div id="s19" class="slider_container">
+                        <h3 id="iterationsport">Iterations = 1000</h3>
+                        <div id="slider19"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="card card-1" id="logistic">
-                <label class="container full"><strong>Logistic Regression</strong>
-                    <input type="radio" name="methods" id="radio_logistic" onclick="changeMethod(4)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <div id="s17" class="slider_container">
-                    <h3 id="alphaport">Alpha = 0.0001</h3>
-                    <div id="slider17"></div>
-                </div>
-                <div id="s18" class="slider_container">
-                    <h3 id="lambdaport">Lambda = 0.0</h3>
-                    <div id="slider18"></div>
-                </div>
-                <div id="s19" class="slider_container">
-                    <h3 id="iterationsport">Iterations = 1000</h3>
-                    <div id="slider19"></div>
-                </div>
-            </div>
-            <div class="card card-1" id="rforest">
-                <label class="container full"><strong>Random Forest</strong>
-                    <input type="radio" name="methods" id="radio_rforest" onclick="changeMethod(3)">
-                    <span class="checkmark circle"></span>
-                </label>
+                <div class="card card-1 method" id="rforest">
+
                 <div class="card card-1" id="decisions">
                         <h3>Decision Type</h3>
                         <label class="container full"><strong>1D</strong>
@@ -1401,56 +1411,59 @@
                     <div id="slider16"></div>
                 </div>
             </div>
+            </div>
+            <!-- end methods-->
             <div id="optimization">
                 <h4>Optimization </h4>
                 <label for="ssca">SSCA</label><input type="checkbox" id="ssca"/>
             </div>
-            <div class="card card-1" id="datasets">
-                <h3>Datasets</h3>
-                <div class="divider"></div>
-                <div id="s0" class="slider_container">
-                    <h3 id="nport">N = 100</h3>
-                    <div id="slider0"></div>
-                </div>
-                <div id="s11" class="slider_container">
-                    <h3 id="ntestport">N Test = 100</h3>
-                    <div id="slider11"></div>
-                </div>
-                <label class="container medium">Random
-                    <input type="radio" name="dataset" id="radio_data1" onclick="setDataSet(1)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <label class="container medium">Circle
-                    <input type="radio" name="dataset" id="radio_data2" onclick="setDataSet(2)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <label class="container medium">ExclusiveOr
-                    <input type="radio" name="dataset" id="radio_data3" onclick="setDataSet(3)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <label class="container medium">Gaussian
-                    <input type="radio" name="dataset" id="radio_data4" onclick="setDataSet(4)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <label class="container medium">Spiral
-                    <input type="radio" name="dataset" id="radio_data5" onclick="setDataSet(5)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <label class="container medium">Multi Circle
-                    <input type="radio" name="dataset" id="radio_data6" onclick="setDataSet(6)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <label class="container medium">V-Stripes
-                    <input type="radio" name="dataset" id="radio_data7" onclick="setDataSet(7)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <label class="container medium">H-Stripes
-                    <input type="radio" name="dataset" id="radio_data8" onclick="setDataSet(8)">
-                    <span class="checkmark circle"></span>
-                </label>
-                <button class="btn action" style="float: left; margin-left: 2%" onclick="setUploadDataset()">Upload DataSet</button>
-            </div>
+
         </div>
+        <div class="card card-1" id="datasets">
+        <h3>Datasets</h3>
+        <div class="divider"></div>
+        <div id="s0" class="slider_container">
+            <h3 id="nport">N = 100</h3>
+            <div id="slider0"></div>
+        </div>
+        <div id="s11" class="slider_container">
+            <h3 id="ntestport">N Test = 100</h3>
+            <div id="slider11"></div>
+        </div>
+        <label class="container medium">Random
+            <input type="radio" name="dataset" id="radio_data1" onclick="setDataSet(1)">
+            <span class="checkmark circle"></span>
+        </label>
+        <label class="container medium">Circle
+            <input type="radio" name="dataset" id="radio_data2" onclick="setDataSet(2)">
+            <span class="checkmark circle"></span>
+        </label>
+        <label class="container medium">ExclusiveOr
+            <input type="radio" name="dataset" id="radio_data3" onclick="setDataSet(3)">
+            <span class="checkmark circle"></span>
+        </label>
+        <label class="container medium">Gaussian
+            <input type="radio" name="dataset" id="radio_data4" onclick="setDataSet(4)">
+            <span class="checkmark circle"></span>
+        </label>
+        <label class="container medium">Spiral
+            <input type="radio" name="dataset" id="radio_data5" onclick="setDataSet(5)">
+            <span class="checkmark circle"></span>
+        </label>
+        <label class="container medium">Multi Circle
+            <input type="radio" name="dataset" id="radio_data6" onclick="setDataSet(6)">
+            <span class="checkmark circle"></span>
+        </label>
+        <label class="container medium">V-Stripes
+            <input type="radio" name="dataset" id="radio_data7" onclick="setDataSet(7)">
+            <span class="checkmark circle"></span>
+        </label>
+        <label class="container medium">H-Stripes
+            <input type="radio" name="dataset" id="radio_data8" onclick="setDataSet(8)">
+            <span class="checkmark circle"></span>
+        </label>
+        <button class="btn action" style="float: left; margin-left: 2%" onclick="setUploadDataset()">Upload DataSet</button>
+    </div>
         <button type="button" class="btn visibility" id="kmeans_tab_btn" onclick="setTabVisibility(id,!kmeans_tab)">K-Means</button>
         <div class="card card-1" id="kmeans">
             <h3>K-Means</h3>
@@ -1487,7 +1500,5 @@
                 </div>
             </div>
         </div>
-
-    </div>
     </body>
 </html>

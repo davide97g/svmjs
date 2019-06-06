@@ -59,7 +59,8 @@ let drawerjs = (function (exports) {
     return exports;
 
 })(typeof module != 'undefined' && module.exports);  // add exports to module.exports if in node.js
-
+let max;
+let min;
 function clean() {
     ctx.clearRect(0,0,WIDTH,HEIGHT);
     data = [];
@@ -87,6 +88,12 @@ function draw(){
 
     ctxTest.clearRect(0,0,WIDTH,HEIGHT);
     if(N===0) return;
+    if(methodID ===0){
+        max = svm.getMaxMargin(data);
+        min = svm.getMinMargin(data);
+    }
+    console.info(max);
+    console.info(min);
     if(methodID!==3)
         drawGrid(ctxTest);
     else
@@ -428,8 +435,22 @@ function getColor(v) {
     let color;
     let value = getValue(v);
     if(methodID===0){
-        if(value>0) color = 'rgb(150,250,150)';
+        if(value>0.5) color = 'rgb(150,250,150)';
         else color = 'rgb(250,150,150)';
+        // if(value>1) color = 'rgb(150,250,150)';
+        // else if(value<-1) color = 'rgb(250,150,150)';
+        // else if(value===0) color = 'rgb(200,200,150)'; //yellow gold
+        // else {
+        //     let ri, gi;
+        //     if (value < 0) { // less red 250-150
+        //         ri = 150-100*value; //with value = -1 ===> ri = 250
+        //         gi = 250+100*value; //with value = -1 ===> gi = 150
+        //     } else { //less green 150-250
+        //         ri = 250-100*value; //with value = 1 ===> ri = 150
+        //         gi = 150+100*value; //with value = 1 ===> gi = 250
+        //     }
+        //     color = 'rgb(' + Math.floor(ri) + ',' + Math.floor(gi) + ',150)';
+        // }
     }
     else if(methodID===1) { //KNN
         if(value===0) color = 'rgb(200,200,150)'; //yellow gold

@@ -141,6 +141,7 @@ function showUiThings() {
     }
 
     if(methodID===0){ //SVM
+        $("#svm").show();
         $("#kernels").show();
         $("#execution_options").show();
         // $("#svm").show();
@@ -176,7 +177,7 @@ function showUiThings() {
         }
     }
     else if(methodID===1) { //KNN
-        // $("#knn").show();
+        $("#knn").show();
         $("#s6").show(); //slider for K in KNN
         $("#distances").show(); //distances buttons
         $("#drawtypes").show(); //distances buttons
@@ -184,10 +185,11 @@ function showUiThings() {
             $("#s7").show(); //slider for minkowski P
     }
     else if(methodID===2){ //RBF
-        // $("#rbf").show();
+        $("#rbf").show();
         $("#s8").show(); //slider for epsilon
     }
     else if(methodID===3){ //Random Forest
+        $("#rforest").show();
         $("#decisions").show();
         $("#assignments").show();
         $("#s14").show(); //slider for epsilon
@@ -195,6 +197,7 @@ function showUiThings() {
         $("#s16").show(); //slider for epsilon
     }
     else if(methodID===4){
+        $("#logistic").show();
         $("#s17").show(); //slider for epsilon
         $("#s18").show(); //slider for epsilon
         $("#s19").show(); //slider for epsilon
@@ -226,6 +229,7 @@ function hideUiThings() {
     $("#assignments").hide();
     $("#drawtypes").hide();
     $(".slider_container").hide(); // per nascondere gli slider che non servono
+    $(".method").hide(); // per nascondere gli slider che non servono
 }
 
 function moveProgressBar(percentage,duration) {

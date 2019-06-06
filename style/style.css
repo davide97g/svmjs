@@ -143,13 +143,16 @@ a{
     float: left;
 }
 
-#knn,#rbf,#rforest,#logistic{
+#knn,#rbf,#rforest,#logistic,#method_options{
     float:left;
     width: 92%;
+    /*max-width: 92%;*/
     margin: 2%;
     padding: 2%;
 }
-
+#method_options{
+    background-color: var(--primary-c);
+}
 
 #values,#kernels,#evalutation,#kmeans-mode,#kmeans-options,#assignments,#decisions,#drawtypes{
     float:left;
