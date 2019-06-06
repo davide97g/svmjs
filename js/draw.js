@@ -419,7 +419,7 @@ function getValue(v) {
         else value = -1;
     }
     else if(methodID===4){ //Logistic Regression
-        value = classifier.predict(v) >= classifier.threshold ? 1 : 0;
+        value = classifier.predict(v) >= classifier.threshold ? 1: 0;
     }
     return value;
 }
@@ -428,18 +428,24 @@ function getColor(v) {
     let color;
     let value = getValue(v);
     if(methodID===0){
-        // value= getValue(v);
         if(value>0) color = 'rgb(150,250,150)';
         else color = 'rgb(250,150,150)';
     }
     else if(methodID===1) { //KNN
-        // value = getValue(v);
-        if(value === 1) color = 'rgb(150,250,150)'; //green
-        else if(value === 0) color = 'rgb(244,220,66)'; //yellow gold
-        else color = 'rgb(250,150,150)'; //red
+        if(value===0) color = 'rgb(200,200,150)'; //yellow gold
+        else {
+            let ri, gi;
+            if (value < 0) { // less red 250-150
+                ri = 150-100*value; //with value = -1 ===> ri = 250
+                gi = 250+100*value; //with value = -1 ===> gi = 150
+            } else { //less green 150-250
+                ri = 250-100*value; //with value = 1 ===> ri = 150
+                gi = 150+100*value; //with value = 1 ===> gi = 250
+            }
+            color = 'rgb(' + Math.floor(ri) + ',' + Math.floor(gi) + ',150)';
+        }
     }
     else if(methodID===2){ //RBF
-        // value = getValue(v);
         if(value === 2) color = 'rgb(150,250,150)'; //green
         else if(value === 0) color = 'rgb(0,0,0)'; //pure black
         else if(value === 1) color = 'rgb(255,255,50)'; //yellow gold

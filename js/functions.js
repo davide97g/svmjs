@@ -168,26 +168,26 @@ $(function() {
     $("#slider17").slider({
         orientation: "horizontal",
         slide: refreshAlpha,
-        max: 50,
-        min: 1,
-        step: 1,
-        value: 10
+        max: 0.001,
+        min: 0.0001,
+        step: 0.0001,
+        value: alpha
     });
     $("#slider18").slider({
         orientation: "horizontal",
         slide: refreshLambda,
-        max: 50,
-        min: 1,
-        step: 1,
-        value: 10
+        max: 1,
+        min: 0.0,
+        step: 0.1,
+        value: lambda
     });
     $("#slider19").slider({
         orientation: "horizontal",
         slide: refreshIterations,
-        max: 50,
-        min: 1,
-        step: 1,
-        value: 10
+        max: 10000,
+        min: 1000,
+        step: 1000,
+        value: iterations
     });
 });
 

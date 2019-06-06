@@ -68,6 +68,7 @@
         let ssca = false;
         let ub = 0.5;
         let K = 1; //for KNN
+        let drawSoftKNN = true;
         let P = 2; //for minkowski
         let v; //array of variances
         let distanceid = 0; //for distances in KNN evalutations
@@ -440,6 +441,7 @@
                 methodID = json.methodID;
                 kernelid = json.kernelid;
                 Degree = json.Degree;
+                K = json.K;
                 if(input_transformation){
                     for(let i=0;i<json.inputs.length;i++) {
                         document.getElementById(json.inputs[i]).checked = true;
@@ -475,7 +477,9 @@
                     let app = [];
                     for(let i=0;i<data.length;i++){
                         app = copyArray(data[i]);
-                        app.push(labels[i]);
+                        if(labels[i]===1)
+                            app.push(1);
+                        else app.push(0);
                         trainingData.push(app);
                     }
                     let config = {
@@ -852,6 +856,7 @@
                     methodID: methodID,
                     kernelid: kernelid,
                     Degree: Degree,
+                    K: K,
                 };
                 let inputList = document.getElementsByClassName("inputF");
                 let id = 0;
@@ -1297,6 +1302,17 @@
                     <h3 id="kport">K: 1</h3>
                     <div id="slider6"></div>
                 </div>
+                <div class="card card-1" id="drawtypes">
+                    <h3>Drawing Type</h3>
+                    <label class="container full"><strong>Hard</strong>
+                        <input type="radio" name="drawtypes" onclick="drawSoftKNN = false;">
+                        <span class="checkmark circle"></span>
+                    </label>
+                    <label class="container full"><strong>Soft</strong>
+                        <input type="radio" name="drawtypes" onclick="drawSoftKNN = true;" checked>
+                        <span class="checkmark circle"></span>
+                    </label>
+                </div>
                 <div class="card card-1" id="distances">
                     <h3>Distances</h3>
                     <label class="container full">Minkowski
@@ -1360,7 +1376,7 @@
                             <input type="radio" name="decisions" onclick="options.type = 1;" checked>
                             <span class="checkmark circle"></span>
                         </label>
-            </div>
+                </div>
                 <div class="card card-1" id="assignments">
                     <h3>Drawing Type</h3>
                     <label class="container full"><strong>Hard</strong>

@@ -151,7 +151,7 @@ a{
 }
 
 
-#values,#kernels,#evalutation,#kmeans-mode,#kmeans-options,#assignments,#decisions{
+#values,#kernels,#evalutation,#kmeans-mode,#kmeans-options,#assignments,#decisions,#drawtypes{
     float:left;
     width: 42%;
     margin: 2%;

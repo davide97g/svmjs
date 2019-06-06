@@ -86,15 +86,15 @@ function refreshTries(event, ui) {
 }
 
 function refreshAlpha(event, ui) {
-    alpha = Math.floor(ui.value);
+    alpha = ui.value;
     $("#alphaport").text("Alpha = " + alpha);
 }
 function refreshLambda(event, ui) {
-    alpha = Math.floor(ui.value);
+    lambda = ui.value;
     $("#lambdaport").text("Lambda = " + lambda);
 }
 function refreshIterations(event, ui) {
-    iterations = Math.floor(ui.value);
+    iterations = ui.value;
     $("#iterationsport").text("Iterations = " + iterations);
 }
 
@@ -179,6 +179,7 @@ function showUiThings() {
         // $("#knn").show();
         $("#s6").show(); //slider for K in KNN
         $("#distances").show(); //distances buttons
+        $("#drawtypes").show(); //distances buttons
         if(distanceid===0)  //minkowski
             $("#s7").show(); //slider for minkowski P
     }
@@ -223,6 +224,7 @@ function hideUiThings() {
     $("#execution_options").hide();
     $("#decisions").hide();
     $("#assignments").hide();
+    $("#drawtypes").hide();
     $(".slider_container").hide(); // per nascondere gli slider che non servono
 }
 

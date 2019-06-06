@@ -35,16 +35,29 @@ function KNN(x,y,n){
     
     //label definition
     let c = 0;
+    let reds = 0;
+    let greens = 0;
     for (let i=0;i<n;i++){
         c+=nearest[i].label;
+        if(nearest[i].label===1)
+            greens++;
+        else reds++;
     }
-    if(c>0) return 1;
-    if(c===0){//indecision between two classes -> could approximate finding the value for n-1 of n+1
-        //return KNN(x,y,n+1); //equal to call knn on the next k
-        //return KNN(x,y,n-1); //equal to call knn on the previous k
-        return 0;
+    if(drawSoftKNN){ //se disegno soft e con n dispari
+        if(c===0) return 0;
+        if(c>0){ //greenish
+            return greens/n;
+        }
+        else{ //redish
+            return -reds/n;
+        }
+
     }
-    return -1;
+    else{
+        if(c>0) return 1;
+        if(c===0) return 0;
+        return -1;
+    }
 }
 
 /**
