@@ -202,6 +202,9 @@ function showUiThings() {
         $("#s18").show(); //slider for epsilon
         $("#s19").show(); //slider for epsilon
     }
+    else if(methodID===5){
+        $("#neural_net").show();
+    }
 }
 
 function hideUiThings() {

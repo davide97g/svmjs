@@ -88,12 +88,6 @@ function draw(){
 
     ctxTest.clearRect(0,0,WIDTH,HEIGHT);
     if(N===0) return;
-    if(methodID ===0){
-        max = svm.getMaxMargin(data);
-        min = svm.getMinMargin(data);
-    }
-    console.info(max);
-    console.info(min);
     if(methodID!==3)
         drawGrid(ctxTest);
     else
@@ -170,7 +164,7 @@ function drawTraining(ctx) {
         l = labels;
         n = data.length;
     }
-    console.info(" ✏ DRAW TRAINING DATA: "+n);
+    // console.info(" ✏ DRAW TRAINING DATA: "+n);
     for(let i=0;i<n;i++) {
         if(l[i]===1) //positive{
             ctx.fillStyle = 'rgb(100,200,100)';//green
@@ -195,7 +189,7 @@ function drawData(ctx) {
     ctx.strokeStyle = 'rgb(0,0,0)';
     let radius = 5;
     let value = 0;
-    console.info(" ✏ DRAW DATA: "+N);
+    // console.info(" ✏ DRAW DATA: "+N);
     let values = [];
     for(let i=0;i<N;i++) {
         if(methodID===0) {
@@ -209,6 +203,7 @@ function drawData(ctx) {
             }
         }
         value = getValue(data[i]);
+        if(methodID===0) value = 2*value-1;
         //COLORS
         if(value>0){ //positive
             if(labels[i]===1) { //positive
@@ -238,7 +233,7 @@ function drawTest(ctx) {
     ctx.lineWidth = 0.75;
     ctx.strokeStyle = 'rgb(255,255,255)';
     let radius = 6;
-    console.info(" ✏ DRAW DATA TEST: "+Ntest);
+    // console.info(" ✏ DRAW DATA TEST: "+Ntest);
     let values = [];
     let value = 0;
     for(let i=0;i<Ntest;i++) {
@@ -275,12 +270,12 @@ function drawKmeans(ctx,drawF) {
     ctx.strokeStyle = 'rgb(255,255,255)';
     let radius = 10;
     ctx.lineWidth = 5;
-    console.info(" ✏ DRAW MEANS 1: "+means[0].length);
+    // console.info(" ✏ DRAW MEANS 1: "+means[0].length);
     for(let i=0;i<means[0].length;i++) {
         ctx.fillStyle = 'rgb(100,200,100)'; //green
         drawF(means[0][i][0]*ss+WIDTH/2, means[0][i][1]*ss+HEIGHT/2, radius);
     }
-    console.info(" ✏ DRAW MEANS 2: "+means[1].length);
+    // console.info(" ✏ DRAW MEANS 2: "+means[1].length);
     for(let i=0;i<means[1].length;i++) {
         ctx.fillStyle = 'rgb(200,100,100)'; //red
         drawF(means[1][i][0]*ss+WIDTH/2, means[1][i][1]*ss+HEIGHT/2, radius);
@@ -293,7 +288,7 @@ function drawDataKmeans(ctx) {
     ctx.strokeStyle = 'rgb(0,0,0)';
     let radius = 6;
     ctx.lineWidth = 1;
-    console.info(" ✏ DRAW DATA KMEANS: "+L);
+    // console.info(" ✏ DRAW DATA KMEANS: "+L);
     let values = [];
     let value;
     for(let i=0;i<L;i++) {
@@ -328,7 +323,9 @@ function drawDataKmeans(ctx) {
 }
 
 function drawGrid(ctx) {
-    density = 2;
+    if(methodID===5)
+        density = 3;
+    else density = 2;
     for(let x=0.0; x<=WIDTH; x+= density) {
         for(let y=0.0; y<=HEIGHT; y+= density) {
             ctx.fillStyle = getColor([(x-WIDTH/2)/ss,(y-HEIGHT/2)/ss]);
@@ -413,6 +410,7 @@ function getValue(v) {
             }
         }
         value = svm.marginOne(v);
+        value = (Math.tanh(value)+1)/2;
     }
     else if(methodID===1) { //KNN
         value = KNN(x,y,K);
@@ -428,6 +426,15 @@ function getValue(v) {
     else if(methodID===4){ //Logistic Regression
         value = classifier.predict(v) >= classifier.threshold ? 1: 0;
     }
+    else if(methodID===5){ //Neural Networks
+        let input = new convnetjs.Vol(1,1,2,0.0);
+        input.w[0] = x;
+        input.w[1] = y;
+        let a = net.forward(input, false);
+        value = a.w[0]>a.w[1] ? -1:1;
+        // let a = predictOne(v);
+        // value = a.w[0]>a.w[1] ? -1:1;
+    }
     return value;
 }
 
@@ -435,22 +442,22 @@ function getColor(v) {
     let color;
     let value = getValue(v);
     if(methodID===0){
-        if(value>0.5) color = 'rgb(150,250,150)';
-        else color = 'rgb(250,150,150)';
-        // if(value>1) color = 'rgb(150,250,150)';
-        // else if(value<-1) color = 'rgb(250,150,150)';
-        // else if(value===0) color = 'rgb(200,200,150)'; //yellow gold
-        // else {
-        //     let ri, gi;
-        //     if (value < 0) { // less red 250-150
-        //         ri = 150-100*value; //with value = -1 ===> ri = 250
-        //         gi = 250+100*value; //with value = -1 ===> gi = 150
-        //     } else { //less green 150-250
-        //         ri = 250-100*value; //with value = 1 ===> ri = 150
-        //         gi = 150+100*value; //with value = 1 ===> gi = 250
-        //     }
-        //     color = 'rgb(' + Math.floor(ri) + ',' + Math.floor(gi) + ',150)';
-        // }
+        // if(value>0.5) color = 'rgb(150,250,150)';
+        // else color = 'rgb(250,150,150)';
+        if(value>1) color = 'rgb(150,250,150)';
+        else if(value<-1) color = 'rgb(250,150,150)';
+        else if(value===0) color = 'rgb(200,200,150)'; //yellow gold
+        else {
+            let ri, gi;
+            if (value < 0) { // less red 250-150
+                ri = 150-100*value; //with value = -1 ===> ri = 250
+                gi = 250+100*value; //with value = -1 ===> gi = 150
+            } else { //less green 150-250
+                ri = 250-100*value; //with value = 1 ===> ri = 150
+                gi = 150+100*value; //with value = 1 ===> gi = 250
+            }
+            color = 'rgb(' + Math.floor(ri) + ',' + Math.floor(gi) + ',150)';
+        }
     }
     else if(methodID===1) { //KNN
         if(value===0) color = 'rgb(200,200,150)'; //yellow gold
@@ -478,6 +485,10 @@ function getColor(v) {
         else color = 'rgb(250,150,150)';
     }
     else if(methodID===4){ //Logistic Regression
+        if(value===1) color = 'rgb(150,250,150)';
+        else color = 'rgb(250,150,150)';
+    }
+    else if(methodID===5){
         if(value===1) color = 'rgb(150,250,150)';
         else color = 'rgb(250,150,150)';
     }
@@ -516,4 +527,45 @@ function updateStatsTest(stats) {
     document.getElementById("accurancy2").innerText=(stats.accurancy*100).toPrecision(3);
     document.getElementById("specificity2").innerText=(stats.specificity*100).toPrecision(3);
     document.getElementById("fmeasure2").innerText=(stats.fMeasure*100).toPrecision(3);
+}
+
+function predictOne(v) {
+    let x = v[0];
+    let y = v[1];
+    let layers = net.layers;
+    let fc1 = layers[1];
+    let fc2 = layers[3];
+    let n1 = fc1.biases.w[0] + fc1.filters[0].w[0]*x + fc1.filters[0].w[1]*y;
+
+    let n2 = fc1.biases.w[1] + fc1.filters[1].w[0]*x + fc1.filters[1].w[1]*y;
+
+    let t1 = Math.tanh(n1);
+
+    let t2 = Math.tanh(n2);
+
+    let o1 = fc2.biases.w[0]+fc2.filters[0].w[0]*t1 + fc2.filters[0].w[1]*t2;
+
+    let o2 = fc2.biases.w[1]+fc2.filters[1].w[0]*t1 + fc2.filters[1].w[1]*t2;
+
+    let V = new convnetjs.Vol(1, 1, 2, 0.0);
+    V.w[0]= o1;
+    V.w[1]= o2;
+
+    return V;
+}
+
+function getFormulaNet(formulaNet) {
+    let x = "x";
+    let y = "y";
+    let layers = net.layers;
+    let fc1 = layers[1];
+    let fc2 = layers[3];
+    let fN1 = fc1.biases.w[0].toPrecision(4)+"+"+fc1.filters[0].w[0].toPrecision(4)+"*"+x+" "+fc1.filters[0].w[1].toPrecision(4)+"*"+y;
+    let fN2 = fc1.biases.w[1].toPrecision(4)+"+"+fc1.filters[1].w[0].toPrecision(4)+"*"+x+" "+fc1.filters[1].w[1].toPrecision(4)+"*"+y;
+    let fT1 = "tanh("+fN1+")";
+    let fT2 = "tanh("+fN2+")";
+    let fO1 = fc2.biases.w[0].toPrecision(4)+"+"+fc2.filters[0].w[0].toPrecision(4)+"*"+fT1+"+"+fc2.filters[0].w[1].toPrecision(4)+"*"+fT2;
+    let fO2 = fc2.biases.w[1].toPrecision(4)+"+"+fc2.filters[1].w[0].toPrecision(4)+"*"+fT1+"+"+fc2.filters[1].w[1].toPrecision(4)+"*"+fT2;
+    formulaNet+="1: "+fO1+"+\n"+"2: "+fO2;
+    return formulaNet;
 }

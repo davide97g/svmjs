@@ -458,7 +458,7 @@ function fillArray(length, val) {
  * */
 
 function KMEANS(data) {
-    console.info("\tKMEANS");
+    // console.info("\tKMEANS");
     KMdataUser = false;
     drawKmeansPoints = true;
     let separated = separateData(data);

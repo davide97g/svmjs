@@ -23,6 +23,8 @@
         <script src="./lib/svmo.js"></script>
         <script src="./lib/randomforest.js"></script>
         <script src="./lib/jsregression.js"></script>
+        <script src="./lib/convnet/convnetjs.js"></script>
+        <script src="./lib/convnet/util.js"></script>
 
         <script type="text/javascript" src="./js/generator.js"></script>
 
@@ -126,6 +128,13 @@
             lambda: lambda
         });
         let logistic_result;
+
+
+        //*************
+        //Neural nets variables
+        let layer_defs, net, trainer;
+        let loop;
+        let formulaNet = "";
 
         </script>
 
@@ -336,81 +345,6 @@
         function myinitTest(){}
         </script>
 
-        <!-- K-Means -->
-        <!--
-        <script type="text/javascript">
-        function KMEANS(data) {
-            console.info("\tKMEANS");
-            KMdataUser = false;
-            drawKmeansPoints = true;
-            let separated = separateData(data);
-            let kmeans1 = new KMeans({
-                canvas: document.getElementById('canvasData'),
-                data: separated[0],
-                k: Km1,
-                p: 1
-            });
-            let kmeans2 = new KMeans({
-                canvas: document.getElementById('canvasData'),
-                data: separated[1],
-                k: Km2,
-                p: 1
-            });
-
-            means = new Array(2);
-            means[0] = kmeans1.means;
-            means[1] = kmeans2.means;
-            return createNewData(means);
-        }
-        function resetKmeans() {
-            means = new Array(2);
-            means[0] = [];
-            means[1] = [];
-        }
-        function cleanKmeans() {
-            resetKmeans();
-            execute();
-        }
-        function createNewData(means) {
-            let L1,L2;
-            L1 = means[0].length;
-            L2 = means[1].length;
-
-            let L = L1+L2;
-            let newData = new Array(L);
-            let newLabels = new Array(L);
-            for(let i=0;i<L1;i++){
-                newData[i] = means[0][i];
-                newLabels[i] = 1;
-            }
-            for(let i=L1;i<L;i++) {
-                newData[i] = means[1][i-L1];
-                newLabels[i] = -1;
-            }
-            return {
-                data: newData,
-                labels: newLabels
-            };
-        }
-        function separateData(data) {
-            let res = new Array(2);
-            res[0] = [];
-            res[1] = [];
-            for(let i=0;i<data.length;i++){
-                if(labels[i]===1)
-                    res[0].push(data[i]);
-                else res[1].push(data[i]);
-            }
-            return res;
-        }
-        function shouldDrawKmeans(value) {
-            drawKmeansPoints = value;
-            hideUiThings();
-            showUiThings();
-        }
-        </script>
-        -->
-
         <!-- distances functions (minkowski, chebyshev, mahalanobis) -->
         <script type="text/javascript" src="js/distances.js"></script>
 
@@ -490,13 +424,50 @@
                     classifier.setOptions(config);
                     logistic_result = classifier.fit(trainingData);
                 }
+                else if(methodID===5){ //Neural Networks
+
+                    layer_defs = [];
+                    layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:2});
+                    layer_defs.push({type:'fc', num_neurons:4, activation: 'tanh'});
+                    layer_defs.push({type:'fc', num_neurons:4, activation: 'tanh'});
+                    layer_defs.push({type:'fc', num_neurons:4, activation: 'tanh'});
+                    layer_defs.push({type:'softmax', num_classes:2});
+                    net = new convnetjs.Net();
+                    net.makeLayers(layer_defs);
+                    trainer = new convnetjs.SGDTrainer(net, {learning_rate:0.01, momentum:0.1, batch_size:10, l2_decay:0.001});
+
+                    let counter =0;
+                    let formulaNet = "";
+                    loop =  setInterval(()=>{
+                        // if(counter===100){
+                        //     // clearInterval(myvar);
+                        //     // formulaNet = net.getFormula();
+                        //     formulaNet = getFormulaNet(formulaNet);
+                        //     console.info(formulaNet);
+                        // }
+                        counter++;
+                        // console.info("\tNeural Networks");
+
+                        let x = new convnetjs.Vol(1,1,2,0.0);
+                        let iters;
+                        for(iters=0;iters<20;iters++) {
+                            for(let ix=0;ix<N;ix++) {
+                                x.w = data[ix];
+                                if(labels[ix]===1)
+                                    trainer.train(x, 1);
+                                else trainer.train(x, 0);
+                            }
+                        }
+                        draw();
+                    },10);
+                }
             }
             function execute() {
                 if(N===0) return;
                 // document.getElementById("getReady").play();
                 console.clear();
-                console.info("🔨 EXECUTE");
-                console.info("🐵 DATASET "+datasetID);
+                // console.info("🔨 EXECUTE");
+                // console.info("🐵 DATASET "+datasetID);
                 update();
                 resetStatsSVM();
                 moveProgressBar(0,100);
@@ -519,7 +490,10 @@
                 else draw();
             }
             function update(){
-                console.info("UPDATE");
+                // console.info("UPDATE");
+                if(loop!==undefined)
+                    clearInterval(loop);
+                formulaNet = "";
 
                 if(input_transformation) {
                     inputFunctionUpdate();
@@ -1165,12 +1139,16 @@
                 <input type="radio" name="methods" id="radio_rbf" onclick="changeMethod(2)">
                 <span class="checkmark circle"></span>
             </label>
+            <label class="container card card-1 medium"><strong>Random Forest</strong>
+                <input type="radio" name="methods" id="radio_rforest" onclick="changeMethod(3)">
+                <span class="checkmark circle"></span>
+            </label>
             <label class="container card card-1 medium"><strong>Logistic Regression</strong>
                 <input type="radio" name="methods" id="radio_logistic" onclick="changeMethod(4)">
                 <span class="checkmark circle"></span>
             </label>
-            <label class="container card card-1 medium"><strong>Random Forest</strong>
-                <input type="radio" name="methods" id="radio_rforest" onclick="changeMethod(3)">
+            <label class="container card card-1 medium"><strong>Neural Net</strong>
+                <input type="radio" name="methods" id="radio_neuralnet" onclick="changeMethod(5)">
                 <span class="checkmark circle"></span>
             </label>
             <!-- end choice-->
@@ -1375,42 +1353,43 @@
                     </div>
                 </div>
                 <div class="card card-1 method" id="rforest">
-
-                <div class="card card-1" id="decisions">
-                        <h3>Decision Type</h3>
-                        <label class="container full"><strong>1D</strong>
-                            <input type="radio" name="decisions" onclick="options.type = 0;">
+                    <div class="card card-1" id="decisions">
+                            <h3>Decision Type</h3>
+                            <label class="container full"><strong>1D</strong>
+                                <input type="radio" name="decisions" onclick="options.type = 0;">
+                                <span class="checkmark circle"></span>
+                            </label>
+                            <label class="container full"><strong>2D</strong>
+                                <input type="radio" name="decisions" onclick="options.type = 1;" checked>
+                                <span class="checkmark circle"></span>
+                            </label>
+                    </div>
+                    <div class="card card-1" id="assignments">
+                        <h3>Drawing Type</h3>
+                        <label class="container full"><strong>Hard</strong>
+                            <input type="radio" name="assignments" onclick="drawSoft = false;">
                             <span class="checkmark circle"></span>
                         </label>
-                        <label class="container full"><strong>2D</strong>
-                            <input type="radio" name="decisions" onclick="options.type = 1;" checked>
+                        <label class="container full"><strong>Soft</strong>
+                            <input type="radio" name="assignments" onclick="drawSoft = true;" checked>
                             <span class="checkmark circle"></span>
                         </label>
-                </div>
-                <div class="card card-1" id="assignments">
-                    <h3>Drawing Type</h3>
-                    <label class="container full"><strong>Hard</strong>
-                        <input type="radio" name="assignments" onclick="drawSoft = false;">
-                        <span class="checkmark circle"></span>
-                    </label>
-                    <label class="container full"><strong>Soft</strong>
-                        <input type="radio" name="assignments" onclick="drawSoft = true;" checked>
-                        <span class="checkmark circle"></span>
-                    </label>
-                </div>
-                <div id="s14" class="slider_container">
-                    <h3 id="treesreport">Number of Trees = 100</h3>
-                    <div id="slider14"></div>
-                </div>
-                <div id="s15" class="slider_container">
-                    <h3 id="depthreport">Max Depth = 4</h3>
-                    <div id="slider15"></div>
-                </div>
-                <div id="s16" class="slider_container">
+                    </div>
+                    <div id="s14" class="slider_container">
+                        <h3 id="treesreport">Number of Trees = 100</h3>
+                        <div id="slider14"></div>
+                    </div>
+                    <div id="s15" class="slider_container">
+                        <h3 id="depthreport">Max Depth = 4</h3>
+                        <div id="slider15"></div>
+                    </div>
+                    <div id="s16" class="slider_container">
                     <h3 id="triesreport">Hypotheses / node = 10</h3>
                     <div id="slider16"></div>
                 </div>
-            </div>
+                </div>
+                <div class="card card-1 method" id="neural_net">
+                </div>
             </div>
             <!-- end methods-->
             <div id="optimization">
