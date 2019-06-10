@@ -4,6 +4,7 @@
         <title>SVM Javascript</title>
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700&display=swap" rel="stylesheet">
         <link type="text/css" href="./jqueryui/css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="Stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
         <link type="text/css" rel="stylesheet" href="style/root.css"/>
         <link type="text/css" rel="stylesheet" href="style/style.css"/>
         <link type="text/css" rel="stylesheet" href="style/radio_button.css"/>
@@ -428,9 +429,7 @@
 
                     layer_defs = [];
                     layer_defs.push({type:'input', out_sx:1, out_sy:1, out_depth:2});
-                    layer_defs.push({type:'fc', num_neurons:4, activation: 'tanh'});
-                    layer_defs.push({type:'fc', num_neurons:4, activation: 'tanh'});
-                    layer_defs.push({type:'fc', num_neurons:4, activation: 'tanh'});
+                    layer_defs.push({type:'fc', num_neurons:2, activation: 'tanh'});
                     layer_defs.push({type:'softmax', num_classes:2});
                     net = new convnetjs.Net();
                     net.makeLayers(layer_defs);
@@ -439,12 +438,15 @@
                     let counter =0;
                     let formulaNet = "";
                     loop =  setInterval(()=>{
-                        // if(counter===100){
-                        //     // clearInterval(myvar);
-                        //     // formulaNet = net.getFormula();
-                        //     formulaNet = getFormulaNet(formulaNet);
-                        //     console.info(formulaNet);
-                        // }
+                        if(counter===100){
+                            // clearInterval(myvar);
+                            // formulaNet = net.getFormula();
+                            let input = [];
+                            input.push("x");
+                            input.push("y");
+                            formulaNet = net.getFormula(input);
+                            console.info(formulaNet);
+                        }
                         counter++;
                         // console.info("\tNeural Networks");
 
@@ -459,7 +461,7 @@
                             }
                         }
                         draw();
-                    },10);
+                    },50);
                 }
             }
             function execute() {
@@ -1000,6 +1002,47 @@
             </canvas>
             <canvas class="card card-1 nopadding" id="canvasResult" width="500px" height="500px">Browser not supported for Canvas. Get a real browser.
             </canvas>
+<!--            <canvas id="myChart" class="card card-1 nopadding" width="500px" height="500px"></canvas>-->
+<!--            <script>-->
+<!--                let context = document.getElementById('myChart').getContext('2d');-->
+<!--                data = circleData(100).data;-->
+<!--                let array_data = [];-->
+<!--                for(let i=0;i<data.length;i++){-->
+<!--                    let obj = {};-->
+<!--                    obj.x = data[i][0];-->
+<!--                    obj.y = data[i][1];-->
+<!--                    array_data.push(obj);-->
+<!--                }-->
+<!--                let color = Chart.helpers.color;-->
+<!--                console.info(color);-->
+
+<!--                let scatterChartData = {-->
+<!--                    datasets: [{-->
+<!--                        label: 'My First dataset',-->
+<!--                        borderColor:'rgba(255, 99, 132, 1)',-->
+<!--                        backgroundColor: 'rgb(255,255,255)',-->
+<!--                        data: array_data-->
+<!--                    }]-->
+<!--                };-->
+
+<!--                var scatterChart = new Chart(context, {-->
+<!--                    type: 'scatter',-->
+<!--                    data: scatterChartData,-->
+<!--                    options: {-->
+<!--                        scales: {-->
+<!--                            xAxes: [{-->
+<!--                                type: 'linear',-->
+<!--                                position: 'bottom'-->
+<!--                            }]-->
+<!--                        },-->
+<!--                        title: {-->
+<!--                            display: true,-->
+<!--                            text: 'Chart.js Scatter Chart'-->
+<!--                        }-->
+<!--                    }-->
+<!--                });-->
+
+<!--            </script>-->
         </div>
         <button type="button" class="btn visibility" id="statistics_tab_btn" onclick="setTabVisibility(id,!statistics_tab)">Statistics</button>
         <div class="card card-1" id="statistics">

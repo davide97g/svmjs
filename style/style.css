@@ -72,6 +72,11 @@ canvas {
     border: 1px solid #555;
     margin-top: 3% !important;
 }
+#myChart{
+    height: 60% !important;
+    width: 60% !important;
+    margin: auto;
+}
 body {
     text-align: center;
     font-family: Roboto,Verdana, Helvetica, sans-serif;
