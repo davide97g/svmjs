@@ -145,7 +145,7 @@
     var n = test_dataset.data.length;
     var acc = 0.0;
     for(var i=0;i<n;i++) {
-      var yhat = net.predict(test_dataset.data[i]);
+      var yhat = Manager.predict(test_dataset.data[i]);
       if(yhat === -1) {
         $("#testresult").html("The MagicNet is not yet ready! It must process at least one batch of candidates across all folds first. Wait a bit.");
         $("#testresult").css('background-color', '#FCC');

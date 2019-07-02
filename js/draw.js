@@ -424,7 +424,7 @@ function getValue(v) {
         else value = -1;
     }
     else if(methodID===4){ //Logistic Regression
-        value = classifier.predict(v) >= classifier.threshold ? 1: 0;
+        value = Manager.predict(v) >= classifier.threshold ? 1: 0;
     }
     else if(methodID===5){ //Neural Networks
         let input = new convnetjs.Vol(1,1,2,0.0);

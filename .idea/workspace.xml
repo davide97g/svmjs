@@ -3,12 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1925c999-ce1a-4f0d-a4e0-f9a12ad3a861" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/draw.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/draw.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/kmeans.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/kmeans.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/js/ui.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/ui.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/stats.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/stats.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/svm.js" beforeDir="false" afterPath="$PROJECT_DIR$/lib/svm.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,32 +15,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="432" column="83" lean-forward="true" selection-start-line="432" selection-start-column="83" selection-end-line="432" selection-end-column="83" />
+            <state relative-caret-position="240">
+              <caret line="447" column="53" lean-forward="true" selection-start-line="447" selection-start-column="53" selection-end-line="447" selection-end-column="53" />
               <folding>
-                <element signature="e#4875#6630#0" />
-                <element signature="e#6667#8020#0" />
-                <element signature="e#8055#8546#0" />
-                <element signature="e#8581#9721#0" />
-                <element signature="e#9753#11895#0" />
-                <element signature="e#14519#14752#0" />
-                <element signature="e#14791#15672#0" />
-                <element signature="e#15873#16300#0" />
-                <element signature="e#16338#16406#0" />
-                <element signature="e#16444#16587#0" />
-                <element signature="e#16625#17401#0" />
-                <element signature="e#18194#18436#0" />
-                <element signature="e#22448#22843#0" />
-                <element signature="e#22872#27045#0" />
                 <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-                <element signature="e#27089#28453#0" />
-                <element signature="e#28497#28622#0" />
-                <element signature="e#28666#28780#0" />
-                <element signature="e#28818#29611#0" />
-                <element signature="e#29643#29783#0" />
-                <element signature="e#29815#29897#0" />
-                <element signature="n#script#19;n#head#0;n#html#0;n#!!top" />
                 <element signature="n#div#0;n#body#0;n#html#0;n#!!top" />
                 <element signature="n#script#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
                 <element signature="n#div#1;n#body#0;n#html#0;n#!!top" />
@@ -58,7 +31,6 @@
                 <element signature="n#label#0;n#div#4;n#body#0;n#html#0;n#!!top" />
                 <element signature="n#label#1;n#div#4;n#body#0;n#html#0;n#!!top" />
                 <element signature="n#label#2;n#div#4;n#body#0;n#html#0;n#!!top" />
-                <element signature="n#label#3;n#div#4;n#body#0;n#html#0;n#!!top" />
                 <element signature="n#label#3;n#div#4;n#body#0;n#html#0;n#!!top" />
                 <element signature="n#label#5;n#div#4;n#body#0;n#html#0;n#!!top" />
                 <element signature="n#div#0;n#div#0;n#div#4;n#body#0;n#html#0;n#!!top" />
@@ -86,8 +58,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/draw.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
-              <caret line="432" column="41" lean-forward="true" selection-start-line="432" selection-start-column="41" selection-end-line="433" selection-end-column="37" />
+            <state relative-caret-position="3528">
+              <caret line="432" column="41" selection-start-line="432" selection-start-column="41" selection-end-line="433" selection-end-column="37" />
               <folding>
                 <element signature="n#!!block;n#clean#0" />
                 <element signature="n#!!block;n#draw#0" />
@@ -111,7 +83,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/convnet/convnetjs.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="145">
+            <state relative-caret-position="13776">
               <caret line="574" column="15" selection-start-line="574" selection-start-column="15" selection-end-line="574" selection-end-column="15" />
             </state>
           </provider>
@@ -186,59 +158,28 @@
     <option name="height" value="944" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane" />
-      <pane id="Scope">
-        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+      <pane id="ProjectPane">
+        <subPane>
           <expand>
             <path>
-              <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
-            </path>
-            <path>
-              <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name=".idea" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="js" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="lib" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="lib" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-              <item name="convnet" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="npg_include" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="svmjs" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="C:\Users\spustage01\Desktop\Stage\project_svmjs\svmjs" type="442cc68d:ScopeViewTreeModel$RootNode" />
-              <item name="style" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="svmjs" type="b2602c69:ProjectViewProjectNode" />
+              <item name="svmjs" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="settings.editor.selected.configurable" value="watcher.settings" />
   </component>
@@ -270,18 +211,18 @@
       <workItem from="1559716602142" duration="26711000" />
       <workItem from="1559805056662" duration="51000" />
       <workItem from="1559805183533" duration="24397000" />
-      <workItem from="1559890038616" duration="21237000" />
+      <workItem from="1559890038616" duration="21399000" />
+      <workItem from="1560148646156" duration="366000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="118040000" />
+    <option name="totallyTimeSpent" value="118568000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1836248" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1836248" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -293,7 +234,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.49841017" visible="true" weight="0.20214032" />
+      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49841017" visible="true" weight="0.20214032" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50158983" side_tool="true" weight="0.20214032" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -542,64 +483,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/convnet/convnetjs.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="145">
-          <caret line="574" column="15" selection-start-line="574" selection-start-column="15" selection-end-line="574" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/draw.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="432" column="41" lean-forward="true" selection-start-line="432" selection-start-column="41" selection-end-line="433" selection-end-column="37" />
-          <folding>
-            <element signature="n#!!block;n#clean#0" />
-            <element signature="n#!!block;n#draw#0" />
-            <element signature="n#!!block;n#drawRandomForest#0" />
-            <element signature="n#!!block;n#drawAxes#0" />
-            <element signature="n#!!block;n#drawData#0" />
-            <element signature="n#!!block;n#drawTest#0" />
-            <element signature="n#!!block;n#drawKmeans#0" />
-            <element signature="n#!!block;n#drawDataKmeans#0" />
-            <element signature="n#!!block;n#drawGrid#0" />
-            <element signature="n#!!block;n#drawIntermidiate#0" />
-            <element signature="n#!!block;n#drawDataLinearKernel#0" />
-            <element signature="n#!!block;n#getColor#0" />
-            <element signature="n#!!block;n#updateStats#0" />
-            <element signature="n#!!block;n#updateStatsTest#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="432" column="83" lean-forward="true" selection-start-line="432" selection-start-column="83" selection-end-line="432" selection-end-column="83" />
+        <state relative-caret-position="240">
+          <caret line="447" column="53" lean-forward="true" selection-start-line="447" selection-start-column="53" selection-end-line="447" selection-end-column="53" />
           <folding>
-            <element signature="e#4875#6630#0" />
-            <element signature="e#6667#8020#0" />
-            <element signature="e#8055#8546#0" />
-            <element signature="e#8581#9721#0" />
-            <element signature="e#9753#11895#0" />
-            <element signature="e#14519#14752#0" />
-            <element signature="e#14791#15672#0" />
-            <element signature="e#15873#16300#0" />
-            <element signature="e#16338#16406#0" />
-            <element signature="e#16444#16587#0" />
-            <element signature="e#16625#17401#0" />
-            <element signature="e#18194#18436#0" />
-            <element signature="e#22448#22843#0" />
-            <element signature="e#22872#27045#0" />
             <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#tr#0;n#!!top" expanded="true" />
-            <element signature="e#27089#28453#0" />
-            <element signature="e#28497#28622#0" />
-            <element signature="e#28666#28780#0" />
-            <element signature="e#28818#29611#0" />
-            <element signature="e#29643#29783#0" />
-            <element signature="e#29815#29897#0" />
-            <element signature="n#script#19;n#head#0;n#html#0;n#!!top" />
             <element signature="n#div#0;n#body#0;n#html#0;n#!!top" />
             <element signature="n#script#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" />
             <element signature="n#div#1;n#body#0;n#html#0;n#!!top" />
@@ -611,7 +501,6 @@
             <element signature="n#label#0;n#div#4;n#body#0;n#html#0;n#!!top" />
             <element signature="n#label#1;n#div#4;n#body#0;n#html#0;n#!!top" />
             <element signature="n#label#2;n#div#4;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#label#3;n#div#4;n#body#0;n#html#0;n#!!top" />
             <element signature="n#label#3;n#div#4;n#body#0;n#html#0;n#!!top" />
             <element signature="n#label#5;n#div#4;n#body#0;n#html#0;n#!!top" />
             <element signature="n#div#0;n#div#0;n#div#4;n#body#0;n#html#0;n#!!top" />
@@ -632,6 +521,36 @@
             <element signature="n#div#1;n#div#4;n#body#0;n#html#0;n#!!top" />
             <element signature="n#div#5;n#body#0;n#html#0;n#!!top" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/draw.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3528">
+          <caret line="432" column="41" selection-start-line="432" selection-start-column="41" selection-end-line="433" selection-end-column="37" />
+          <folding>
+            <element signature="n#!!block;n#clean#0" />
+            <element signature="n#!!block;n#draw#0" />
+            <element signature="n#!!block;n#drawRandomForest#0" />
+            <element signature="n#!!block;n#drawAxes#0" />
+            <element signature="n#!!block;n#drawData#0" />
+            <element signature="n#!!block;n#drawTest#0" />
+            <element signature="n#!!block;n#drawKmeans#0" />
+            <element signature="n#!!block;n#drawDataKmeans#0" />
+            <element signature="n#!!block;n#drawGrid#0" />
+            <element signature="n#!!block;n#drawIntermidiate#0" />
+            <element signature="n#!!block;n#drawDataLinearKernel#0" />
+            <element signature="n#!!block;n#getColor#0" />
+            <element signature="n#!!block;n#updateStats#0" />
+            <element signature="n#!!block;n#updateStatsTest#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/convnet/convnetjs.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13776">
+          <caret line="574" column="15" selection-start-line="574" selection-start-column="15" selection-end-line="574" selection-end-column="15" />
         </state>
       </provider>
     </entry>
